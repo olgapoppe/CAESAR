@@ -14,7 +14,7 @@ import run.*;
 public abstract class EventDistributor implements Runnable {
 	
 	AtomicInteger distributorProgress;
-	final LinkedBlockingQueue<PositionReport> events;
+	EventQueue events;
 	HashMap<RunID,Run> runs;
 	final HashMap<RunID,LinkedBlockingQueue<PositionReport>> runtaskqueues;
 			
@@ -27,7 +27,7 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger xway0dir1firstHPseg;
 	
 		
-	public EventDistributor (AtomicInteger dp, LinkedBlockingQueue<PositionReport> e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq,
+	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq,
 							AtomicInteger x1, AtomicInteger x2) {
 		
 		distributorProgress = dp;
@@ -36,7 +36,7 @@ public abstract class EventDistributor implements Runnable {
 		runtaskqueues = rtq;
 						
 		shutdown = false;
-		
+				
 		min_stream_rate = Integer.MAX_VALUE;
 		max_stream_rate = 0;
 		

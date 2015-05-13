@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import distributor.*;
 import event.*;
 import run.*;
@@ -32,8 +33,8 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// fixed
-		int lastSec = 1500; //10784;		
-		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
+		int lastSec = 20; //10784;		
+		int thread_number = Runtime.getRuntime().availableProcessors() - 2;	
 		
 		// variable
 		int HP_frequency = 3;	// must be >= 1	
@@ -42,13 +43,13 @@ public class Main {
 		/*** Pick the input file ***/
 		//String filename = "src/input/10events.dat";
 		//String filename = "src/input/small.txt";
-		//String filename = "src/input/datafile20seconds.dat";
-		String filename = "../../input.dat";
+		String filename = "src/input/datafile20seconds.dat";
+		//String filename = "../../input.dat";
 		//String filename = "../../../Dropbox/LR/InAndOutput/1xway/input7.dat";				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger distributorProgress = new AtomicInteger(-1);
-		LinkedBlockingQueue<PositionReport> events = new LinkedBlockingQueue<PositionReport>();		
+		EventQueue events = new EventQueue();		
 		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();		
 		HashMap<RunID,LinkedBlockingQueue<PositionReport>> runtaskqueues = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
 		HashMap<RunID,LinkedBlockingQueue<PositionReport>> HPruntaskqueues = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
@@ -119,12 +120,15 @@ public class Main {
 			done.await();
 			
 			/*** Terminate threads ***/
+			events.shutdown();
 			distributor.shutdown = true;
 			scheduler.shutdown = true;			
 			executor.shutdown();	
 									
 			/*** Generate output files ***/
 			OutputFileGenerator.write2File (runs, startOfSimulation, distributor.min_stream_rate, distributor.max_stream_rate, HP_frequency, LP_frequency);
+			
+			System.out.println("executor and main done");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
 	}	

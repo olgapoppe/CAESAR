@@ -13,7 +13,7 @@ public class DoubleQueueDistributor extends EventDistributor {
 	
 	final HashMap<RunID,LinkedBlockingQueue<PositionReport>> HPruntaskqueues;
 	
-	public DoubleQueueDistributor (AtomicInteger dp, LinkedBlockingQueue<PositionReport> e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq, HashMap<RunID,LinkedBlockingQueue<PositionReport>> hprtq,
+	public DoubleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq, HashMap<RunID,LinkedBlockingQueue<PositionReport>> hprtq,
 								   AtomicInteger x1, AtomicInteger x2) {
 		super(dp, e, rs, rtq, x1, x2);
 		HPruntaskqueues = hprtq;
