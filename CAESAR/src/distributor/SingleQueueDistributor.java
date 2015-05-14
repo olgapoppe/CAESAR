@@ -9,10 +9,8 @@ import run.*;
 import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {
-	
-	public SingleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq, 
-								   AtomicInteger x1, AtomicInteger x2) {
-		super(dp, e, rs, rtq, x1, x2);
+		public SingleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2) {
+		super(dp, e, rs, rq, x1, x2);
 	}
 
 	/** 
@@ -53,10 +51,10 @@ public class SingleQueueDistributor extends EventDistributor {
 							runs.put(runid, run);
 						}  			 	
 						/************************************* Run task queues *************************************/
-						LinkedBlockingQueue<PositionReport> runtaskqueue = runtaskqueues.get(runid);
+						LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
 						if (runtaskqueue == null) {    
 							runtaskqueue = new LinkedBlockingQueue<PositionReport>();
-							runtaskqueues.put(runid, runtaskqueue);		 				
+							runqueues.contents.put(runid, runtaskqueue);		 				
 						}
 						runtaskqueue.add(event);	 			
 		 			
@@ -67,7 +65,7 @@ public class SingleQueueDistributor extends EventDistributor {
 						if (event.sec > curr_sec) {			 				
 		 						 				
 							/********************************** Distributer progress **********************************/
-							distributorProgress.set(curr_sec.intValue());
+							runqueues.put(curr_sec);
 									 						 					
 							/*** Min and max stream rate ***/
 							if (curr_sec >= 0) {
@@ -83,9 +81,7 @@ public class SingleQueueDistributor extends EventDistributor {
 					}
 				}
 				/************************************** Last second in the batch **************************************/
-				distributorProgress.set(curr_sec.intValue());
-				
-				System.out.println("Distributor last in batch: " + curr_sec);
+				runqueues.put(curr_sec);						
 		 	
 				/*** Min and max stream rate ***/
 				if (min_stream_rate > event_count) min_stream_rate = event_count;

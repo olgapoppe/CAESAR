@@ -5,7 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import distributor.*;
 import event.*;
 import run.*;
 
@@ -22,10 +22,10 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 	int HPrun_frequency;
 	int LPrun_frequency;
 	
-	RunDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rt, ExecutorService e, 
+	RunDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 						CountDownLatch tn, CountDownLatch d, int last, long start, 
 						AtomicInteger x0, AtomicInteger x1, int hprf, int lprf) {		
-		super(dp,rs,rt,e,tn,d,last,start);
+		super(dp,rs,rq,e,tn,d,last,start);
 		xway0dir0HPrunsFromSeg = x0;
 		xway0dir1HPrunsFromSeg = x1;
 		HPrun_frequency = hprf;

@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import transaction.*;
 import event.*;
+import distributor.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -18,14 +19,14 @@ import event.*;
  */
 public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	
-	public final HashMap<RunID,LinkedBlockingQueue<PositionReport>> HPruntaskqueues;
+	public final RunQueues HPrunqueues;
 	int HPquery_frequency;
 	int LPquery_frequency;
 
-	QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq, HashMap<RunID,LinkedBlockingQueue<PositionReport>> hprtq, ExecutorService e, 
+	QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
 							CountDownLatch tn, CountDownLatch d, int last, long start, int hpqf, int lpqf) {		
-		super(dp,rs,rtq,e,tn,d,last,start);
-		HPruntaskqueues = hprtq;
+		super(dp,rs,rq,e,tn,d,last,start);
+		HPrunqueues = hprq;
 		HPquery_frequency = hpqf;
 		LPquery_frequency = lpqf;
 	}
@@ -98,9 +99,9 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		/*** Accident management ***/
 		if (query == 1) {
 		
-			if (HPruntaskqueues.containsKey(runid)) {
+			if (HPrunqueues.contents.containsKey(runid)) {
 			
-				LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPruntaskqueues.get(runid);	
+				LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);	
 			
 				if (HPruntaskqueue!=null && !HPruntaskqueue.isEmpty()) {			
 				
@@ -121,9 +122,9 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
-			if (runtaskqueues.containsKey(runid)) {
+			if (runqueues.contents.containsKey(runid)) {
 				
-				LinkedBlockingQueue<PositionReport> runtaskqueue = runtaskqueues.get(runid);	
+				LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);	
 			
 				if (runtaskqueue!=null && !runtaskqueue.isEmpty()) {			
 				

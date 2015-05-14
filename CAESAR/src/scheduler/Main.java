@@ -4,11 +4,8 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import distributor.*;
-import event.*;
 import run.*;
 import iogenerator.*;
 
@@ -51,8 +48,8 @@ public class Main {
 		AtomicInteger distributorProgress = new AtomicInteger(-1);
 		EventQueue events = new EventQueue();		
 		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();		
-		HashMap<RunID,LinkedBlockingQueue<PositionReport>> runtaskqueues = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
-		HashMap<RunID,LinkedBlockingQueue<PositionReport>> HPruntaskqueues = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
+		RunQueues runqueues = new RunQueues(distributorProgress);
+		RunQueues HPrunqueues = new RunQueues(distributorProgress);
 		ExecutorService executor = Executors.newFixedThreadPool(thread_number);		
 		
 		CountDownLatch transaction_number = new CountDownLatch(0);
@@ -73,37 +70,37 @@ public class Main {
 		
 		if (scheduling_strategy < 3) {
 						
-			distributor = new SingleQueueDistributor(distributorProgress, events, runs, runtaskqueues,
+			distributor = new SingleQueueDistributor(distributorProgress, events, runs, runqueues,
 												xway0dir0firstHPseg, xway0dir1firstHPseg);		
 			
 			if (scheduling_strategy == 1) {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
-				scheduler = new TimeDrivenScheduler(distributorProgress, runs, runtaskqueues, executor, 
+				scheduler = new TimeDrivenScheduler(distributorProgress, runs, runqueues, executor, 
 												transaction_number, done, lastSec, startOfSimulation);
 			} else {			
 			
 				System.out.println("RUN DRIVEN SCHEDULER.");
-				scheduler = new RunDrivenScheduler(	distributorProgress, runs, runtaskqueues, executor, 
+				scheduler = new RunDrivenScheduler(	distributorProgress, runs, runqueues, executor, 
 												transaction_number, done, lastSec, startOfSimulation, 
 												xway0dir0firstHPseg, xway0dir1firstHPseg, 
 												HP_frequency, LP_frequency);
 			}
 		} else {
 			
-			distributor = new DoubleQueueDistributor(distributorProgress, events, runs, runtaskqueues, HPruntaskqueues,
+			distributor = new DoubleQueueDistributor(distributorProgress, events, runs, runqueues, HPrunqueues,
 												xway0dir0firstHPseg, xway0dir1firstHPseg);	
 			
 			if (scheduling_strategy == 3) {
 			
 				System.out.println("QUERY DRIVEN SCHEDULER.");
-				scheduler = new QueryDrivenScheduler(distributorProgress, runs, runtaskqueues, HPruntaskqueues, executor, 
+				scheduler = new QueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
 												transaction_number, done, lastSec, startOfSimulation,
 												HP_frequency, LP_frequency);
 			} else {
 			
 				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
-				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, runs, runtaskqueues, HPruntaskqueues, executor, 
+				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
 												transaction_number, done, lastSec, startOfSimulation,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, 
 												HP_frequency, LP_frequency);
@@ -120,9 +117,10 @@ public class Main {
 			done.await();
 			
 			/*** Terminate threads ***/
+			distributor.shutdown = true;						
+			scheduler.shutdown = true;
 			events.shutdown();
-			distributor.shutdown = true;
-			scheduler.shutdown = true;			
+			runqueues.shutdown();
 			executor.shutdown();	
 									
 			/*** Generate output files ***/

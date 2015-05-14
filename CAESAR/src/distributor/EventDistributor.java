@@ -16,7 +16,7 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger distributorProgress;
 	EventQueue events;
 	HashMap<RunID,Run> runs;
-	final HashMap<RunID,LinkedBlockingQueue<PositionReport>> runtaskqueues;
+	final RunQueues runqueues;
 			
 	public boolean shutdown;
 		
@@ -27,13 +27,13 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger xway0dir1firstHPseg;
 	
 		
-	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq,
+	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq,
 							AtomicInteger x1, AtomicInteger x2) {
 		
 		distributorProgress = dp;
 		events = e;
 		runs = rs;
-		runtaskqueues = rtq;
+		runqueues = rq;
 						
 		shutdown = false;
 				

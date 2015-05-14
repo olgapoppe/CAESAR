@@ -11,12 +11,12 @@ import event.PositionReport;
 
 public class DoubleQueueDistributor extends EventDistributor {
 	
-	final HashMap<RunID,LinkedBlockingQueue<PositionReport>> HPruntaskqueues;
+	final RunQueues HPrunqueues;
 	
-	public DoubleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq, HashMap<RunID,LinkedBlockingQueue<PositionReport>> hprtq,
+	public DoubleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq,
 								   AtomicInteger x1, AtomicInteger x2) {
-		super(dp, e, rs, rtq, x1, x2);
-		HPruntaskqueues = hprtq;
+		super(dp, e, rs, rq, x1, x2);
+		HPrunqueues = hprq;
 	}
 
 	/** 
