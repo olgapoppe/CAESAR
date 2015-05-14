@@ -29,10 +29,10 @@ public class DataDriver implements Runnable {
 			// Input file
 			scanner = new Scanner(new File(filename));
 			
-			// Current second
+			// Time
 			Double curr_sec = new Double(-1);
-			double dp = -1;
-						
+			Double arrival_sec = new Double(-1);
+								
 			// Output file
 			//File input_file = new File("../../input_till_sec_10784.dat");
 			//BufferedWriter input = new BufferedWriter(new FileWriter(input_file));	
@@ -41,25 +41,29 @@ public class DataDriver implements Runnable {
 			String line = scanner.nextLine();
 	 		PositionReport event = PositionReport.parse(line);	
 						
-			while (curr_sec <= lastSec) {
+			while (arrival_sec < lastSec) {
 				
-				/*************************************** Event number ***************************************/
+				/*************************************** Batch size ***************************************/
 				Random random = new Random();
 				int min = 6;
 				int max = 14;	
-				int number = random.nextInt(max - min + 1) + min;
+				int batch_size = random.nextInt(max - min + 1) + min;
 				
-				// Arrival time
-				curr_sec = (curr_sec==-1) ? number : curr_sec+number;	
+				// Arrival sec
+				arrival_sec = (arrival_sec==-1) ? batch_size : arrival_sec+batch_size;	
 							
 				/****************************************** Event batch *******************************************/		 		
-		 		while (event != null && event.sec <= curr_sec) {
+		 		while (event != null && event.sec <= arrival_sec) {
 		 			
 		 			// Write the event to the output file and append its arrival time
-		 			event.arrivalTime = curr_sec;
+		 			event.arrivalTime = arrival_sec;
 		 			events.contents.add(event);
 		 			
-		 			dp = event.sec;
+		 			// Set driver progress
+		 			if (event.sec > curr_sec) { 
+		 				events.setDriverPrgress(curr_sec);
+		 				curr_sec++;
+		 			}
 		 			
 		 			// Reset event
 		 			if (scanner.hasNextLine()) {		 				
@@ -69,15 +73,13 @@ public class DataDriver implements Runnable {
 		 				event = null;		 				
 		 			}
 		 		}	
-		 		/****************************************** Driver progress *******************************************/
-		 		events.set(dp);		 		
-		 		
-				Thread.sleep(number * 1000);
+		 		// Set driver progress to the time stamp of the last event in the batch and sleep
+		 		events.setDriverPrgress(curr_sec);
+		 		if (arrival_sec < lastSec) Thread.sleep(batch_size * 1000);
 			}			
 			/*** Clean-up ***/		
-			scanner.close();	
-			
-			System.out.println("driver done");
+			scanner.close();				
+			System.out.println("Driver is done.");
 		}
 		catch (InterruptedException e) { e.printStackTrace(); }
 		catch (FileNotFoundException e1) { e1.printStackTrace(); }		

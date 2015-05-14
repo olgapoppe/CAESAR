@@ -16,7 +16,7 @@ public class EventQueue {
 		shutdown = false;
 	}
 	
-	public synchronized void set (Double d) {
+	public synchronized void setDriverPrgress (Double d) {
 		
 		driverProgress.set(d.intValue());
 		
@@ -25,7 +25,7 @@ public class EventQueue {
 		notifyAll();		
 	}
 	
-	public synchronized boolean get (double sec) {
+	public synchronized boolean getDriverProgress (double sec) {
 		try {
 			
 			while (driverProgress.get() < sec && !shutdown) {

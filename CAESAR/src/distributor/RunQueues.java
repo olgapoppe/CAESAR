@@ -19,7 +19,7 @@ public class RunQueues {
 		shutdown = false;
 	}
 	
-	public synchronized void set (Double d) {
+	public synchronized void setDistributorProgress (Double d) {
 		
 		distributorProgress.set(d.intValue());
 		
@@ -28,10 +28,10 @@ public class RunQueues {
 		notifyAll();
 	}
 
-	public synchronized boolean get(double sec) {	
+	public synchronized boolean getDistributorProgress (double sec) {	
 		
 		try {
-			while (distributorProgress.get() <= sec && !shutdown) {
+			while (distributorProgress.get() < sec && !shutdown) {
 				wait();
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
