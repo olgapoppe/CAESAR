@@ -88,7 +88,7 @@ public class SingleQueueDistributor extends EventDistributor {
 				if (min_stream_rate > event_count) min_stream_rate = event_count;
 				if (max_stream_rate < event_count) max_stream_rate = event_count;	
 		 	
-				Thread.sleep(3000); // how long??? 	
+				Thread.sleep(2000); // how long??? 	
 			}	
 		} catch (InterruptedException e1) { e1.printStackTrace(); } 						 
 	}
