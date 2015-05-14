@@ -2,6 +2,7 @@ package transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import run.*;
 import event.PositionReport;
 
@@ -20,7 +21,9 @@ public class CongestionManagement extends Transaction {
 		
 		for (PositionReport event : events) {
 			
-			if (run.vehicles.get(event.vid)==null) System.out.println(event.toString());
+			/*if (event == null) System.out.println("NULL EVENT!!!");
+			if (run == null) System.out.println("NULL RUN!!!");			
+			if (run.vehicles.get(event.vid)==null) System.out.println("NO SUCH VEHICLE!!!");*/
 		
 			// READ: If a new vehicle on a travel lane arrives, lookup accidents ahead
 			if (run.vehicles.get(event.vid).appearance_sec == event.sec && event.lane < 4) {

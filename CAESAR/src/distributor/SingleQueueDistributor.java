@@ -28,8 +28,10 @@ public class SingleQueueDistributor extends EventDistributor {
 			// First event
 			PositionReport event = events.contents.peek();	
 				
-			while (event != null && event.sec <= curr_sec) {						
-				events.contents.poll();	   			 	
+			while (event != null && event.sec <= curr_sec) {		
+				
+				events.contents.poll();	
+				
 				if (event.type == 0) {
 					
 					/******************************************* Run *******************************************/

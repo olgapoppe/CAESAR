@@ -10,13 +10,11 @@ public class RunQueues {
 	
 	public HashMap<RunID,LinkedBlockingQueue<PositionReport>> contents;
 	AtomicInteger distributorProgress;
-	public boolean shutdown;
-	
+		
 	public RunQueues (AtomicInteger dp) {
 		
 		contents = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
 		distributorProgress = dp;
-		shutdown = false;
 	}
 	
 	public synchronized void setDistributorProgress (Double d) {
@@ -31,16 +29,11 @@ public class RunQueues {
 	public synchronized boolean getDistributorProgress (double sec) {	
 		
 		try {
-			while (distributorProgress.get() < sec && !shutdown) {
+			while (distributorProgress.get() < sec) {
 				wait();
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			
 		return true;		
-	}
-	
-	public synchronized void shutdown() {		
-		shutdown = true;
-		notifyAll();
 	}
 }

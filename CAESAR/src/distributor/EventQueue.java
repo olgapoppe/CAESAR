@@ -8,12 +8,10 @@ public class EventQueue {
 	
 	final LinkedBlockingQueue<PositionReport> contents;
 	AtomicInteger driverProgress;
-	public boolean shutdown;
-		
+			
 	public EventQueue(AtomicInteger dp) {
 		driverProgress = dp;
-		contents = new LinkedBlockingQueue<PositionReport>();
-		shutdown = false;
+		contents = new LinkedBlockingQueue<PositionReport>();		
 	}
 	
 	public synchronized void setDriverPrgress (Double d) {
@@ -28,16 +26,11 @@ public class EventQueue {
 	public synchronized boolean getDriverProgress (double sec) {
 		try {
 			
-			while (driverProgress.get() < sec && !shutdown) {
+			while (driverProgress.get() < sec) {
 				wait();
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			
 		return true;		
-	}
-	
-	public synchronized void shutdown() {
-		shutdown = true;
-		notifyAll();
 	}
 }

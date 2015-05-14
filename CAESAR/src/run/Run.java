@@ -418,6 +418,10 @@ public class Run {
 					
 				Run runAhead = runs.get(runid);		
 				// if there is an accident ahead, segment with accident ahead is returned
+				
+				/*if (event == null) System.out.println("NULL EVENT!!!");
+				if (runAhead == null) System.out.println("NULL RUN!!!");		*/		
+				
 				if (runAhead.readAccidents(event)) return segAhead;
 		}}		
 		return -1;

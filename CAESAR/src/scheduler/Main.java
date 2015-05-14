@@ -114,18 +114,14 @@ public class Main {
 		consThread.start();
 							
 		try {
-			/*** Wait till all input events are processed ***/
-			done.await();
-			
-			/*** Terminate threads ***/
-			//events.shutdown();
-			//runqueues.shutdown();
+			/*** Wait till all input events are processed and terminate the executor ***/
+			done.await();		
 			executor.shutdown();	
+			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
 			OutputFileGenerator.write2File (runs, startOfSimulation, distributor.min_stream_rate, distributor.max_stream_rate, HP_frequency, LP_frequency);
-			
-			System.out.println("Executor and main are done.");
+			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
 	}	
