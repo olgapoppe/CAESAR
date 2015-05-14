@@ -10,19 +10,24 @@ public class RunQueues {
 	
 	public HashMap<RunID,LinkedBlockingQueue<PositionReport>> contents;
 	AtomicInteger distributorProgress;
+	int sec;
 		
 	public RunQueues (AtomicInteger dp) {
 		
 		contents = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
 		distributorProgress = dp;
+		sec = 0;
 	}
 	
 	public synchronized void setDistributorProgress (Double d) {
 		
 		distributorProgress.set(d.intValue());
 		
-		System.out.println("Distributor: " + d);
-		
+		// Output the current progress every 5 min
+		if (d == sec+300) {
+			System.out.println("Distributor: " + d);
+			sec += 300;
+		}			
 		notifyAll();
 	}
 

@@ -8,24 +8,29 @@ public class EventQueue {
 	
 	final LinkedBlockingQueue<PositionReport> contents;
 	AtomicInteger driverProgress;
+	int sec;
 			
 	public EventQueue(AtomicInteger dp) {
+		
 		driverProgress = dp;
-		contents = new LinkedBlockingQueue<PositionReport>();		
+		contents = new LinkedBlockingQueue<PositionReport>();	
+		sec = 0;
 	}
 	
 	public synchronized void setDriverPrgress (Double d) {
 		
 		driverProgress.set(d.intValue());
 		
-		System.out.println("-----------------------\nDriver: " + d);
-		
+		// Output the current progress every 5 min
+		if (d == sec+300) {
+			System.out.println("-----------------------\nDriver: " + d);
+			sec += 300;
+		}		
 		notifyAll();		
 	}
 	
 	public synchronized boolean getDriverProgress (double sec) {
-		try {
-			
+		try {			
 			while (driverProgress.get() < sec) {
 				wait();
 			} 

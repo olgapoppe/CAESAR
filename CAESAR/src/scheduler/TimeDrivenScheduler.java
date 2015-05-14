@@ -12,11 +12,14 @@ import distributor.*;
  * time driven scheduler submits them for execution.
  * @author Olga Poppe 
  */
-public class TimeDrivenScheduler extends Scheduler implements Runnable {		
+public class TimeDrivenScheduler extends Scheduler implements Runnable {
+	
+	int sec;
 			
 	TimeDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 						 CountDownLatch tn, CountDownLatch d, int last, long start) {		
 		super(dp,rs,rq,e,tn,d,last,start);
+		sec = 0;
 	}
 	
 	/**
@@ -24,16 +27,21 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	 */	
 	public void run() {	
 		
-		/*** Local variables ***/
+		// Local variables
 		double curr_sec = -1;
-							
-		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec)) { // Get the permission to schedule curr_sec 
-			try {					
-				all_queries_all_runs (curr_sec, false, false);	// 2 waitings
-				System.out.println("Scheduler: " + curr_sec);
-									
-				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 waiting, 1 query, 1 queue for QDS testing					
-				 
+		
+		// Get the permission to schedule current second
+		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec)) {  
+			try {	
+				// Scheduler the current second
+				all_queries_all_runs (curr_sec, false, false);
+				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing
+				
+				// Output the current progress every 5 min 
+				if (curr_sec == sec+300) {
+					System.out.println("Scheduler: " + curr_sec);
+					sec += 300;
+				}			 
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/					
 				if (curr_sec == lastSec) {						
 					transaction_number.await();						
