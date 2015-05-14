@@ -22,7 +22,7 @@ public class RunQueues {
 	public synchronized void put(Double d) {				
 		distributorProgress.set(d.intValue());
 		
-		//System.out.println("Distributor: " + d);
+		System.out.println("Distributor: " + d);
 		
 		notifyAll();
 	}

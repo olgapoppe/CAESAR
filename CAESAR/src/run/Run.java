@@ -516,8 +516,8 @@ public class Run {
 			
 			// Update vehicles
 			Vehicle newVehicle = new Vehicle (event);
-			vehicles.put(event.vid,newVehicle);    		
-    
+			vehicles.put(event.vid,newVehicle);    
+			
 			// Derive accident warnings
 			if (event.lane < 4 && isAccident) {		
 					

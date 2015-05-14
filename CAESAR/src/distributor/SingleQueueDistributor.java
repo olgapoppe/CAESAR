@@ -30,7 +30,7 @@ public class SingleQueueDistributor extends EventDistributor {
 				
 				/**************************************** Event batch ****************************************/
 				ArrayList<PositionReport> batch = events.get();
-								
+												
 				for (PositionReport event : batch) {  
    			 	
 					/*** Current minute ***/
@@ -62,18 +62,18 @@ public class SingleQueueDistributor extends EventDistributor {
 						int size = runtaskqueue.size();
 						if (run.output.maxNumberOfStoredEvents < size) run.output.maxNumberOfStoredEvents = size;	
 					
-						if (event.sec > curr_sec) {			 				
-		 						 				
+						if (event.sec > curr_sec) {	
+							
 							/********************************** Distributer progress **********************************/
 							runqueues.put(curr_sec);
-									 						 					
+		 						 				
 							/*** Min and max stream rate ***/
 							if (curr_sec >= 0) {
 								if (min_stream_rate > event_count) min_stream_rate = event_count;
 								if (max_stream_rate < event_count) max_stream_rate = event_count;
 							}		 				
 							curr_sec = event.sec;
-							event_count = 1;
+							event_count = 1;							
 		 				
 						} else { 
 							event_count++;

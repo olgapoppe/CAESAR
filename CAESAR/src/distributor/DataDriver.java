@@ -12,11 +12,13 @@ public class DataDriver implements Runnable {
 	
 	String filename;
 	EventQueue events;
+	double lastSec;
 		
-	public DataDriver(String f, EventQueue e) {
+	public DataDriver(String f, EventQueue e, double s) {
 		
 		filename = f;
 		events = e;
+		lastSec = s;
 	}
 	
 	public void run() {
@@ -32,13 +34,13 @@ public class DataDriver implements Runnable {
 			
 			// Output file
 			//File input_file = new File("../../input_till_sec_10784.dat");
-			//BufferedWriter input = new BufferedWriter(new FileWriter(input_file));			
-						
+			//BufferedWriter input = new BufferedWriter(new FileWriter(input_file));	
+			
 			// First event
 			String line = scanner.nextLine();
-	 		PositionReport event = PositionReport.parse(line);		
-			
-			while (scanner.hasNextLine()) {
+	 		PositionReport event = PositionReport.parse(line);	
+						
+			while (curr_sec <= lastSec) {
 				
 				/*************************************** Event number ***************************************/
 				Random random = new Random();
@@ -47,21 +49,25 @@ public class DataDriver implements Runnable {
 				int number = random.nextInt(max - min + 1) + min;
 				
 				// Arrival time
-				curr_sec += number;	
-				batch.clear();
+				curr_sec = (curr_sec==-1) ? number : curr_sec+number;	
+				batch.clear();			
 				
 				/****************************************** Event batch *******************************************/		 		
-		 		while (scanner.hasNextLine() && event.sec <= curr_sec) {
+		 		while (event != null && event.sec <= curr_sec) {
 		 			
 		 			// Write the event to the output file and append its arrival time
 		 			event.arrivalTime = curr_sec;
 		 			batch.add(event);
 		 			
 		 			// Reset event
-		 			line = scanner.nextLine();   
-			 		event = PositionReport.parse(line);	
+		 			if (scanner.hasNextLine()) {		 				
+		 				line = scanner.nextLine();   
+		 				event = PositionReport.parse(line);	
+		 			} else {
+		 				event = null;		 				
+		 			}
 		 		}	
-		 		events.put(batch);
+		 		if (!batch.isEmpty()) events.put(batch);
 		 				 		
 		 		System.out.println("-----------------------\nDriver: " + curr_sec + " " + batch.size());
 		 		

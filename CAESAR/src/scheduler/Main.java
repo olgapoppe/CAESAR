@@ -30,7 +30,7 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// fixed
-		int lastSec = 20; //10784;		
+		int lastSec = 1500; //10784;		
 		int thread_number = Runtime.getRuntime().availableProcessors() - 2;	
 		
 		// variable
@@ -40,8 +40,8 @@ public class Main {
 		/*** Pick the input file ***/
 		//String filename = "src/input/10events.dat";
 		//String filename = "src/input/small.txt";
-		String filename = "src/input/datafile20seconds.dat";
-		//String filename = "../../input.dat";
+		//String filename = "src/input/datafile20seconds.dat";
+		String filename = "../../input.dat";
 		//String filename = "../../../Dropbox/LR/InAndOutput/1xway/input7.dat";				
 		
 		/*** Create shared data structures ***/
@@ -59,7 +59,7 @@ public class Main {
 		AtomicInteger xway0dir1firstHPseg = new AtomicInteger(-1);	
 		
 		/*** Create and start data driver ***/
-		DataDriver dataDriver = new DataDriver(filename,events);
+		DataDriver dataDriver = new DataDriver(filename,events,lastSec);
 		Thread drThread = new Thread(dataDriver);
 		drThread.setPriority(10);
 		drThread.start();
