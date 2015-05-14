@@ -1,10 +1,8 @@
 package distributor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import run.*;
 import event.*;
 
@@ -25,63 +23,69 @@ public class SingleQueueDistributor extends EventDistributor {
 			double curr_min = 0;		
 			Double curr_sec = new Double(-1);
 			int event_count = 0;
-			
+						
 			while (!shutdown) {					 			
 				
-				/**************************************** Event batch ****************************************/
-				ArrayList<PositionReport> batch = events.get();
-												
-				for (PositionReport event : batch) {  
-   			 	
-					/*** Current minute ***/
-					if (event.min > curr_min) {   			 		
-						System.out.println("Minute: " + event.min);
-						curr_min = event.min;  			 		   			 		
-					}   		 		
-					if (event.type == 0) {
-		 			
-						/******************************************* Run *******************************************/
-						RunID runid = new RunID (event.xway, event.dir, event.seg); 
-						Run run;        		
-						if (runs.containsKey(runid)) {
-						run = runs.get(runid);             			          			
-						} else {
-							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-							run = new Run(runid, event.sec, event.min, firstHPseg);
-							runs.put(runid, run);
-						}  			 	
-						/************************************* Run task queues *************************************/
-						LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
-						if (runtaskqueue == null) {    
-							runtaskqueue = new LinkedBlockingQueue<PositionReport>();
-							runqueues.contents.put(runid, runtaskqueue);		 				
-						}
-						runtaskqueue.add(event);	 			
-		 			
-						/*** Max number of stored events per run ***/
-						int size = runtaskqueue.size();
-						if (run.output.maxNumberOfStoredEvents < size) run.output.maxNumberOfStoredEvents = size;	
+				while (events.get(curr_sec)) {
 					
-						if (event.sec > curr_sec) {	
-							
-							/********************************** Distributer progress **********************************/
-							runqueues.put(curr_sec);
+					/**************************************** Event ****************************************/
+					PositionReport event = events.contents.peek();
+					
+					if (event!=null) {
+						
+						events.contents.poll();					
+   			 	
+						/*** Current minute ***/
+						if (event.min > curr_min) {   			 		
+							System.out.println("Minute: " + event.min);
+							curr_min = event.min;  			 		   			 		
+						}   		 		
+						if (event.type == 0) {
+		 			
+							/******************************************* Run *******************************************/
+							RunID runid = new RunID (event.xway, event.dir, event.seg); 
+							Run run;        		
+							if (runs.containsKey(runid)) {
+								run = runs.get(runid);             			          			
+							} else {
+								AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
+								run = new Run(runid, event.sec, event.min, firstHPseg);
+								runs.put(runid, run);
+							}  			 	
+							/************************************* Run task queues *************************************/
+							LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
+							if (runtaskqueue == null) {    
+								runtaskqueue = new LinkedBlockingQueue<PositionReport>();
+								runqueues.contents.put(runid, runtaskqueue);		 				
+							}
+							runtaskqueue.add(event);	 			
+		 			
+							/*** Max number of stored events per run ***/
+							int size = runtaskqueue.size();
+							if (run.output.maxNumberOfStoredEvents < size) run.output.maxNumberOfStoredEvents = size;	
+					
+							if (event.sec > curr_sec || events.contents.isEmpty()) {	
+								
+								/********************************** Distributer progress **********************************/
+								runqueues.set(curr_sec);
 		 						 				
-							/*** Min and max stream rate ***/
-							if (curr_sec >= 0) {
-								if (min_stream_rate > event_count) min_stream_rate = event_count;
-								if (max_stream_rate < event_count) max_stream_rate = event_count;
-							}		 				
-							curr_sec = event.sec;
-							event_count = 1;							
-		 				
-						} else { 
-							event_count++;
-						}	 			
-					}
-				}
+								/*** Min and max stream rate ***/
+								if (curr_sec >= 0) {
+									if (min_stream_rate > event_count) min_stream_rate = event_count;
+									if (max_stream_rate < event_count) max_stream_rate = event_count;
+								}		 				
+								curr_sec++;
+								event_count = 1;
+									 				
+							} else { 
+								event_count++;							
+							}	 			
+						}
+					} else {
+						curr_sec++;
+				}}
 				/************************************** Last second in the batch **************************************/
-				runqueues.put(curr_sec);						
+				runqueues.set(curr_sec);						
 		 	
 				/*** Min and max stream rate ***/
 				if (min_stream_rate > event_count) min_stream_rate = event_count;

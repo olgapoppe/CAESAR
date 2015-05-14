@@ -27,8 +27,7 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger xway0dir1firstHPseg;
 	
 		
-	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq,
-							AtomicInteger x1, AtomicInteger x2) {
+	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2) {
 		
 		distributorProgress = dp;
 		events = e;

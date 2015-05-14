@@ -19,7 +19,8 @@ public class RunQueues {
 		shutdown = false;
 	}
 	
-	public synchronized void put(Double d) {				
+	public synchronized void set (Double d) {
+		
 		distributorProgress.set(d.intValue());
 		
 		System.out.println("Distributor: " + d);

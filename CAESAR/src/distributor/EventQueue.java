@@ -1,43 +1,39 @@
 package distributor;
 
-import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import event.PositionReport;
 
 public class EventQueue {
 	
-	final ArrayList<PositionReport> contents;
+	final LinkedBlockingQueue<PositionReport> contents;
+	AtomicInteger driverProgress;
 	public boolean shutdown;
 		
-	public EventQueue() {
-		contents = new ArrayList<PositionReport>();
+	public EventQueue(AtomicInteger dp) {
+		driverProgress = dp;
+		contents = new LinkedBlockingQueue<PositionReport>();
 		shutdown = false;
 	}
 	
-	public synchronized void put (ArrayList<PositionReport> batch) {
-		try {
-			while(!contents.isEmpty() && !shutdown) {
-				wait();
-			}
-		} catch (InterruptedException e) { e.printStackTrace(); }
+	public synchronized void set (Double d) {
 		
-		contents.addAll(batch);
+		driverProgress.set(d.intValue());
+		
+		System.out.println("-----------------------\nDriver: " + d);
+		
 		notifyAll();		
 	}
 	
-	public synchronized ArrayList<PositionReport> get() {
+	public synchronized boolean get (double sec) {
 		try {
-			while (contents.isEmpty() && !shutdown) {
+			
+			while (driverProgress.get() < sec && !shutdown) {
 				wait();
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			
-		ArrayList<PositionReport> batch = new ArrayList<PositionReport>();
-		batch.addAll(contents);
-		
-		contents.clear();
-		notifyAll();
-			
-		return batch;		
+		return true;		
 	}
 	
 	public synchronized void shutdown() {
