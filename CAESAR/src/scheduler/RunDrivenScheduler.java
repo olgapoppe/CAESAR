@@ -46,7 +46,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 		int lp_count = 0;
 		boolean LPruns_catchup = false;
 				
-		while (!shutdown) {
+		//while (!shutdown) {
 			try {				 
 				/*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***/
 				int distr_progr = distributorProgress.get();
@@ -116,9 +116,9 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 						transaction_number.await(); 						
 						done.countDown();												
 					}					
-					Thread.sleep(getSleepTime(number));					
+					//Thread.sleep(getSleepTime(number));					
 				}
 			} catch (final InterruptedException ex) { ex.printStackTrace(); }
-		}	
+		//}	
 	}
 }

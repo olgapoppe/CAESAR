@@ -44,7 +44,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		int hp_count = 0;
 		int lp_count = 0;
 					
-		while (!shutdown) {
+		//while (!shutdown) {
 			try {				 
 				/*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***/
 				int distr_progr = distributorProgress.get();
@@ -86,10 +86,10 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 						transaction_number.await();						
 						done.countDown();						
 					}					
-					Thread.sleep(getSleepTime(number));				
+					//Thread.sleep(getSleepTime(number));				
 				}
 			} catch (final InterruptedException ex) { ex.printStackTrace(); }
-		}			
+		//}			
 	}	
 	
 	public Transaction one_query_one_run (double sec, RunID runid, int query, boolean run_priorization, boolean catchup) {

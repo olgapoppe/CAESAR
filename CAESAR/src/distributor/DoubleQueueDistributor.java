@@ -14,8 +14,8 @@ public class DoubleQueueDistributor extends EventDistributor {
 	final RunQueues HPrunqueues;
 	
 	public DoubleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq,
-								   AtomicInteger x1, AtomicInteger x2) {
-		super(dp, e, rs, rq, x1, x2);
+								   AtomicInteger x1, AtomicInteger x2, int last) {
+		super(dp, e, rs, rq, x1, x2, last);
 		HPrunqueues = hprq;
 	}
 

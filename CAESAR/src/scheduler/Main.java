@@ -72,7 +72,7 @@ public class Main {
 		if (scheduling_strategy < 3) {
 						
 			distributor = new SingleQueueDistributor(distributorProgress, events, runs, runqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg);		
+												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec);		
 			
 			if (scheduling_strategy == 1) {
 			
@@ -90,7 +90,7 @@ public class Main {
 		} else {
 			
 			distributor = new DoubleQueueDistributor(distributorProgress, events, runs, runqueues, HPrunqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg);	
+												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec);	
 			
 			if (scheduling_strategy == 3) {
 			
@@ -118,16 +118,14 @@ public class Main {
 			done.await();
 			
 			/*** Terminate threads ***/
-			distributor.shutdown = true;						
-			scheduler.shutdown = true;
-			events.shutdown();
-			runqueues.shutdown();
+			//events.shutdown();
+			//runqueues.shutdown();
 			executor.shutdown();	
 									
 			/*** Generate output files ***/
 			OutputFileGenerator.write2File (runs, startOfSimulation, distributor.min_stream_rate, distributor.max_stream_rate, HP_frequency, LP_frequency);
 			
-			System.out.println("executor and main done");
+			System.out.println("Executor and main are done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
 	}	

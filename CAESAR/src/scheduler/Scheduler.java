@@ -27,8 +27,6 @@ public abstract class Scheduler implements Runnable {
 	CountDownLatch transaction_number;
 	CountDownLatch done;
 	int lastSec;
-	int sleepTime;
-	public boolean shutdown;	
 	long startOfSimulation;
 	
 	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
@@ -43,17 +41,8 @@ public abstract class Scheduler implements Runnable {
 		transaction_number = tn;
 		done = d;
 		lastSec = last;
-		sleepTime = 1000;		
-		shutdown = false;
 		startOfSimulation = start;
 	}	
-	
-	public int getSleepTime (int transaction_number) {
-		if (transaction_number > 100) { return 2000; } else {
-		if (transaction_number > 50) { return 1000; } else {
-			return 500;
-		}}
-	}
 	
 	public int all_queries_all_runs (double sec, boolean run_priorization, boolean catchup) {
 		
