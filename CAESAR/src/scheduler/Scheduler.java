@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import event.*;
 import run.*;
 import transaction.*;
+import distributor.*;
 
 /**
  * A scheduler iterates over run task queues, picks events from them and 
@@ -20,7 +21,7 @@ public abstract class Scheduler implements Runnable {
 	
 	AtomicInteger distributorProgress;
 	HashMap<RunID,Run> runs;
-	public final HashMap<RunID,LinkedBlockingQueue<PositionReport>> runtaskqueues;		
+	public final RunQueues runqueues;		
 	ExecutorService executor;
 	
 	CountDownLatch transaction_number;
@@ -30,12 +31,12 @@ public abstract class Scheduler implements Runnable {
 	public boolean shutdown;	
 	long startOfSimulation;
 	
-	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rt, ExecutorService e, 
+	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 				CountDownLatch tn, CountDownLatch d, int last, long start) {
 		
 		distributorProgress = dp;
 		runs = rs;
-		runtaskqueues = rt;			
+		runqueues = rq;			
 		
 		executor = e;
 		
@@ -303,9 +304,9 @@ public abstract class Scheduler implements Runnable {
 		
 		if (query!=1 && query!=2) System.err.println("Non-existing query is called by scheduler.");
 		
-		if (runtaskqueues.containsKey(runid)) {
+		if (runqueues.contents.containsKey(runid)) {
 			
-			LinkedBlockingQueue<PositionReport> runtaskqueue = runtaskqueues.get(runid);	
+			LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);	
 			
 			if (runtaskqueue!=null && !runtaskqueue.isEmpty()) {			
 				

@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import event.*;
+import distributor.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -15,16 +16,16 @@ import event.*;
  */
 public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 
-	public final HashMap<RunID,LinkedBlockingQueue<PositionReport>> HPruntaskqueues;
+	public final RunQueues HPrunqueues;
 	AtomicInteger xway0dir0HPrunsFromSeg;
 	AtomicInteger xway0dir1HPrunsFromSeg;
 	int HP_frequency;
 	int LP_frequency;
 	
-	RunAndQueryDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, HashMap<RunID,LinkedBlockingQueue<PositionReport>> rtq, HashMap<RunID,LinkedBlockingQueue<PositionReport>> hprtq,ExecutorService e, 
+	RunAndQueryDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq,ExecutorService e, 
 								CountDownLatch tn, CountDownLatch d, int last, long start, AtomicInteger x0, AtomicInteger x1, int hpf, int lpf) {		
-		super(dp,rs,rtq,e,tn,d,last,start);
-		HPruntaskqueues = hprtq;
+		super(dp,rs,rq,e,tn,d,last,start);
+		HPrunqueues = hprq;
 		xway0dir0HPrunsFromSeg = x0;
 		xway0dir1HPrunsFromSeg = x1;
 		HP_frequency = hpf;

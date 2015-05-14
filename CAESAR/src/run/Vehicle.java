@@ -74,7 +74,8 @@ public class Vehicle {
 	public String toString() {
 		
 		String s = 	"\nvid=" + vid + ", " +
-					"time=" + sec + ", " +
+					"sec=" + sec + ", " +
+					"appearance sec=" + appearance_sec + ", " +
 					"spd=" + spd + ", " +
 					"xway=" + xway + ", " +
 					"lane=" + lane + ", " +
