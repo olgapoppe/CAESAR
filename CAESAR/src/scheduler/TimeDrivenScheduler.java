@@ -34,8 +34,8 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec)) {  
 			try {	
 				// Scheduler the current second
-				all_queries_all_runs (curr_sec, false, false);
-				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing
+				//all_queries_all_runs (curr_sec, false, false);
+				one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing
 				
 				// Output the current progress every 5 min 
 				if (curr_sec == sec+300) {
