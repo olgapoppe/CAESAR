@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import event.*;
 
 /**
  * Input file generator parses the input file and
@@ -19,8 +20,8 @@ public class InputFileGenerator {
 		Scanner s = null;
 		try {		
 			/*** Input file ***/
-			//File f = new File("../../input_till_sec_10784.dat");
-			File f = new File("../../../Dropbox/LR/InAndOutput/1xway/input7.dat");
+			//File f = new File("src/input/datafile20seconds.dat");
+			File f = new File("../../Dropbox/LR/InAndOutput/1xway/input7.dat");
 			s = new Scanner(f);  			
 					
 			/*** Output file ***/
@@ -29,14 +30,16 @@ public class InputFileGenerator {
             
             String eventString = "";
             int count = 0;
-            int number_of_position_reports = 357853; // Integer.parseInt(args[0]);
+            //int number_of_position_reports = 357853; // Integer.parseInt(args[0]);
             
             /*** Write output file ***/
-            while (s.hasNextLine() && count<number_of_position_reports) {        	
+            while (s.hasNextLine()) { // && count<number_of_position_reports) {        	
             	count++;
             	eventString = s.nextLine();
-            	position_reports.write(eventString + "\n");            	            	            	         	
-            } 
+            	PositionReport event = PositionReport.parse(eventString);
+            	if (event.type == 0 && event.dir == 0) position_reports.write(eventString + "\n");            	            	            	         	
+            }              
+            
             // Print out event number and last event
             System.out.println("Count: " + count + " Last event: " + eventString);
             

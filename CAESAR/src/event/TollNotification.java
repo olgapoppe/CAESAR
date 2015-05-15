@@ -25,7 +25,7 @@ public class TollNotification extends Event {
 		super(0,time,vid);
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
-		if (emit - arrivalTime > 5) System.err.println(this.toString() + " violates response time constraint!");
+		if (emit - arrivalTime > 5) System.err.println(this.toString() + " attived at " + arrivalTime);
 		
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);		 	
@@ -43,7 +43,7 @@ public class TollNotification extends Event {
 		super(0,time,vid);
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
-		if (emit - arrivalTime > 5) System.err.println(this.toString() + " violates response time constraint!");
+		if (emit - arrivalTime > 5) System.err.println(this.toString() + " attived at " + arrivalTime);
 		
 		avgSpd = a;
 		toll = 0;			
@@ -58,6 +58,6 @@ public class TollNotification extends Event {
 				+ new Double(sec).intValue() + ","
 				+ new Double(emit).intValue() + "," 
 				+ new Double(avgSpd).intValue() + ","
-				+ new Double(toll).intValue() + "\n";			
+				+ new Double(toll).intValue();			
 	}
 }

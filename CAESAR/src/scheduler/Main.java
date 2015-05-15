@@ -41,8 +41,8 @@ public class Main {
 		//String filename = "src/input/10events.dat";
 		//String filename = "src/input/small.txt";
 		//String filename = "src/input/datafile20seconds.dat";
-		//String filename = "../../input.dat";
-		String filename = "../../Dropbox/LR/InAndOutput/1xway/input7.dat";				
+		String filename = "../../input.dat";
+		//String filename = "../../Dropbox/LR/InAndOutput/1xway/input7.dat";				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger distributorProgress = new AtomicInteger(-1);

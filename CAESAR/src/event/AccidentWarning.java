@@ -16,7 +16,7 @@ public class AccidentWarning extends Event {
 		super(1,t,v);
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
-		if (emit - arrivalTime > 5) System.err.println(this.toString() + " violates response time constraint!");
+		if (emit - arrivalTime > 5) System.err.println(this.toString() + " attived at " + arrivalTime);
 		
 		seg = s;		
 	}	
@@ -29,6 +29,6 @@ public class AccidentWarning extends Event {
 				+ new Double(sec).intValue() + ","
 				+ new Double(emit).intValue() + "," 
 				+ new Double(vid).intValue() + ","
-				+ new Double(seg).intValue() + "\n";			
+				+ new Double(seg).intValue();			
 	}
 }

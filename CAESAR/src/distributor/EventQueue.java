@@ -8,12 +8,13 @@ public class EventQueue {
 	
 	final LinkedBlockingQueue<PositionReport> contents;
 	AtomicInteger driverProgress;
+	
 	int sec;
 			
 	public EventQueue(AtomicInteger dp) {
 		
 		driverProgress = dp;
-		contents = new LinkedBlockingQueue<PositionReport>();	
+		contents = new LinkedBlockingQueue<PositionReport>();
 		sec = 0;
 	}
 	
