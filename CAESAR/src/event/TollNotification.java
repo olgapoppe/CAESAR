@@ -28,7 +28,7 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
-		printError (emit, p.arrivalTime, tnf, "TOLL NOTIFICATIONS ");		 	
+		printError (p, emit, tnf, "TOLL NOTIFICATIONS ");		 	
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 0;
 		
-		printError (emit, p.arrivalTime, tnf, "TOLL NOTIFICATIONS ");			
+		printError (p, emit, tnf, "TOLL NOTIFICATIONS ");			
 	}
 	
 	/** 

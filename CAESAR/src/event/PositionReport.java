@@ -20,6 +20,11 @@ public class PositionReport extends Event {
 	public double arrivalTime;
 	public double processingTime;
 	
+	public double driverTime;
+	public double distributorTime;
+	public double schedulerTime;
+	public double executorTime;
+	
 	public PositionReport (double t, double sec, double m, double v, double s, double x, double l, double d, double s1, double p) {
 		super(t, sec, v);	
 		min = m;		
@@ -109,7 +114,7 @@ public class PositionReport extends Event {
 	 */
 	public String toString() {
 		return "type: " + type + 
-				" time: " + sec + 
+				" application time: " + sec + 
 				" vid: " + vid + 
 				" spd: " + spd + 
 				" xway: " + xway + 
@@ -117,6 +122,10 @@ public class PositionReport extends Event {
 				" dir: " + dir + 
 				" seg: " + seg +
 				" pos: " + pos +
-				" arrival time: " + arrivalTime;
+				" arrival time: " + arrivalTime +
+				" driver time: " + driverTime +
+				" distributor time: " + distributorTime + 
+				" scheduler time: " + schedulerTime + 
+				" executor time: " + executorTime;
 	}	
 }

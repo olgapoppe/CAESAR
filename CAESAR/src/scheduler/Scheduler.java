@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import event.*;
 import run.*;
 import transaction.*;
@@ -317,6 +318,7 @@ public abstract class Scheduler implements Runnable {
 						while(iterator.hasNext()) {							
 							PositionReport event = iterator.next();						
 							if (event.sec<=sec) {
+								event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 								event_list.add(event);						
 							} else {
 								if (event.sec>sec) 
@@ -325,6 +327,7 @@ public abstract class Scheduler implements Runnable {
 						while(iterator.hasNext()) {						
 							PositionReport event = iterator.next();						
 							if (event.sec==sec) {
+								event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 								event_list.add(event);						
 							} else {
 								if (event.sec>sec) 
@@ -345,11 +348,13 @@ public abstract class Scheduler implements Runnable {
 					if (catchup) {
 						while (event!=null && event.sec<=sec) { 							
 							runtaskqueue.poll();
+							event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 							event_list.add(event);				
 							event = runtaskqueue.peek();
 					}} else {
 						while (event!=null && event.sec==sec) { 				
 							runtaskqueue.poll();
+							event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 							event_list.add(event);				
 							event = runtaskqueue.peek();
 					}}

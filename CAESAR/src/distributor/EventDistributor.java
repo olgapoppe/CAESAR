@@ -24,8 +24,9 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger xway0dir0firstHPseg;
 	AtomicInteger xway0dir1firstHPseg;
 	int lastSec;
+	long startOfSimulation;
 		
-	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last) {
+	public EventDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
 		
 		distributorProgress = dp;
 		events = e;
@@ -38,5 +39,6 @@ public abstract class EventDistributor implements Runnable {
 		xway0dir0firstHPseg = x1;
 		xway0dir1firstHPseg = x2;
 		lastSec = last;
+		startOfSimulation = start;
 	}
 }

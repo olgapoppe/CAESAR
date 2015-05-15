@@ -18,12 +18,14 @@ public abstract class Event {
 		vid = v;
 	}
 	
-	public void printError (double emit, double arrivalTime, AtomicBoolean failed, String s) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
 		
-		if (!failed.get() && emit - arrivalTime > 5) { 
-			System.err.println(s + " FAILED!!! " + this.toString() + " attived at " + arrivalTime);
+		if (!failed.get() && emit - p.arrivalTime > 5) { 
+			System.err.println(s + " FAILED!!! " + this.toString() + " attived at " + p.arrivalTime);
 			failed.compareAndSet(false, true);
 		}
+		
+		if (emit - p.arrivalTime > 5) System.out.println(p.toString());
 	}
 	
 	public abstract String toString();

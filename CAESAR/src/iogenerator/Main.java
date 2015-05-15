@@ -32,7 +32,7 @@ public class Main {
 		/*** Set local variables ***/
 		// fixed
 		int lastSec = 10784;		
-		int thread_number = Runtime.getRuntime().availableProcessors() - 2;	
+		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
 		
 		// variable
 		int HP_frequency = 3;	// must be >= 1	
@@ -61,7 +61,7 @@ public class Main {
 		AtomicInteger xway0dir1firstHPseg = new AtomicInteger(-1);	
 		
 		/*** Create and start data driver ***/
-		DataDriver dataDriver = new DataDriver(driverProgress,filename,events,lastSec);
+		DataDriver dataDriver = new DataDriver(driverProgress, filename, events, lastSec, startOfSimulation);
 		Thread drThread = new Thread(dataDriver);
 		drThread.setPriority(10);
 		drThread.start();
@@ -73,7 +73,7 @@ public class Main {
 		if (scheduling_strategy < 3) {
 						
 			distributor = new SingleQueueDistributor(distributorProgress, events, runs, runqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec);		
+												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);		
 			
 			if (scheduling_strategy == 1) {
 			
@@ -91,7 +91,7 @@ public class Main {
 		} else {
 			
 			distributor = new DoubleQueueDistributor(distributorProgress, events, runs, runqueues, HPrunqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec);	
+												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);	
 			
 			if (scheduling_strategy == 3) {
 			

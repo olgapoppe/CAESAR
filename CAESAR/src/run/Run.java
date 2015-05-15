@@ -511,7 +511,9 @@ public class Run {
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param run_priorization		whether run priorities are maintainded
 	 */
-	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed) { 
+	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed) {
+		
+		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		
 		// Set auxiliary variables
 		boolean isAccident = segWithAccAhead != -1;   		
@@ -594,7 +596,7 @@ public class Run {
 		// Set event processing time
 		if (time.minOfLastStorageOfEventProcessingTime < event.min) {
 			
-			event.processingTime = System.currentTimeMillis() - startOfSimulation;
+			event.processingTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 			output.positionReports.add(event);
 			time.minOfLastStorageOfEventProcessingTime = event.min;  		   			 	
 		}	

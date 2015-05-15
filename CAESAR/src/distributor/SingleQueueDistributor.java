@@ -10,8 +10,8 @@ import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {
 		
-	public SingleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last) {
-		super(dp, e, rs, rq, x1, x2, last);
+	public SingleQueueDistributor (AtomicInteger dp, EventQueue e, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
+		super(dp, e, rs, rq, x1, x2, last, start);
 	}
 
 	/** 
@@ -52,6 +52,7 @@ public class SingleQueueDistributor extends EventDistributor {
 						runtaskqueue = new LinkedBlockingQueue<PositionReport>();
 						runqueues.contents.put(runid, runtaskqueue);		 				
 					}
+					event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 					runtaskqueue.add(event);	 	
 				}
 				// Reset event

@@ -13,14 +13,18 @@ public class DataDriver implements Runnable {
 	AtomicInteger driverProgress;
 	String filename;
 	EventQueue events;
+	
 	double lastSec;
+	long startOfSimulation;
 		
-	public DataDriver(AtomicInteger dp, String f, EventQueue e, double s) {
+	public DataDriver(AtomicInteger dp, String f, EventQueue e, double last, long start) {
 		
 		driverProgress = dp;
 		filename = f;
 		events = e;
-		lastSec = s;
+		
+		lastSec = last;
+		startOfSimulation = start;
 	}
 	
 	public void run() {
@@ -58,6 +62,7 @@ public class DataDriver implements Runnable {
 		 			
 		 			// Write the event to the output file and append its arrival time
 		 			event.arrivalTime = arrival_sec;
+		 			event.driverTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 			events.contents.add(event);
 		 			
 		 			// Set driver progress
