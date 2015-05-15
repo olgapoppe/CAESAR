@@ -590,6 +590,8 @@ public class Run {
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, AtomicBoolean tollNotificationsFailed) { 
 		
+		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+		
 		// Set auxiliary variables
 		double next_min = event.min+1;
 		boolean isAccident = segWithAccAhead != -1;   
