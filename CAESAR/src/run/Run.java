@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import accident.*;
@@ -510,7 +511,7 @@ public class Run {
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param run_priorization		whether run priorities are maintainded
 	 */
-	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization) { 
+	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed) { 
 		
 		// Set auxiliary variables
 		boolean isAccident = segWithAccAhead != -1;   		
@@ -525,7 +526,7 @@ public class Run {
 			// Derive accident warnings
 			if (event.lane < 4 && isAccident) {		
 					
-				AccidentWarning accidentWarning = new AccidentWarning(event.vid,event.sec,segWithAccAhead,startOfSimulation,event.arrivalTime);
+				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed);
 				output.accidentWarnings.add(accidentWarning);				
 			}
 		/********************************************** If the vehicle was in the segment before ***********************************************/
@@ -584,7 +585,7 @@ public class Run {
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead 
 	 */
-	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead) { 
+	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, AtomicBoolean tollNotificationsFailed) { 
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -629,10 +630,10 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event.vid,event.sec,avgSpd,vehCount,startOfSimulation,event.arrivalTime); 
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); 
 					
 				} else {
-					tollNotification = new TollNotification(event.vid,event.sec,avgSpd,startOfSimulation,event.arrivalTime);				
+					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed);				
 				}
 				output.tollNotifications.add(tollNotification);
 			}

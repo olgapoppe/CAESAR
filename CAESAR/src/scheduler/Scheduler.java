@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import event.*;
 import run.*;
@@ -29,6 +30,9 @@ public abstract class Scheduler implements Runnable {
 	int lastSec;
 	long startOfSimulation;
 	
+	AtomicBoolean accidentWarningsFailed;
+	AtomicBoolean tollNotificationsFailed;
+	
 	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 				CountDownLatch tn, CountDownLatch d, int last, long start) {
 		
@@ -42,6 +46,9 @@ public abstract class Scheduler implements Runnable {
 		done = d;
 		lastSec = last;
 		startOfSimulation = start;
+		
+		accidentWarningsFailed = new AtomicBoolean(false);
+		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
 	public int all_queries_all_runs (double sec, boolean run_priorization, boolean catchup) {
@@ -327,7 +334,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization);											
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed);											
 				}}
 				
 				/*** Congestion management ***/
@@ -350,7 +357,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation);					
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed);					
 		}}}}
 		return null;
 	}

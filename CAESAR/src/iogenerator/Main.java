@@ -6,15 +6,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import distributor.*;
-import driver.DataDriver;
-import driver.EventQueue;
+import driver.*;
 import run.*;
-import scheduler.QueryDrivenScheduler;
-import scheduler.RunAndQueryDrivenScheduler;
-import scheduler.RunDrivenScheduler;
-import scheduler.Scheduler;
-import scheduler.TimeDrivenScheduler;
-import iogenerator.*;
+import scheduler.*;
 
 public class Main {
 	
@@ -52,8 +46,8 @@ public class Main {
 		//String filename = "../../Dropbox/LR/InAndOutput/1xway/input7.dat";				
 		
 		/*** Create shared data structures ***/
-		AtomicInteger distributorProgress = new AtomicInteger(-1);
 		AtomicInteger driverProgress = new AtomicInteger(-1);
+		AtomicInteger distributorProgress = new AtomicInteger(-1);		
 		EventQueue events = new EventQueue(driverProgress);		
 		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();		
 		RunQueues runqueues = new RunQueues(distributorProgress);

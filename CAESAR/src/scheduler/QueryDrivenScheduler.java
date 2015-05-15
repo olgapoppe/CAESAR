@@ -118,7 +118,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization);						
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed);						
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
@@ -141,7 +141,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation);						
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed);						
 		}}}}
 		return null;
 	}

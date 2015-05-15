@@ -1,52 +1,51 @@
 package event;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * In addition to type, time stamp and vehicle identifier, 
  * an toll notification has an emission time stamp, average speed and a toll value.
- * 
- * @author olga
+ * @author Olga Poppe
  */
 public class TollNotification extends Event {
 	
 	double emit;
 	double avgSpd;
 	double toll;
-	
+		
 	/**
 	 * Construct real toll notification when the road segment is congested.
-	 * @param vid				vehicle identifier
-	 * @param time				time stamp
+	 * @param p					position report
 	 * @param a					average speed for the last 5 minutes in the road segment
 	 * @param vehCount			vehicle count in the segment
 	 * @param startOfSimulation	start of simulation to generate the emission time
+	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (double vid, double time, double a, double vehCount, long startOfSimulation, double arrivalTime) {
+	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf) {
 		
-		super(0,time,vid);
-		
+		super(0,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
-		if (emit - arrivalTime > 5) System.err.println(this.toString() + " attived at " + arrivalTime);
-		
 		avgSpd = a;
-		toll = 2*(vehCount-50)*(vehCount-50);		 	
+		toll = 2*(vehCount-50)*(vehCount-50);
+		
+		printError (emit, p.arrivalTime, tnf, "TOLL NOTIFICATIONS ");		 	
 	}
 	
 	/**
 	 * Construct real toll notification when there is an accident on the road or the road segment is not congested.
-	 * @param vid				vehicle identifier
-	 * @param time				time stamp
+	 * @param p					position report
 	 * @param a					average speed for the last 5 minutes in the road segment
 	 * @param startOfSimulation	start of simulation to generate the emission time
+	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (double vid, double time, double a, long startOfSimulation, double arrivalTime) {
+	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf) {
 		
-		super(0,time,vid);
-		
+		super(0,p.sec,p.vid);
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
-		if (emit - arrivalTime > 5) System.err.println(this.toString() + " attived at " + arrivalTime);
-		
 		avgSpd = a;
-		toll = 0;			
+		toll = 0;
+		
+		printError (emit, p.arrivalTime, tnf, "TOLL NOTIFICATIONS ");			
 	}
 	
 	/** 
