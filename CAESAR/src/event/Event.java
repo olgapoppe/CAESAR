@@ -25,7 +25,7 @@ public abstract class Event {
 			failed.compareAndSet(false, true);
 		}
 		
-		if (emit - p.arrivalTime > 5) System.out.println(p.toString());
+		if (emit - p.arrivalTime > 5) System.out.println(p.timesToString());
 	}
 	
 	public abstract String toString();

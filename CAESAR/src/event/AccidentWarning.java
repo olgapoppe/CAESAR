@@ -29,6 +29,6 @@ public class AccidentWarning extends Event {
 				+ new Double(sec).intValue() + ","
 				+ new Double(emit).intValue() + "," 
 				+ new Double(vid).intValue() + ","
-				+ new Double(seg).intValue();			
+				+ new Double(seg).intValue() + "\n";			
 	}
 }

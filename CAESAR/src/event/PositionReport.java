@@ -124,7 +124,7 @@ public class PositionReport extends Event {
 	}	
 	
 	/** 
-	 * Print this position report.
+	 * Print all time stamps of this position report.
 	 */
 	public String timesToString() {
 		return 	"application time: " + sec +			

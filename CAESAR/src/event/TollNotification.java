@@ -57,6 +57,6 @@ public class TollNotification extends Event {
 				+ new Double(sec).intValue() + ","
 				+ new Double(emit).intValue() + "," 
 				+ new Double(avgSpd).intValue() + ","
-				+ new Double(toll).intValue();			
+				+ new Double(toll).intValue() + "\n";			
 	}
 }

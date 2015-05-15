@@ -514,7 +514,7 @@ public class Run {
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed) {
 		
 		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-		System.out.println(event.timesToString());
+		//System.out.println(event.timesToString());
 		
 		// Set auxiliary variables
 		boolean isAccident = segWithAccAhead != -1;   		
