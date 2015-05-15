@@ -1,8 +1,7 @@
-package distributor;
+package event;
 
 import java.util.Comparator;
 
-import event.Event;
 
 /**
  * Event comparator determines the position of an event in an ordered data structure.

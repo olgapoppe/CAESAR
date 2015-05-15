@@ -1,4 +1,4 @@
-package distributor;
+package driver;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -6,7 +6,7 @@ import event.PositionReport;
 
 public class EventQueue {
 	
-	final LinkedBlockingQueue<PositionReport> contents;
+	public final LinkedBlockingQueue<PositionReport> contents;
 	AtomicInteger driverProgress;
 	
 	int sec;

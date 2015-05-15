@@ -1,10 +1,11 @@
-package distributor;
+package driver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import event.PositionReport;
 
 public class DataDriver implements Runnable {

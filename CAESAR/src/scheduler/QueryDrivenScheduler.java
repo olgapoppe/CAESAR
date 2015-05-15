@@ -23,7 +23,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int HPquery_frequency;
 	int LPquery_frequency;
 
-	QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
+	public QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
 							CountDownLatch tn, CountDownLatch d, int last, long start, int hpqf, int lpqf) {		
 		super(dp,rs,rq,e,tn,d,last,start);
 		HPrunqueues = hprq;
