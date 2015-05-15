@@ -3,6 +3,8 @@ package distributor;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import driver.EventQueue;
 import run.*;
 import event.*;
 

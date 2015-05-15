@@ -2,14 +2,18 @@ package transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import run.*;
 import event.PositionReport;
 
 public class CongestionManagement extends Transaction {
 	
-	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start) {
+	AtomicBoolean tollNotificationsFailed;
+	
+	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicBoolean tnf) {
 		super(r,eventList,rs,start);
+		tollNotificationsFailed = tnf;
 	}
 	
 	/**
@@ -32,7 +36,7 @@ public class CongestionManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run and remove old data
-			run.congestionManagement(event, startOfSimulation, segWithAccAhead); 	
+			run.congestionManagement(event, startOfSimulation, segWithAccAhead, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

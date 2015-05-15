@@ -2,16 +2,20 @@ package transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import run.*;
 import event.PositionReport;
 
 public class AccidentManagement extends Transaction {
 	
 	boolean run_priorization;
+	AtomicBoolean accidentWarningsFailed;
 	
-	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp) {
+	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, AtomicBoolean awf) {
 		super(r,eventList,rs,start);
 		run_priorization = rp;
+		accidentWarningsFailed = awf;
 	}
 	
 	/**
@@ -38,7 +42,7 @@ public class AccidentManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run
-			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization); 									
+			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed); 									
 		}		
 		// Count down the number of transactions
 		transaction_number.countDown();

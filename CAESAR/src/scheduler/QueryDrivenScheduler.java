@@ -23,7 +23,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int HPquery_frequency;
 	int LPquery_frequency;
 
-	QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
+	public QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
 							CountDownLatch tn, CountDownLatch d, int last, long start, int hpqf, int lpqf) {		
 		super(dp,rs,rq,e,tn,d,last,start);
 		HPrunqueues = hprq;
@@ -118,7 +118,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization);						
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed);						
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
@@ -141,7 +141,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation);						
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed);						
 		}}}}
 		return null;
 	}

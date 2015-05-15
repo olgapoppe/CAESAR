@@ -8,10 +8,8 @@ import java.util.Scanner;
 import event.*;
 
 /**
- * Input file generator parses the input file and
- * copies a given number of lines to the output file. 
- * 
- * @author olga
+ * Input file generator parses the input file and copies certain tuples to the output file.  
+ * @author Olga Poppe
  */
 public class InputFileGenerator {
 	
@@ -20,8 +18,8 @@ public class InputFileGenerator {
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			//File input_file = new File("src/input/datafile20seconds.dat");
-			File input_file = new File("../../Dropbox/LR/InAndOutput/1xway/input7.dat");
+			File input_file = new File("src/input/datafile20seconds.dat");
+			//File input_file = new File("../../Dropbox/LR/InAndOutput/1xway/input7.dat");
 			input = new Scanner(input_file);  			
 					
 			/*** Output file ***/
@@ -31,11 +29,10 @@ public class InputFileGenerator {
             // Integer.parseInt(args[0]);
             // 357853 events are within the first for 1500 seconds 
             
-            /*** Call method ***/
+            /*** Call method ***/            
+            changeXway(input,output,2);
             
-            
-            
-            /*** Clean-up ***/
+            /*** Close the files ***/
        		input.close();
        		output.close();        		
         
@@ -49,9 +46,17 @@ public class InputFileGenerator {
 	 * @param output
 	 * @param new xway
 	 */
-	public void changeXway (Scanner input, BufferedWriter output, int newXway) {
+	public static void changeXway (Scanner input, BufferedWriter output, int newXway) {
 		
-		
+		String eventString = "";		
+		try {
+			while (input.hasNextLine()) {         	
+        			
+				eventString = input.nextLine();
+				PositionReport event = PositionReport.parse(eventString);
+				if (event.type == 0) output.write(event.toString(newXway) + "\n");            	            	            	         	
+			}   
+		} catch (IOException e) { System.err.println(e); }
 	}
 	
 	/**
@@ -60,7 +65,7 @@ public class InputFileGenerator {
 	 * @param output
 	 * @param dir
 	 */
-	public void selectTuples (Scanner input, BufferedWriter output, int dir) {
+	public static void selectTuples (Scanner input, BufferedWriter output, int dir) {
 		
 		String eventString = "";		
 		try {
@@ -79,7 +84,7 @@ public class InputFileGenerator {
 	 * @param output
 	 * @param tuple number
 	 */
-	public void copyTuples (Scanner input, BufferedWriter output, int tupleNumber) {
+	public static void copyTuples (Scanner input, BufferedWriter output, int tupleNumber) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -97,7 +102,7 @@ public class InputFileGenerator {
 	 * Count the number of tuples in the input and print it and the last tuple
 	 * @param input 
 	 */
-	public void countTuples (Scanner input) {
+	public static void countTuples (Scanner input) {
 		
 		String eventString = "";	
 		int count = 0; 

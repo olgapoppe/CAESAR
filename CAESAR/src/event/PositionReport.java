@@ -5,9 +5,8 @@ import java.io.IOException;
 
 /**
  * In addition to type, time stamp and vehicle identifier, 
- * a position report has minute, speed, expressway, lane, direction, segment, position and processing time.
- * 
- * @author olga
+ * a position report has minute, speed, expressway, lane, direction, segment, position and processing time. 
+ * @author Olga Poppe
  */
 public class PositionReport extends Event {
 	
@@ -76,8 +75,7 @@ public class PositionReport extends Event {
 	}	
 	
 	/**
-	 * Write the application and processing time stamps of this position report to the given file.
-	 * 
+	 * Write the application and processing time stamps of this position report to the given file. 
 	 * @param file
 	 */
 	public void write2FileEventProcessingTime (BufferedWriter file) {
@@ -89,6 +87,22 @@ public class PositionReport extends Event {
 		
 		try { file.write(line); } catch (IOException e) { e.printStackTrace(); }
 	}
+	
+	/** 
+	 * Print this position report to file and change the xway to the given value.
+	 * @param new xway
+	 */
+	public String toString(int newXway) {
+		return new Double(type).intValue() + ","
+				+ new Double(sec).intValue() + ","				
+				+ new Double(vid).intValue() + ","
+				+ new Double(spd).intValue() + ","
+				+ newXway + ","
+				+ new Double(lane).intValue() + ","
+				+ new Double(dir).intValue() + ","
+				+ new Double(seg).intValue() + ","
+				+ new Double(pos).intValue();		
+	}	
 	
 	/** 
 	 * Print this position report.

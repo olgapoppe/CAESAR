@@ -1,24 +1,24 @@
 package event;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * In addition to type, time stamp and vehicle identifier, 
- * an accident warning has an emission time stamp and a segment.
- * 
+ * an accident warning has an emission time stamp and a segment. 
  * @author Olga Poppe
  */
 public class AccidentWarning extends Event {
 	
 	double emit;
 	double seg;
-	
-	public AccidentWarning (double v, double t, double s, long startOfSimulation, double arrivalTime) {
 		
-		super(1,t,v);
+	public AccidentWarning (PositionReport p, double s, long startOfSimulation, AtomicBoolean awf) {
 		
+		super(1,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
-		if (emit - arrivalTime > 5) System.err.println(this.toString() + " attived at " + arrivalTime);
-		
-		seg = s;		
+		seg = s;
+				
+		printError (emit, p.arrivalTime, awf, "ACCIDENT WARNINGS ");			
 	}	
 
 	/** 
