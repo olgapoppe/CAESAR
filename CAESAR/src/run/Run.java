@@ -282,7 +282,7 @@ public class Run {
 			// Update first HP segment on this road in this direction
 			if (run_priorization) {
 				
-				long beginOfPriorityMaintenance = System.currentTimeMillis();
+				//long beginOfPriorityMaintenance = System.currentTimeMillis();
 				
 				Double firstSeg;
 				double lastSeg;
@@ -297,8 +297,8 @@ public class Run {
 				}
 				firstHPseg.set(firstSeg.intValue());
 							
-				long durationOfPriorityMaintenance = System.currentTimeMillis() - beginOfPriorityMaintenance;
-				time.priorityMaintenanceTime += durationOfPriorityMaintenance;
+				//long durationOfPriorityMaintenance = System.currentTimeMillis() - beginOfPriorityMaintenance;
+				//time.priorityMaintenanceTime += durationOfPriorityMaintenance;
 			
 				System.out.println(	time.sec + ": New HPruns: xway " + runID.xway + " dir " + runID.dir + 
 									" from seg " + firstSeg + " to seg " + lastSeg);
@@ -330,12 +330,12 @@ public class Run {
 			// Update first HP segment on this road in this direction
 			if (run_priorization) {
 			
-				long beginOfPriorityMaintenance = System.currentTimeMillis();
+				//long beginOfPriorityMaintenance = System.currentTimeMillis();
 			
 				firstHPseg.set(-1); // assuming there is only one accident per road in one direction
 						
-				long durationOfPriorityMaintenance = System.currentTimeMillis() - beginOfPriorityMaintenance;
-				time.priorityMaintenanceTime += durationOfPriorityMaintenance;
+				//long durationOfPriorityMaintenance = System.currentTimeMillis() - beginOfPriorityMaintenance;
+				//time.priorityMaintenanceTime += durationOfPriorityMaintenance;
 			
 				Double firstSeg;
 				double lastSeg;
@@ -491,15 +491,15 @@ public class Run {
 	public void collectGarbage (double new_min) {
 		if (time.minOfLastGarbageCollection < new_min-2) {
 	 			
-	 		long beginOfDeletion = System.currentTimeMillis();
+	 		//long beginOfDeletion = System.currentTimeMillis();
 	 			
  			deleteVehCounts(new_min);
  			deleteAvgSpds(new_min);
  			deleteVehicles(new_min);
  			time.minOfLastGarbageCollection = new_min;	
 	 			
- 			long durationOfDeletion = System.currentTimeMillis() - beginOfDeletion;
- 			time.garbageCollectionTime += durationOfDeletion;		 			
+ 			//long durationOfDeletion = System.currentTimeMillis() - beginOfDeletion;
+ 			//time.garbageCollectionTime += durationOfDeletion;		 			
 		}
 	}
 	
@@ -509,7 +509,7 @@ public class Run {
 	 * @param event					incoming position report
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead
-	 * @param run_priorization		whether run priorities are maintainded
+	 * @param run_priorization		whether run priorities are maintained
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed) {
 		
@@ -597,12 +597,12 @@ public class Run {
 		boolean isAccident = segWithAccAhead != -1;   
 
 		// Set event processing time
-		if (time.minOfLastStorageOfEventProcessingTime < event.min) {
+		/*if (time.minOfLastStorageOfEventProcessingTime < event.min) {
 			
 			event.processingTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 			output.positionReports.add(event);
 			time.minOfLastStorageOfEventProcessingTime = event.min;  		   			 	
-		}	
+		}*/	
 
 		// Update run data: avgSpd, time, numberOfProcessedEvents
 		if (time.min < event.min) {  
@@ -611,7 +611,7 @@ public class Run {
 			time.min = event.min;
 		}   	
 		time.sec = event.sec;
-		output.numberOfProcessedEvents++;	
+		//output.numberOfProcessedEvents++;	
 		
 		// Get previous info about the vehicle
 		Vehicle vehicle = vehicles.get(event.vid);
@@ -675,23 +675,23 @@ public class Run {
 	 * Write the number of processed and stored events to the given file. 
 	 * @param file
 	 */
-	public void write2FileEventStorage (BufferedWriter file) {		
+	/*public void write2FileEventStorage (BufferedWriter file) {		
 		String line = runID.toString() + " " + output.numberOfProcessedEvents + " " + output.maxNumberOfStoredEvents + "\n";	
 		try { file.write(line); } catch (IOException e) { e.printStackTrace(); }
-	}
+	}*/
 	
 	/**
 	 * Write accident processing times to the given file. 
 	 * @param file
 	 */
-	public void write2FileAccidentProcessingTimes (BufferedWriter file) {
+	/*public void write2FileAccidentProcessingTimes (BufferedWriter file) {
 		for (Accident a : accidents) {
 			int dpt = new Double(a.detProcTime).intValue();
 			int cpt = new Double(a.clearProcTime).intValue();
 			String line = runID.toString() + " " + dpt + " " + cpt + "\n";		
 			try { file.write(line); } catch (IOException e) { e.printStackTrace(); }
 		}
-	}
+	}*/
 	
 	/** 
 	 * Print this run.

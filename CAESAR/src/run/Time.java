@@ -3,8 +3,7 @@ package run;
 /**
  * A run maintains several time stamps including the time stamps of the run progress,
  * run updates and total processing time due to overhead.
- * 
- * @author olga
+ * @author Olga Poppe
  */
 public class Time {
 	
@@ -14,12 +13,12 @@ public class Time {
 	
 	// Time stamps of the updates
 	public double minOfLastUpdateOfAccidentAhead;
-	public double minOfLastStorageOfEventProcessingTime;
+	//public double minOfLastStorageOfEventProcessingTime;
 	public double minOfLastGarbageCollection;
 	
 	// Overhead
-	public long garbageCollectionTime;
-    public long priorityMaintenanceTime;
+	//public long garbageCollectionTime;
+    //public long priorityMaintenanceTime;
     
     public Time (double s, double m) {
     	
@@ -27,10 +26,10 @@ public class Time {
 		min = m;
     	
     	minOfLastUpdateOfAccidentAhead = -1;
-    	minOfLastStorageOfEventProcessingTime = 0;
+    	//minOfLastStorageOfEventProcessingTime = 0;
     	minOfLastGarbageCollection = 0;
     	
-    	garbageCollectionTime = 0;
-    	priorityMaintenanceTime = 0;
+    	//garbageCollectionTime = 0;
+    	//priorityMaintenanceTime = 0;
     }
 }

@@ -13,21 +13,21 @@ import event.*;
  */
 public class Output {
 	
-	public ArrayList<PositionReport> positionReports;
+	//public ArrayList<PositionReport> positionReports;
 	public ArrayList<TollNotification> tollNotifications;
 	public ArrayList<AccidentWarning> accidentWarnings;
 	
-	public int numberOfProcessedEvents;
-	public int maxNumberOfStoredEvents;
+	//public int numberOfProcessedEvents;
+	//public int maxNumberOfStoredEvents;
 	
 	public Output () {
 		
-		positionReports  = new ArrayList<PositionReport>();
+		//positionReports  = new ArrayList<PositionReport>();
 		tollNotifications  = new ArrayList<TollNotification>();
 		accidentWarnings = new ArrayList<AccidentWarning>();
 		
-		numberOfProcessedEvents = 0;
-		maxNumberOfStoredEvents = 0;
+		//numberOfProcessedEvents = 0;
+		//maxNumberOfStoredEvents = 0;
 	}
 	
 	/**
@@ -35,11 +35,11 @@ public class Output {
 	 * 
 	 * @param file
 	 */	
-	public void write2FileEventProcessingTimes (BufferedWriter file) {
+	/*public void write2FileEventProcessingTimes (BufferedWriter file) {
 		for (PositionReport p : positionReports) {
 			p.write2FileEventProcessingTime(file);
 		}  
-	}
+	}*/
 	
 	/**
 	 * Write the toll notifications to the given file. 

@@ -43,8 +43,8 @@ public class Main {
 		//String filename = "src/input/small.txt";
 		//String filename = "src/input/datafile20seconds.dat";
 		//String filename = "src/input/input_till_sec_1500.dat";
-		String filename = "../../input.dat";
-		//String filename = "../../Dropbox/LR/InAndOutput/1xway/input7.dat";				
+		//String filename = "../../input-0,5.dat";
+		String filename = "../../merged.dat";				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger driverProgress = new AtomicInteger(-1);

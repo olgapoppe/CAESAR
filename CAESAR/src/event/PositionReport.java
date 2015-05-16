@@ -18,7 +18,7 @@ public class PositionReport extends Event {
 	public double seg;
 	public double pos;	
 	public double arrivalTime;
-	public double processingTime;
+	//public double processingTime;
 	
 	public double distributorTime;
 	public double schedulerTime;
@@ -82,7 +82,7 @@ public class PositionReport extends Event {
 	 * Write the application and processing time stamps of this position report to the given file. 
 	 * @param file
 	 */
-	public void write2FileEventProcessingTime (BufferedWriter file) {
+	/*public void write2FileEventProcessingTime (BufferedWriter file) {
 		
 		int appTime = new Double(sec).intValue();
 		int procTime = new Double(processingTime).intValue();
@@ -90,7 +90,7 @@ public class PositionReport extends Event {
 		String line = appTime + " " + procTime  + "\n"; 
 		
 		try { file.write(line); } catch (IOException e) { e.printStackTrace(); }
-	}
+	}*/
 	
 	/** 
 	 * Print this position report to file and change the xway to the given value.
