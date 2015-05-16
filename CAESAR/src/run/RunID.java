@@ -2,8 +2,7 @@ package run;
 
 /** 
  * A run processes a road segment which is uniquely identified by an expressway, direction and segment.
- * 
- * @author olga
+ * @author Olga Poppe
  */
 public class RunID {
 	
@@ -27,7 +26,7 @@ public class RunID {
 	        		+ new Double(xway).intValue() 
 	        		+ new Double(dir).intValue() 
 	        		+ new Double(seg).intValue();
-	    return Integer.parseInt(s);
+		return Integer.parseInt(s);
 	}
 	
 	/**

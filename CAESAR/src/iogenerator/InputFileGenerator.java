@@ -13,46 +13,83 @@ import event.*;
  */
 public class InputFileGenerator {
 	
-	public static void main (String[] args) {
-	
-		//int lastSec = 10784;
+	// select correct position reports and change xway
+	public static void main1 (String[] args) {
 		
-		//Scanner input1 = null;
-		//Scanner input2 = null;
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			//File input_file_1 = new File("../../Dropbox/LR/InAndOutput/2xways/input-0.dat");
-			//File input_file_2 = new File("../../Dropbox/LR/InAndOutput/2xways/input-1.dat");
-			//File input_file = new File("../../Dropbox/LR/InAndOutput/2xways/input7.dat");
-			//File input_file = new File("../../Dropbox/LR/InAndOutput/2xways/cardatapoints.out0");
-			//input1 = new Scanner(input_file_1);  			
-			//input2 = new Scanner(input_file_2);
-					
+			File input_file = new File("../../Dropbox/LR/InAndOutput/2xways/cardatapoints.out1");
+			input = new Scanner(input_file);  			
+								
 			/*** Output file ***/
-            File output_file = new File("../../input.dat");
-            input = new Scanner(output_file);
-            
-           // BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
-            
-            // Integer.parseInt(args[0]);
-            // 357853 events are within the first for 1500 seconds 
-            
+            File output_file = new File("../../input1.dat");
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
+              
             /*** Call method ***/            
-            //changeXway(input,output,1);
-            //zip2files(input1,input2,output,lastSec);
-            countTuples(input);
+            changeXway(input,output,1);
             
             /*** Close the files ***/
-       		//input1.close();
-       		//input2.close();
        		input.close();
-       		//output.close();        		
+       		output.close();        		
         
 		} catch (IOException e) { System.err.println(e); }		  
 	}
 	
-	public static void zip2files (Scanner input1, Scanner input2, BufferedWriter output, int lastSec) {
+	// merge 2 files
+	public static void main2 (String[] args) {
+		
+		int lastSec = 10784;
+		Scanner input1 = null;
+		Scanner input2 = null;
+		try {		
+			/*** Input file ***/
+			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/2xways/input0.dat");
+			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/2xways/input1.dat");
+			input1 = new Scanner(input_file_1);  			
+			input2 = new Scanner(input_file_2);
+					
+			/*** Output file ***/
+            File output_file = new File("../../merged.dat");
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
+            
+            /*** Call method ***/            
+            merge(input1,input2,output,lastSec);
+                       
+            /*** Close the files ***/
+       		input1.close();
+       		input2.close();
+       		output.close();        		
+        
+		} catch (IOException e) { System.err.println(e); }		  
+	}
+	
+	// count number of tuples in the merged file
+	public static void main (String[] args) {
+	
+		Scanner input = null;
+		try {		
+			/*** Input file ***/
+			File input_file = new File("../../merged.dat");
+            input = new Scanner(input_file);           
+            
+            /*** Call method ***/                      
+            countTuples(input);
+            
+            /*** Close the files ***/       		
+       		input.close();       		       		
+        
+		} catch (IOException e) { System.err.println(e); }		  
+	}
+	
+	/**
+	 * Merges 2 sorted files input1 and input2 into one sorted file output. The files are sorted by time stamps. 
+	 * @param input1
+	 * @param input2
+	 * @param output
+	 * @param lastSec last second in both input files
+	 */
+	public static void merge (Scanner input1, Scanner input2, BufferedWriter output, int lastSec) {
 		
 		String eventString1 = input1.nextLine();
 		String eventString2 = input2.nextLine();
@@ -109,7 +146,8 @@ public class InputFileGenerator {
         			
 				eventString = input.nextLine();
 				PositionReport event = PositionReport.parse(eventString);
-				if (event.type == 0) output.write(event.toString(newXway) + "\n");            	            	            	         	
+				if (event.correctPositionReport()) 
+					output.write(event.toString(newXway) + "\n");            	            	            	         	
 			}   
 		} catch (IOException e) { System.err.println(e); }
 	}

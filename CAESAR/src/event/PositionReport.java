@@ -60,6 +60,10 @@ public class PositionReport extends Event {
         return event;
 	}
 	
+	public boolean correctPositionReport() {
+		return type==0 && sec>=0 && vid>=0 && spd>=0 && xway>=0 && lane>=0 && dir>=0 && seg>=0 && pos>=0;
+	}
+	
 	/**
 	 * Determine whether this position report is equal to the given position report.
 	 * 
