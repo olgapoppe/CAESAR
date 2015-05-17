@@ -31,6 +31,8 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// fixed
+		int lastXway = 1;
+		boolean lastXwayUnidir = false;
 		int lastSec = 10784;		
 		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
 		
@@ -80,12 +82,12 @@ public class Main {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
 				scheduler = new TimeDrivenScheduler(distributorProgress, runs, runqueues, executor, 
-												transaction_number, done, lastSec, startOfSimulation);
+												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation);
 			} else {			
 			
 				System.out.println("RUN DRIVEN SCHEDULER.");
 				scheduler = new RunDrivenScheduler(	distributorProgress, runs, runqueues, executor, 
-												transaction_number, done, lastSec, startOfSimulation, 
+												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation, 
 												xway0dir0firstHPseg, xway0dir1firstHPseg, 
 												HP_frequency, LP_frequency);
 			}
@@ -98,13 +100,13 @@ public class Main {
 			
 				System.out.println("QUERY DRIVEN SCHEDULER.");
 				scheduler = new QueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, lastSec, startOfSimulation,
+												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation,
 												HP_frequency, LP_frequency);
 			} else {
 			
 				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
 				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, lastSec, startOfSimulation,
+												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, 
 												HP_frequency, LP_frequency);
 		}}

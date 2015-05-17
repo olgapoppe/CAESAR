@@ -19,11 +19,11 @@ public class InputFileGenerator {
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			File input_file = new File("../../Dropbox/LR/InAndOutput/2xways/cardatapoints.out1");
+			File input_file = new File("../../Dropbox/LR/InAndOutput/0.5xways/input.dat");
 			input = new Scanner(input_file);  			
 								
 			/*** Output file ***/
-            File output_file = new File("../../input1.dat");
+            File output_file = new File("../../input2.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
               
             /*** Call method ***/            
@@ -44,8 +44,8 @@ public class InputFileGenerator {
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/2xways/input0.dat");
-			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/2xways/input1.dat");
+			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/1.5xways/input7cleaned.dat");
+			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/1.5xways/input_cleaned.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					

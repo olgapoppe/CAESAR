@@ -28,14 +28,15 @@ public abstract class Scheduler implements Runnable {
 	
 	CountDownLatch transaction_number;
 	CountDownLatch done;
+	int lastXway;
+	boolean lastXwayUnidir;
 	int lastSec;
 	long startOfSimulation;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-				CountDownLatch tn, CountDownLatch d, int last, long start) {
+	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, CountDownLatch tn, CountDownLatch d, int lastR, boolean unidir, int lastS, long start) {
 		
 		distributorProgress = dp;
 		runs = rs;
@@ -45,7 +46,9 @@ public abstract class Scheduler implements Runnable {
 		
 		transaction_number = tn;
 		done = d;
-		lastSec = last;
+		lastXway = lastR;
+		lastXwayUnidir = unidir;
+		lastSec = lastS;
 		startOfSimulation = start;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
@@ -209,16 +212,19 @@ public abstract class Scheduler implements Runnable {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 		
-		for (double seg=0; seg<=99; seg++) {
+		for (int xway=0; xway<=lastXway; xway++) {
+			for (double seg=0; seg<=99; seg++) {
 			
-			RunID runid0 = new RunID(0,0,seg);
-			Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup);
-			if (t0!=null) transactions.add(t0);	
+				RunID runid0 = new RunID(xway,0,seg);
+				Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup);
+				if (t0!=null) transactions.add(t0);	
 			
-			RunID runid1 = new RunID(0,1,seg);
-			Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup);
-			if (t1!=null) transactions.add(t1);
-		}
+				// If the last road is unidirectional, avoid calling transaction creation
+				if (!(xway==lastXway && lastXwayUnidir)) { 
+					RunID runid1 = new RunID(xway,1,seg); 
+					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup);
+					if (t1!=null) transactions.add(t1);
+		}}}
 		return transactions;
 	}	
 	
