@@ -33,7 +33,7 @@ public class Main {
 		// input data dependent
 		int lastXway = 2;
 		boolean lastXwayUnidir = false;
-		int lastSec = 10784;		
+		int lastSec = 1500; //10784;		
 		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
 		
 		// scheduler dependent
@@ -44,9 +44,9 @@ public class Main {
 		//String filename = "src/input/few_events.dat";
 		//String filename = "src/input/small.txt";
 		//String filename = "src/input/datafile20seconds.dat";
-		//String filename = "src/input/input_till_sec_1500.dat";
+		String filename = "src/input/input_till_sec_1500.dat";
 		//String filename = "../../input-0,5.dat";
-		String filename = "../../merged012.dat";				
+		//String filename = "../../merged012.dat";				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger driverProgress = new AtomicInteger(-1);

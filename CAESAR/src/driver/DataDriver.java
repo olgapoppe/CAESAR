@@ -2,10 +2,8 @@ package driver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import event.PositionReport;
 
 public class DataDriver implements Runnable {
@@ -35,9 +33,9 @@ public class DataDriver implements Runnable {
 			scanner = new Scanner(new File(filename));
 			
 			// Time
-			Double curr_sec = new Double(-1);
-			Double arrival_sec = new Double(-1);
-														
+			double curr_app_sec = 0;
+			double curr_sec = 0;
+																
 			// Output file
 			//File input_file = new File("../../input_till_sec_10784.dat");
 			//BufferedWriter input = new BufferedWriter(new FileWriter(input_file));	
@@ -46,30 +44,17 @@ public class DataDriver implements Runnable {
 			String line = scanner.nextLine();
 	 		PositionReport event = PositionReport.parse(line);	
 	 								
-			while (curr_sec < lastSec) {
+			while (curr_app_sec <= lastSec) {
 				
-				/*************************************** Batch size ***************************************/
-				Random random = new Random();
-				int min = 6;
-				int max = 14;	
-				int batch_size = random.nextInt(max - min + 1) + min;
-				
-				// Time				 
-				arrival_sec = (arrival_sec==-1) ? batch_size : arrival_sec+batch_size;	
-							
-				/****************************************** Event batch *******************************************/		 		
-		 		while (event != null && event.sec <= arrival_sec) {
+				// Put events with time stamp curr_app_sec into the event queue		 		
+		 		while (event != null && event.sec == curr_app_sec) {
 		 			
-		 			// Write the event to the output file and append its arrival time
-		 			event.arrivalTime = (System.currentTimeMillis() - startOfSimulation)/1000;		 			
+		 			// Write the event to the output file and append its driver time	
+		 			event.driverTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 			events.contents.add(event);
-		 					 			
-		 			// Set driver progress
-		 			if (event.sec > curr_sec) { 
-		 				events.setDriverPrgress(curr_sec);
-		 				curr_sec++;
-		 			}
 		 			
+		 			//System.out.println(event.toString());
+		 					 			
 		 			// Reset event
 		 			if (scanner.hasNextLine()) {		 				
 		 				line = scanner.nextLine();   
@@ -77,10 +62,22 @@ public class DataDriver implements Runnable {
 		 			} else {
 		 				event = null;		 				
 		 			}
-		 		}	
-		 		// Set driver progress to the time stamp of the last event in the batch and sleep
-		 		events.setDriverPrgress(curr_sec);
-		 		if (curr_sec < lastSec) Thread.sleep(batch_size * 1000);
+		 		}
+		 		// Set driver progress to curr_app_sec
+		 		events.setDriverPrgress(curr_app_sec);
+		 		
+		 		// Sleep if curr_sec is smaller than curr_app_sec
+		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 		
+		 		if (curr_sec < curr_app_sec && curr_app_sec < lastSec) {
+		 			
+		 			int sleep_time = new Double(curr_app_sec - curr_sec).intValue();
+		 			
+		 			//System.out.println("Driver sleeps " + sleep_time + " seconds.");
+		 			
+		 			Thread.sleep(sleep_time * 1000);
+		 		}
+		 		curr_app_sec++;
 			}			
 			/*** Clean-up ***/		
 			scanner.close();				

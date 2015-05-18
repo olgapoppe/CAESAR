@@ -13,6 +13,7 @@ public abstract class Event {
 	public double vid;
 	
 	public Event (double t, double s, double v) {
+		
 		type = t;
 		sec = s;
 		vid = v;
@@ -20,12 +21,10 @@ public abstract class Event {
 	
 	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
 		
-		if (!failed.get() && emit - p.arrivalTime > 5) { 
+		if (!failed.get() && emit - p.sec > 5) { 
 			System.err.println(s + " FAILED!!! " + p.timesToString() + " triggered " + this.toString());
 			failed.compareAndSet(false, true);
 		}
-		
-		// if (emit - p.arrivalTime > 5) System.out.println(p.timesToString());
 	}
 	
 	public abstract String toString();
