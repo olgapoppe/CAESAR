@@ -19,7 +19,7 @@ public class InputFileGenerator {
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			File input_file = new File("../../Dropbox/LR/InAndOutput/0.5xways/input.dat");
+			File input_file = new File("../../Dropbox/LR/InAndOutput/3xways/cardatapoints.out2");
 			input = new Scanner(input_file);  			
 								
 			/*** Output file ***/
@@ -27,7 +27,7 @@ public class InputFileGenerator {
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
               
             /*** Call method ***/            
-            changeXway(input,output,1);
+            changeXway(input,output,2);
             
             /*** Close the files ***/
        		input.close();
@@ -44,13 +44,13 @@ public class InputFileGenerator {
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/1.5xways/input7cleaned.dat");
-			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/1.5xways/input_cleaned.dat");
+			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/3xways/merged01.dat");
+			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/3xways/input2.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../merged.dat");
+            File output_file = new File("../../merged012.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            
@@ -65,12 +65,12 @@ public class InputFileGenerator {
 	}
 	
 	// count number of tuples in the merged file
-	public static void main (String[] args) {
+	public static void main3 (String[] args) {
 	
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			File input_file = new File("../../merged.dat");
+			File input_file = new File("../../Dropbox/LR/InAndOutput/3xways/input2.dat");
             input = new Scanner(input_file);           
             
             /*** Call method ***/                      
@@ -96,25 +96,30 @@ public class InputFileGenerator {
 		PositionReport event1 = PositionReport.parse(eventString1);
 		PositionReport event2 = PositionReport.parse(eventString2);
 		double curr_sec = 0;
+		int count = 0; 
 		
 		try {
 			
 			while (curr_sec <= lastSec) {							
 				
 				while (event1 != null && event1.sec == curr_sec) {
+					
+					count++;
 						
-						// Write event1
-						output.write(eventString1 + "\n");
+					// Write event1
+					output.write(eventString1 + "\n");
 						
-						// Reset event1
-						if (input1.hasNextLine()) {
-							eventString1 = input1.nextLine();
-							event1 = PositionReport.parse(eventString1);
-						} else {
-							event1 = null;
-						}
+					// Reset event1
+					if (input1.hasNextLine()) {
+						eventString1 = input1.nextLine();
+						event1 = PositionReport.parse(eventString1);
+					} else {
+						event1 = null;
+					}
 				} 		
 				while (event2 != null && event2.sec == curr_sec) {
+					
+					count++;
 					
 					// Write event2
 					output.write(eventString2 + "\n");
@@ -129,7 +134,8 @@ public class InputFileGenerator {
 				} 	
 				curr_sec++;
 			}
-		} catch (IOException e) { System.err.println(e); }		
+		} catch (IOException e) { System.err.println(e); }	
+		System.out.println("Count: " + count + " Last event: " + eventString2);
 	}
 	
 	/**
@@ -140,16 +146,21 @@ public class InputFileGenerator {
 	 */
 	public static void changeXway (Scanner input, BufferedWriter output, int newXway) {
 		
-		String eventString = "";		
+		String eventString = "";
+		int count = 0; 
 		try {
 			while (input.hasNextLine()) {         	
         			
 				eventString = input.nextLine();
 				PositionReport event = PositionReport.parse(eventString);
+				
 				if (event.correctPositionReport()) 
+					
+					count++;
 					output.write(event.toString(newXway) + "\n");            	            	            	         	
-			}   
+			}			
 		} catch (IOException e) { System.err.println(e); }
+		System.out.println("Count: " + count + " Last event: " + eventString);
 	}
 	
 	/**

@@ -211,8 +211,11 @@ public abstract class Scheduler implements Runnable {
 	public ArrayList<Transaction> one_query_all_runs (double sec, int query, boolean run_priorization, boolean catchup) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
-		
+				
 		for (int xway=0; xway<=lastXway; xway++) {
+			
+			boolean skipLastHalfXway = (xway==lastXway && lastXwayUnidir);
+			
 			for (double seg=0; seg<=99; seg++) {
 			
 				RunID runid0 = new RunID(xway,0,seg);
@@ -220,7 +223,7 @@ public abstract class Scheduler implements Runnable {
 				if (t0!=null) transactions.add(t0);	
 			
 				// If the last road is unidirectional, avoid calling transaction creation
-				if (!(xway==lastXway && lastXwayUnidir)) { 
+				if (!skipLastHalfXway) { 
 					RunID runid1 = new RunID(xway,1,seg); 
 					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup);
 					if (t1!=null) transactions.add(t1);

@@ -30,13 +30,13 @@ public class Main {
 		}
 		
 		/*** Set local variables ***/
-		// fixed
-		int lastXway = 1;
+		// input data dependent
+		int lastXway = 2;
 		boolean lastXwayUnidir = false;
 		int lastSec = 10784;		
 		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
 		
-		// variable
+		// scheduler dependent
 		int HP_frequency = 3;	// must be >= 1	
 		int LP_frequency = 1;	// must be >= 1
 		
@@ -46,7 +46,7 @@ public class Main {
 		//String filename = "src/input/datafile20seconds.dat";
 		//String filename = "src/input/input_till_sec_1500.dat";
 		//String filename = "../../input-0,5.dat";
-		String filename = "../../merged.dat";				
+		String filename = "../../merged012.dat";				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger driverProgress = new AtomicInteger(-1);
