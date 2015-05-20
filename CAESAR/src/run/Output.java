@@ -7,9 +7,8 @@ import event.*;
 
 /** 
  * Every run maintains its output consisting of processed position reports, generated toll notifications and accident warnings,
- * number of processed events and maximal number of stored events.
- * 
- * @author olga
+ * number of processed events and maximal number of stored events. 
+ * @author Olga Poppe
  */
 public class Output {
 	
@@ -31,8 +30,7 @@ public class Output {
 	}
 	
 	/**
-	 * Write the processing times of position reports to the given file. 
-	 * 
+	 * Write the processing times of position reports to the given file.  
 	 * @param file
 	 */	
 	/*public void write2FileEventProcessingTimes (BufferedWriter file) {
@@ -42,8 +40,7 @@ public class Output {
 	}*/
 	
 	/**
-	 * Write the toll notifications to the given file. 
-	 * 
+	 * Write the toll notifications to the given file.  
 	 * @param file
 	 */
 	public void write2FileTollNotifications (BufferedWriter file) {
@@ -54,7 +51,6 @@ public class Output {
 	
 	/**
 	 * Write the accident warnings to the given file. 
-	 * 
 	 * @param file
 	 */
 	public void write2FileAccidentWarnings (BufferedWriter file) {

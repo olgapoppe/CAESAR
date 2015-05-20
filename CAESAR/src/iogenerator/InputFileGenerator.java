@@ -37,20 +37,20 @@ public class InputFileGenerator {
 	}
 	
 	// merge 2 files
-	public static void main2 (String[] args) {
+	public static void main (String[] args) {
 		
 		int lastSec = 10784;
 		Scanner input1 = null;
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/6xways/merged0123.dat");
-			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/6xways/merged45.dat");
+			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/6xways/merged45.dat");
+			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/6xways/input3.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../merged012345.dat");
+            File output_file = new File("../../merged345.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            

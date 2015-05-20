@@ -18,9 +18,6 @@ public abstract class EventDistributor implements Runnable {
 	HashMap<RunID,Run> runs;
 	final RunQueues runqueues;
 			
-	public int min_stream_rate;
-	public int max_stream_rate;
-	
 	AtomicInteger xway0dir0firstHPseg;
 	AtomicInteger xway0dir1firstHPseg;
 	int lastSec;
@@ -33,9 +30,6 @@ public abstract class EventDistributor implements Runnable {
 		runs = rs;
 		runqueues = rq;	
 				
-		min_stream_rate = Integer.MAX_VALUE;
-		max_stream_rate = 0;
-		
 		xway0dir0firstHPseg = x1;
 		xway0dir1firstHPseg = x2;
 		lastSec = last;
