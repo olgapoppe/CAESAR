@@ -53,7 +53,7 @@ public class DataDriver implements Runnable {
 		 			event.driverTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 			events.contents.add(event);
 		 			
-		 			System.out.println(event.toString());
+		 			//System.out.println(event.toString());
 		 					 			
 		 			// Reset event
 		 			if (scanner.hasNextLine()) {		 				

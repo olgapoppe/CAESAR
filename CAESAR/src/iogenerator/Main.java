@@ -41,8 +41,8 @@ public class Main {
 		//String filename1 = "src/input/datafile20seconds.dat";
 		//String filename2 = "src/input/datafile20seconds.dat";
 		//String filename = "src/input/input_till_sec_1500.dat";
-		String filename1 = "../../merged012.dat";			
-		String filename2 = "../../merged345.dat";
+		String filename1 = "../../Dropbox/LR/InAndOutput/6xways/merged012.dat";			
+		String filename2 = "../../Dropbox/LR/InAndOutput/6xways/merged345.dat";
 		
 		/*** Define shared objects ***/
 		HashMap<RunID,Run> runs1 = new HashMap<RunID,Run>();
@@ -51,7 +51,7 @@ public class Main {
 		CountDownLatch done2 = new CountDownLatch(1);
 		long startOfSimulation = System.currentTimeMillis();
 		
-		int thread_number = Runtime.getRuntime().availableProcessors() - 3;
+		int thread_number = Runtime.getRuntime().availableProcessors() - 6;
 		ExecutorService executor = Executors.newFixedThreadPool(thread_number);	
 		
 		/*** Start drivers, distributers and schedulers ***/
