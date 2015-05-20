@@ -19,15 +19,15 @@ public class InputFileGenerator {
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			File input_file = new File("../../Dropbox/LR/InAndOutput/3xways/cardatapoints.out2");
+			File input_file = new File("../../Dropbox/LR/InAndOutput/6xways/cardatapoints.out5");
 			input = new Scanner(input_file);  			
 								
 			/*** Output file ***/
-            File output_file = new File("../../input2.dat");
+            File output_file = new File("../../input5.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
               
             /*** Call method ***/            
-            changeXway(input,output,2);
+            changeXway(input,output,5);
             
             /*** Close the files ***/
        		input.close();
@@ -44,13 +44,13 @@ public class InputFileGenerator {
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/3xways/merged01.dat");
-			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/3xways/input2.dat");
+			File input_file_1 = new File("../../Dropbox/LR/InAndOutput/6xways/merged0123.dat");
+			File input_file_2 = new File("../../Dropbox/LR/InAndOutput/6xways/merged45.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../merged012.dat");
+            File output_file = new File("../../merged012345.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            
@@ -154,11 +154,11 @@ public class InputFileGenerator {
 				eventString = input.nextLine();
 				PositionReport event = PositionReport.parse(eventString);
 				
-				if (event.correctPositionReport()) 
+				if (event.correctPositionReport()) {
 					
 					count++;
 					output.write(event.toString(newXway) + "\n");            	            	            	         	
-			}			
+			}}			
 		} catch (IOException e) { System.err.println(e); }
 		System.out.println("Count: " + count + " Last event: " + eventString);
 	}

@@ -17,7 +17,6 @@ public class PositionReport extends Event {
 	public double dir; 
 	public double seg;
 	public double pos;	
-	public double arrivalTime;
 	//public double processingTime;
 	
 	public double driverTime;
@@ -134,7 +133,6 @@ public class PositionReport extends Event {
 	public String timesToString() {
 		return 	"application time: " + sec +	
 				"   driver time: " + driverTime +
-				"   arrival time: " + arrivalTime +
 				"   distributor time: " + distributorTime + 
 				"   scheduler time: " + schedulerTime + 
 				"   executor time: " + executorTime;

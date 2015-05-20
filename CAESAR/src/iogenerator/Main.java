@@ -31,21 +31,23 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// input data dependent
-		int lastXway = 2;
+		int lastXway = 5;
 		boolean lastXwayUnidir = false;
 		int lastSec = 10784;		
-		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
-		
+				
 		// scheduler dependent
 		int HP_frequency = 3;	// must be >= 1	
 		int LP_frequency = 1;	// must be >= 1
+		
+		// fixed
+		int thread_number = Runtime.getRuntime().availableProcessors() - 3;	
 		
 		/*** Pick the input file ***/
 		//String filename = "src/input/few_events.dat";
 		//String filename = "src/input/small.txt";
 		//String filename = "src/input/datafile20seconds.dat";
 		//String filename = "src/input/input_till_sec_1500.dat";
-		String filename = "../../merged012.dat";				
+		String filename = "../../merged012345.dat";				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger driverProgress = new AtomicInteger(-1);

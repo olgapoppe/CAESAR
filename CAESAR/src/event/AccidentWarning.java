@@ -18,7 +18,7 @@ public class AccidentWarning extends Event {
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
 		seg = s;
 				
-		printError (p, emit, awf, "ACCIDENT WARNINGS ");			
+		printError (p, emit, awf, "ACCIDENT WARNINGS");			
 	}	
 
 	/** 
