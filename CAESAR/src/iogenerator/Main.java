@@ -29,7 +29,7 @@ public class Main {
 		// input data dependent
 		int lastXway = 5;
 		boolean lastXwayUnidir = false;
-		int lastSec = 10784;		
+		int lastSec = 20;//10784;		
 				
 		// scheduler dependent
 		int HP_frequency = 3;	// must be >= 1	
@@ -38,10 +38,10 @@ public class Main {
 		/*** Pick the input file ***/
 		//String filename = "src/input/few_events.dat";
 		//String filename = "src/input/small.txt";
-		//String filename1 = "src/input/datafile20seconds.dat";
+		String filename1 = "src/input/datafile20seconds.dat";
 		//String filename2 = "src/input/datafile20seconds.dat";
 		//String filename1 = "src/input/input_till_sec_1500.dat";
-		String filename1 = "../../merged012345.dat";			
+		//String filename1 = "../../merged012345.dat";			
 		//String filename2 = "../../Dropbox/LR/InAndOutput/6xways/merged345.dat";
 		
 		/*** Define shared objects ***/
