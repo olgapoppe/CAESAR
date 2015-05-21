@@ -1,17 +1,21 @@
 package iogenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import parser.TupleParser;
 import run.*;
 import scheduler.*;
 import distributor.*;
 import driver.*;
+import event.*;
 
-public class EventPreprocessor implements Runnable {
+public class EventPreprocessor {
 	
-	String filename;
+	/*String filename;
 	int scheduling_strategy; 
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
@@ -20,11 +24,10 @@ public class EventPreprocessor implements Runnable {
 	int lastXway;
 	boolean lastXwayUnidir;
 	int lastSec;
-	long startOfSimulation;
 	int HP_frequency;
 	int LP_frequency;
 	
-	EventPreprocessor(String f, int ss, HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, int lX, boolean lXU, int lS, long start, int HP_freq, int LP_freq) {
+	EventPreprocessor(String f, int ss, HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, int lX, boolean lXU, int lS, int HP_freq, int LP_freq) {
 		
 		filename = f;
 		scheduling_strategy = ss; 
@@ -35,12 +38,15 @@ public class EventPreprocessor implements Runnable {
 		lastXway = lX;
 		lastXwayUnidir = lXU;
 		lastSec = lS;
-		startOfSimulation = start;
 		HP_frequency = HP_freq;
 		LP_frequency = LP_freq;		
-	}
+	}*/
 	
-	public void run () {
+	public static void preprocess (String filename, int scheduling_strategy, HashMap<RunID,Run> runs, ExecutorService executor, 
+			CountDownLatch done, int lastXway, boolean lastXwayUnidir, int lastSec, int HP_frequency, int LP_frequency) {
+		
+		/*** Parse input tuples and store events in the hash table ***/
+		HashMap<Integer,ArrayList<PositionReport>> input = TupleParser.parseTuples(filename, lastSec);				
 		
 		/*** Create shared data structures ***/
 		AtomicInteger driverProgress = new AtomicInteger(-1);
@@ -53,9 +59,10 @@ public class EventPreprocessor implements Runnable {
 		CountDownLatch transaction_number = new CountDownLatch(0);				
 		AtomicInteger xway0dir0firstHPseg = new AtomicInteger(-1);
 		AtomicInteger xway0dir1firstHPseg = new AtomicInteger(-1);	
+		long startOfSimulation = System.currentTimeMillis();		
 		
 		/*** Create and start data driver ***/
-		DataDriver dataDriver = new DataDriver(driverProgress, filename, events, lastSec, startOfSimulation);
+		DataDriver dataDriver = new DataDriver(driverProgress, input, events, lastSec, startOfSimulation);
 		Thread drThread = new Thread(dataDriver);
 		drThread.setPriority(10);
 		drThread.start();

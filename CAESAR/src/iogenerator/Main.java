@@ -29,7 +29,7 @@ public class Main {
 		// input data dependent
 		int lastXway = 5;
 		boolean lastXwayUnidir = false;
-		int lastSec = 10784;		
+		int lastSec = 20;//10784;		
 				
 		// scheduler dependent
 		int HP_frequency = 3;	// must be >= 1	
@@ -38,42 +38,41 @@ public class Main {
 		/*** Pick the input file ***/
 		//String filename = "src/input/few_events.dat";
 		//String filename = "src/input/small.txt";
-		//String filename1 = "src/input/datafile20seconds.dat";
+		String filename1 = "src/input/datafile20seconds.dat";
 		//String filename2 = "src/input/datafile20seconds.dat";
-		//String filename = "src/input/input_till_sec_1500.dat";
-		String filename1 = "../../Dropbox/LR/InAndOutput/6xways/merged012.dat";			
-		String filename2 = "../../Dropbox/LR/InAndOutput/6xways/merged345.dat";
+		//String filename1 = "src/input/input_till_sec_1500.dat";
+		//String filename1 = "../../Dropbox/LR/InAndOutput/6xways/merged012345.dat";			
+		//String filename2 = "../../Dropbox/LR/InAndOutput/6xways/merged345.dat";
 		
 		/*** Define shared objects ***/
 		HashMap<RunID,Run> runs1 = new HashMap<RunID,Run>();
-		HashMap<RunID,Run> runs2 = new HashMap<RunID,Run>();
+		//HashMap<RunID,Run> runs2 = new HashMap<RunID,Run>();
 		CountDownLatch done1 = new CountDownLatch(1);
-		CountDownLatch done2 = new CountDownLatch(1);
-		long startOfSimulation = System.currentTimeMillis();
-		
-		int thread_number = Runtime.getRuntime().availableProcessors() - 6;
+		//CountDownLatch done2 = new CountDownLatch(1);
+				
+		int thread_number = Runtime.getRuntime().availableProcessors() - 3; 
 		ExecutorService executor = Executors.newFixedThreadPool(thread_number);	
 		
-		/*** Start drivers, distributers and schedulers ***/
-		EventPreprocessor preprocessor1 = new EventPreprocessor (filename1, scheduling_strategy, runs1, executor, done1, lastXway, lastXwayUnidir, lastSec, startOfSimulation, HP_frequency, LP_frequency);
-		Thread ppThread1 = new Thread(preprocessor1);
+		/*** Start parser, driver, distributer and scheduler ***/
+		EventPreprocessor.preprocess(filename1, scheduling_strategy, runs1, executor, done1, lastXway, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
+		/*Thread ppThread1 = new Thread(preprocessor1);
 		ppThread1.setPriority(10);
-		ppThread1.start();
+		ppThread1.start();*/
 		
-		EventPreprocessor preprocessor2 = new EventPreprocessor (filename2, scheduling_strategy, runs2, executor, done2, lastXway, lastXwayUnidir, lastSec, startOfSimulation, HP_frequency, LP_frequency);
+		/*EventPreprocessor preprocessor2 = new EventPreprocessor (filename2, scheduling_strategy, runs2, executor, done2, lastXway, lastXwayUnidir, lastSec, startOfSimulation, HP_frequency, LP_frequency);
 		Thread ppThread2 = new Thread(preprocessor2);
 		ppThread2.setPriority(10);
-		ppThread2.start();		
+		ppThread2.start();*/	
 							
 		try {
 			/*** Wait till all input events are processed and terminate the executor ***/
 			done1.await();		
-			done2.await();
+			//done2.await();
 			executor.shutdown();	
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runs1, runs2, HP_frequency, LP_frequency);  			
+			OutputFileGenerator.write2File (runs1, HP_frequency, LP_frequency);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
