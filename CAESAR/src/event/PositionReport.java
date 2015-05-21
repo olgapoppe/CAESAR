@@ -17,8 +17,8 @@ public class PositionReport extends Event {
 	public double dir; 
 	public double seg;
 	public double pos;	
-	//public double processingTime;
 	
+	public double driverTime;
 	public double distributorTime;
 	public double schedulerTime;
 	public double executorTime;
@@ -130,7 +130,8 @@ public class PositionReport extends Event {
 	 * Print all time stamps of this position report.
 	 */
 	public String timesToString() {
-		return 	"application time: " + sec +				
+		return 	"application time: " + sec +
+				"   driver time: " + driverTime +
 				"   distributor time: " + distributorTime + 
 				"   scheduler time: " + schedulerTime + 
 				"   executor time: " + executorTime;

@@ -1,23 +1,24 @@
 package driver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import event.PositionReport;
 
 public class DataDriver implements Runnable {
 	
 	AtomicInteger driverProgress;
-	HashMap<Integer,ArrayList<PositionReport>> input;
+	String filename;
 	EventQueue events;
 	
 	double lastSec;
 	long startOfSimulation;
 		
-	public DataDriver(AtomicInteger dp, HashMap<Integer,ArrayList<PositionReport>> i, EventQueue e, double last, long start) {
+	public DataDriver(AtomicInteger dp, String f, EventQueue e, double last, long start) {
 		
 		driverProgress = dp;
-		input = i;
+		filename = f;
 		events = e;
 		
 		lastSec = last;
@@ -26,33 +27,63 @@ public class DataDriver implements Runnable {
 	
 	public void run() {
 		
-		// Time
-		double app_sec = 0;
-		double curr_sec = 0;
+		Scanner scanner;
+		try {
+			// Input file
+			scanner = new Scanner(new File(filename));
+			
+			// Time
+			double curr_app_sec = 0;
+			double curr_sec = 0;
 																
-		while (app_sec <= lastSec) {
+			// Output file
+			//File input_file = new File("../../input_till_sec_10784.dat");
+			//BufferedWriter input = new BufferedWriter(new FileWriter(input_file));	
+			
+			// First event
+			String line = scanner.nextLine();
+	 		PositionReport event = PositionReport.parse(line);	
+	 								
+			while (curr_app_sec <= lastSec) {
 				
-			// Write all events with the application time app_sec to the event queue	
-			Integer i = new Double(app_sec).intValue();
-		 	ArrayList<PositionReport> list = input.remove(i);
-		 	events.contents.addAll(list);		 	
-		 	
-			// Set driver progress to app_sec
-			events.setDriverPrgress(app_sec);
-			
-			// Sleep if curr_sec is smaller than app_sec
-			curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
-			
-			if (curr_sec < app_sec && app_sec < lastSec) {
-	 			
-	 			int sleep_time = new Double(app_sec - curr_sec).intValue();
-	 			
-	 			//System.out.println("Driver sleeps " + sleep_time + " seconds.");
-	 			
-	 			try { Thread.sleep(sleep_time * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
-	 		}
-	 		app_sec++;
+				// Put events with time stamp curr_app_sec into the event queue		 		
+		 		while (event != null && event.sec == curr_app_sec) {
+		 			
+		 			// Write the event to the output file and append its driver time	
+		 			event.driverTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 			events.contents.add(event);
+		 			
+		 			//System.out.println(event.toString());
+		 					 			
+		 			// Reset event
+		 			if (scanner.hasNextLine()) {		 				
+		 				line = scanner.nextLine();   
+		 				event = PositionReport.parse(line);		 				
+		 			} else {
+		 				event = null;		 				
+		 			}
+		 		}
+		 		// Set driver progress to curr_app_sec
+		 		events.setDriverPrgress(curr_app_sec);
+		 		
+		 		// Sleep if curr_sec is smaller than curr_app_sec
+		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 		
+		 		if (curr_sec < curr_app_sec && curr_app_sec < lastSec) {
+		 			
+		 			int sleep_time = new Double(curr_app_sec - curr_sec).intValue();
+		 			
+		 			//System.out.println("Driver sleeps " + sleep_time + " seconds.");
+		 			
+		 			Thread.sleep(sleep_time * 1000);
+		 		}
+		 		curr_app_sec++;
+			}			
+			/*** Clean-up ***/		
+			scanner.close();				
+			System.out.println("Driver is done.");
 		}
-		System.out.println("Driver is done.");			
+		catch (InterruptedException e) { e.printStackTrace(); }
+		catch (FileNotFoundException e1) { e1.printStackTrace(); }		
 	}
 }

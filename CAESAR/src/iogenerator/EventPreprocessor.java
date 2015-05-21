@@ -62,10 +62,10 @@ public class EventPreprocessor {
 		long startOfSimulation = System.currentTimeMillis();		
 		
 		/*** Create and start data driver ***/
-		DataDriver dataDriver = new DataDriver(driverProgress, input, events, lastSec, startOfSimulation);
+		/*DataDriver dataDriver = new DataDriver(driverProgress, input, events, lastSec, startOfSimulation);
 		Thread drThread = new Thread(dataDriver);
 		drThread.setPriority(10);
-		drThread.start();
+		drThread.start();*/
 		
 		/*** Depending on scheduling strategy, create and start event distributing and query scheduling threads ***/
 		EventDistributor distributor;
