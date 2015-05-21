@@ -34,9 +34,8 @@ public class DataDriver implements Runnable {
 				
 			// Write all events with the application time app_sec to the event queue	
 			Integer i = new Double(app_sec).intValue();
-		 	ArrayList<PositionReport> list = input.get(i);
-		 	events.contents.addAll(list);
-		 	input.remove(app_sec);
+		 	ArrayList<PositionReport> list = input.remove(i);
+		 	events.contents.addAll(list);		 	
 		 	
 			// Set driver progress to app_sec
 			events.setDriverPrgress(app_sec);
