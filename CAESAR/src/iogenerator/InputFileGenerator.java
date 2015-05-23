@@ -45,12 +45,12 @@ public class InputFileGenerator {
 		try {		
 			/*** Input file ***/
 			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/6xways/merged012345.dat");
-			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/10xways/merged6789.dat");
+			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/10xways/merged678.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to9.dat");
+            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to8.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            

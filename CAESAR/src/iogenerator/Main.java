@@ -31,7 +31,7 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// input data dependent
-		int lastXway = 9;
+		int lastXway = 8;
 		boolean lastXwayUnidir = false;
 		int lastSec = 10784;		
 				
@@ -44,7 +44,7 @@ public class Main {
 		//String filename = "src/input/small.txt";
 		//String filename = "src/input/datafile20seconds.dat";
 		//String filename = "src/input/input_till_sec_1500.dat";
-		String filename = "../../Dropbox/LR/InAndOutput/10xways/merged0to9.dat";			
+		String filename = "../../Dropbox/LR/InAndOutput/10xways/merged0to8.dat";			
 				
 		/*** Define shared objects and data structures ***/
 		int thread_number = Runtime.getRuntime().availableProcessors() - 3; 
