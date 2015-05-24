@@ -44,13 +44,13 @@ public class InputFileGenerator {
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/6xways/merged012345.dat");
-			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/10xways/merged67.dat");
+			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to7.dat");
+			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/10xways/input8dir0.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to7.dat");
+            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to7andHalf.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            
@@ -79,6 +79,29 @@ public class InputFileGenerator {
             /*** Close the files ***/       		
        		input.close();       		       		
         
+		} catch (IOException e) { System.err.println(e); }		  
+	}
+	
+	// copy all tuples with direction 0
+	public static void main4 (String[] args) {
+		
+		Scanner input = null;
+		try {		
+			/*** Input file ***/
+			File input_file = new File("../../../Dropbox/LR/InAndOutput/10xways/input8.dat");
+	        input = new Scanner(input_file);     
+	        
+	        /*** Output file ***/
+            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/input8dir0.dat");
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
+	            
+	        /*** Call method ***/                      
+	        selectTuples(input,output,0);
+	            
+	        /*** Close the files ***/       		
+	       	input.close();       		       		
+	       	output.close();
+	        
 		} catch (IOException e) { System.err.println(e); }		  
 	}
 	
@@ -171,15 +194,22 @@ public class InputFileGenerator {
 	 */
 	public static void selectTuples (Scanner input, BufferedWriter output, int dir) {
 		
-		String eventString = "";		
+		String eventString = "";
+		int count = 0; 
 		try {
 			while (input.hasNextLine()) {         	
         			
 				eventString = input.nextLine();
 				PositionReport event = PositionReport.parse(eventString);
-				if (event.type == 0 && event.dir == 0) output.write(eventString + "\n");            	            	            	         	
+				
+				if (event.correctPositionReport() && event.dir == 0) {
+					
+					count++;
+					output.write(eventString + "\n");            	            	            	         	
+				}
 			}   
 		} catch (IOException e) { System.err.println(e); }	
+		System.out.println("Count: " + count + " Last event: " + eventString);
 	}
 	
 	/**
