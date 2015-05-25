@@ -37,20 +37,20 @@ public class InputFileGenerator {
 	}
 	
 	// merge 2 files
-	public static void main (String[] args) {
+	public static void main2 (String[] args) {
 		
 		int lastSec = 10784;
 		Scanner input1 = null;
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to7.dat");
-			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/10xways/input8dir0.dat");
+			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/2xways/input0.dat");
+			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/2xways/input1dir0.dat");
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/merged0to7andHalf.dat");
+            File output_file = new File("../../../Dropbox/LR/InAndOutput/2xways/merged0andHalf.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            
@@ -88,11 +88,11 @@ public class InputFileGenerator {
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			File input_file = new File("../../../Dropbox/LR/InAndOutput/10xways/input8.dat");
+			File input_file = new File("../../../Dropbox/LR/InAndOutput/2xways/input1.dat");
 	        input = new Scanner(input_file);     
 	        
 	        /*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/input8dir0.dat");
+            File output_file = new File("../../../Dropbox/LR/InAndOutput/2xways/input1dir0.dat");
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
 	            
 	        /*** Call method ***/                      

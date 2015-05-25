@@ -36,7 +36,7 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	Scheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, CountDownLatch tn, CountDownLatch d, int lastR, boolean unidir, int lastS, long start) {
+	Scheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, CountDownLatch tn, CountDownLatch d, int lastR, boolean unidir, int lastS, long start) {
 		
 		distributorProgress = dp;
 		runs = rs;
@@ -224,6 +224,7 @@ public abstract class Scheduler implements Runnable {
 			
 				// If the last road is unidirectional, avoid calling transaction creation
 				if (!skipLastHalfXway) { 
+					
 					RunID runid1 = new RunID(xway,1,seg); 
 					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup);
 					if (t1!=null) transactions.add(t1);
@@ -372,7 +373,8 @@ public abstract class Scheduler implements Runnable {
 					
 						Run run = runs.get(runid);
 						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed);					
-		}}}}
+				}}
+		}}
 		return null;
 	}
 }
