@@ -31,20 +31,20 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// input data dependent
-		int lastXway = 0;
-		boolean lastXwayUnidir = true;
-		int lastSec = 20; //10784;		
+		int lastXway = 9;
+		boolean lastXwayUnidir = false;
+		int lastSec = 10784;		
 				
 		// scheduler dependent
 		int HP_frequency = 3;	// must be >= 1	
 		int LP_frequency = 1;	// must be >= 1
 		
 		/*** Pick the input file ***/
-		//String filename = "src/input/few_events.dat";
-		//String filename = "src/input/small.txt";
-		String filename = "input/datafile20seconds.dat";
-		//String filename = "src/input/input_till_sec_1500.dat";
-		//String filename = "../../Dropbox/LR/InAndOutput/2xways/merged0andHalf.dat";			
+		//String filename = "input/few_events.dat";
+		//String filename = "input/small.txt";
+		//String filename = "input/datafile20seconds.dat";
+		//String filename = "input/input_till_sec_1500.dat";
+		String filename = "../../merged0to9.dat";			
 				
 		/*** Define shared objects and data structures ***/
 		int thread_number = Runtime.getRuntime().availableProcessors() - 3; 
