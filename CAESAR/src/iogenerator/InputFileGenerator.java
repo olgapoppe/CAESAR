@@ -7,27 +7,36 @@ import java.io.IOException;
 import java.util.Scanner;
 import event.*;
 
-/**
+/***
  * Input file generator parses the input file and copies certain tuples to the output file.  
  * @author Olga Poppe
  */
 public class InputFileGenerator {
 	
-	// select correct position reports and change xway
-	public static void main1 (String[] args) {
+	public static void main (String[] args) {
+		
+	}
+	
+	/****************************************************************************
+	 * Select correct position reports and change xway
+	 * @param inputfilename
+	 * @param outputfilename
+	 * @param xway
+	 */
+	public static void cleanFile (String inputfilename, String outputfilename, int xway) {
 		
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
-			File input_file = new File("../../../Dropbox/LR/InAndOutput/10xways/cardatapoints.out9");
+			File input_file = new File(inputfilename);
 			input = new Scanner(input_file);  			
 								
 			/*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/input9.dat");
+            File output_file = new File(outputfilename);
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
               
             /*** Call method ***/            
-            changeXway(input,output,9);
+            changeXway(input,output,xway);
             
             /*** Close the files ***/
        		input.close();
@@ -36,21 +45,50 @@ public class InputFileGenerator {
 		} catch (IOException e) { System.err.println(e); }		  
 	}
 	
-	// merge 2 files
-	public static void main (String[] args) {
+	/***
+	 * Copy position reports from input to output and change their xway to the given value 
+	 * @param input
+	 * @param output
+	 * @param new xway
+	 */
+	public static void changeXway (Scanner input, BufferedWriter output, int newXway) {
+		
+		String eventString = "";
+		int count = 0; 
+		try {
+			while (input.hasNextLine()) {         	
+        			
+				eventString = input.nextLine();
+				PositionReport event = PositionReport.parse(eventString);
+				
+				if (event.correctPositionReport()) {
+					
+					count++;
+					output.write(event.toString(newXway) + "\n");            	            	            	         	
+			}}			
+		} catch (IOException e) { System.err.println(e); }
+		System.out.println("Count: " + count + " Last event: " + eventString);
+	}
+	
+	/****************************************************************************
+	 * Merge 2 files
+	 * @param filename1
+	 * @param filename2
+	 */
+	public static void mergeFiles (String inputfilename1, String inputfilename2, String outputfilename) {
 		
 		int lastSec = 10784;
 		Scanner input1 = null;
 		Scanner input2 = null;
 		try {		
 			/*** Input file ***/
-			File input_file_1 = new File("../../../Dropbox/LR/InAndOutput/10xways/merged6789.dat");
-			File input_file_2 = new File("../../../Dropbox/LR/InAndOutput/6xways/input5.dat");
+			File input_file_1 = new File(inputfilename1);
+			File input_file_2 = new File(inputfilename2);
 			input1 = new Scanner(input_file_1);  			
 			input2 = new Scanner(input_file_2);
 					
 			/*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/10xways/merged5to9.dat");
+            File output_file = new File(outputfilename);
             BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
             /*** Call method ***/            
@@ -64,48 +102,7 @@ public class InputFileGenerator {
 		} catch (IOException e) { System.err.println(e); }		  
 	}
 	
-	// count number of tuples in the merged file
-	public static void main3 (String[] args) {
-	
-		Scanner input = null;
-		try {		
-			/*** Input file ***/
-			File input_file = new File("../../Dropbox/LR/InAndOutput/3xways/input2.dat");
-            input = new Scanner(input_file);           
-            
-            /*** Call method ***/                      
-            countTuples(input);
-            
-            /*** Close the files ***/       		
-       		input.close();       		       		
-        
-		} catch (IOException e) { System.err.println(e); }		  
-	}
-	
-	// copy all tuples with direction 0
-	public static void main4 (String[] args) {
-		
-		Scanner input = null;
-		try {		
-			/*** Input file ***/
-			File input_file = new File("../../../Dropbox/LR/InAndOutput/2xways/input1.dat");
-	        input = new Scanner(input_file);     
-	        
-	        /*** Output file ***/
-            File output_file = new File("../../../Dropbox/LR/InAndOutput/2xways/input1dir0.dat");
-            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
-	            
-	        /*** Call method ***/                      
-	        selectTuples(input,output,0);
-	            
-	        /*** Close the files ***/       		
-	       	input.close();       		       		
-	       	output.close();
-	        
-		} catch (IOException e) { System.err.println(e); }		  
-	}
-	
-	/**
+	/***
 	 * Merges 2 sorted files input1 and input2 into one sorted file output. The files are sorted by time stamps. 
 	 * @param input1
 	 * @param input2
@@ -161,33 +158,68 @@ public class InputFileGenerator {
 		System.out.println("Count: " + count + " Last event: " + eventString2);
 	}
 	
-	/**
-	 * Copy position reports from input to output and change their xway to the given value 
-	 * @param input
-	 * @param output
-	 * @param new xway
+	/****************************************************************************
+	 * Count number of tuples in the merged file
+	 * @param inputfilename
 	 */
-	public static void changeXway (Scanner input, BufferedWriter output, int newXway) {
+	public static void countTuples (String inputfilename) {
+	
+		Scanner input = null;
+		try {		
+			/*** Input file ***/
+			File input_file = new File(inputfilename);
+            input = new Scanner(input_file);           
+            
+            /*** Call method ***/                      
+            String eventString = "";	
+    		int count = 0; 
+    		while (input.hasNextLine()) {         	
+            			
+    			count++;
+    			eventString = input.nextLine();
+    		} 
+    		System.out.println("Count: " + count + " Last event: " + eventString);	
+            
+            /*** Close the files ***/       		
+       		input.close();       		       		
+        
+		} catch (IOException e) { System.err.println(e); }		  
+	}	
+	
+	/****************************************************************************
+	 * Copy all tuples with given direction or just a given number of tuples
+	 * @param inputfilename
+	 * @param outputfilename
+	 * @param dir
+	 */
+	public static void getTuples (int choice, String inputfilename, String outputfilename, int n) {
 		
-		String eventString = "";
-		int count = 0; 
-		try {
-			while (input.hasNextLine()) {         	
-        			
-				eventString = input.nextLine();
-				PositionReport event = PositionReport.parse(eventString);
-				
-				if (event.correctPositionReport()) {
-					
-					count++;
-					output.write(event.toString(newXway) + "\n");            	            	            	         	
-			}}			
-		} catch (IOException e) { System.err.println(e); }
-		System.out.println("Count: " + count + " Last event: " + eventString);
-	}
+		Scanner input = null;
+		try {		
+			/*** Input file ***/
+			File input_file = new File(inputfilename);
+	        input = new Scanner(input_file);     
+	        
+	        /*** Output file ***/
+            File output_file = new File(outputfilename);
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
+	            
+	        /*** Call method ***/    
+            if (choice==1) {
+            	selectTuples(input,output,n);
+            } else {
+            	copyTuples(input,output,n);
+            }
+	            
+	        /*** Close the files ***/       		
+	       	input.close();       		       		
+	       	output.close();
+	        
+		} catch (IOException e) { System.err.println(e); }		  
+	}	
 	
 	/**
-	 * Copy position reports that have the given direction from input to output
+	 * Select position reports that have the given direction from input to output
 	 * @param input
 	 * @param output
 	 * @param dir
@@ -212,7 +244,7 @@ public class InputFileGenerator {
 		System.out.println("Count: " + count + " Last event: " + eventString);
 	}
 	
-	/**
+	/***
 	 * Copy the given number of tuples from input to output
 	 * @param input
 	 * @param output
@@ -230,21 +262,5 @@ public class InputFileGenerator {
 				output.write(eventString + "\n");            	            	            	         	
 			}   
 		} catch (IOException e) { System.err.println(e); }				
-	}
-	
-	/**
-	 * Count the number of tuples in the input and print it and the last tuple
-	 * @param input 
-	 */
-	public static void countTuples (Scanner input) {
-		
-		String eventString = "";	
-		int count = 0; 
-		while (input.hasNextLine()) {         	
-        			
-			count++;
-			eventString = input.nextLine();
-		} 
-		System.out.println("Count: " + count + " Last event: " + eventString);		
 	}
 }
