@@ -38,7 +38,7 @@ public class Main {
 		
 		int numberOfInputFiles = args.length - 4;
 		int numberOfHelperThreads = numberOfInputFiles * 3;
-		int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
+		int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads + 1;
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfExeThreads);
 		
 		//String path = "src/input/"; // local path

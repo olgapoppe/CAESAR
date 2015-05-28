@@ -21,7 +21,10 @@ public abstract class Event {
 	
 	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
 		
-		if (!failed.get() && emit - p.driverTime > 5) { 
+		int diff = new Double(emit).intValue() - new Double(p.driverTime).intValue();
+		
+		if (!failed.get() && diff > 5) {
+			
 			System.err.println(s + " FAILED!!! " + p.timesToString() + " triggered " + this.toString());
 			failed.compareAndSet(false, true);
 		}
