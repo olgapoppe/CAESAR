@@ -12,10 +12,10 @@ public class DataDriver implements Runnable {
 	String filename;
 	EventQueue events;
 	
-	double lastSec;
+	int lastSec;
 	long startOfSimulation;
 		
-	public DataDriver(AtomicInteger dp, String f, EventQueue e, double last, long start) {
+	public DataDriver(AtomicInteger dp, String f, EventQueue e, int last, long start) {
 		
 		driverProgress = dp;
 		filename = f;

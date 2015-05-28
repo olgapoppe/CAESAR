@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-import distributor.*;
-import driver.*;
 import run.*;
-import scheduler.*;
  
 public class Main {
 	
@@ -40,90 +36,43 @@ public class Main {
 		int LP_frequency = 1;	// must be >= 1
 		
 		/*** Pick the input file ***/
-		//String filename = "input/few_events.dat";
-		//String filename = "input/small.txt";
-		//String filename = "input/datafile20seconds.dat";
-		//String filename = "input/input_till_sec_1500.dat";
-		String filename = "../../merged0to9.dat";			
+		//String filename = "src/input/few_events.dat";
+		//String filename = "src/input/small.txt";
+		//String filename1 = "src/input/datafile20seconds.dat";
+		//String filename2 = "src/input/datafile20seconds.dat";
+		//String filename = "src/input/input_till_sec_1500.dat";
+		String filename1 = "../../merged0to4.dat";			
+		String filename2 = "../../merged5to9.dat";
+		
+		/*** Define shared objects ***/
+		HashMap<RunID,Run> runs1 = new HashMap<RunID,Run>();
+		HashMap<RunID,Run> runs2 = new HashMap<RunID,Run>();
+		CountDownLatch done1 = new CountDownLatch(1);
+		CountDownLatch done2 = new CountDownLatch(1);
 				
-		/*** Define shared objects and data structures ***/
-		int thread_number = Runtime.getRuntime().availableProcessors() - 3; 
+		int thread_number = Runtime.getRuntime().availableProcessors() - 6;
 		ExecutorService executor = Executors.newFixedThreadPool(thread_number);	
 		
-		AtomicInteger driverProgress = new AtomicInteger(-1);
-		AtomicInteger distributorProgress = new AtomicInteger(-1);	
-		CountDownLatch transaction_number = new CountDownLatch(0);				
-		AtomicInteger xway0dir0firstHPseg = new AtomicInteger(-1);
-		AtomicInteger xway0dir1firstHPseg = new AtomicInteger(-1);	
-		CountDownLatch done = new CountDownLatch(1);
-		long startOfSimulation = System.currentTimeMillis();
+		/*** Start drivers, distributers and schedulers ***/
+		EventPreprocessor preprocessor1 = new EventPreprocessor (filename1, scheduling_strategy, runs1, executor, done1, lastXway, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
+		Thread ppThread1 = new Thread(preprocessor1);
+		ppThread1.setPriority(10);
+		ppThread1.start();
 		
-		EventQueue events = new EventQueue(driverProgress);		
-		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
-		RunQueues runqueues = new RunQueues(distributorProgress);
-		RunQueues HPrunqueues = new RunQueues(distributorProgress);					
-		
-		/*** Create and start data driver ***/
-		DataDriver dataDriver = new DataDriver(driverProgress, filename, events, lastSec, startOfSimulation);
-		Thread drThread = new Thread(dataDriver);
-		drThread.setPriority(10);
-		drThread.start();
-		
-		/*** Depending on scheduling strategy, create and start event distributing and query scheduling threads ***/
-		EventDistributor distributor;
-		Scheduler scheduler;
-		
-		if (scheduling_strategy < 3) {
-			
-			distributor = new SingleQueueDistributor(distributorProgress, events, runs, runqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);		
-			
-			if (scheduling_strategy == 1) {
-			
-				System.out.println("TIME DRIVEN SCHEDULER.");
-				scheduler = new TimeDrivenScheduler(distributorProgress, runs, runqueues, executor, 
-												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation);
-			} else {			
-			
-				System.out.println("RUN DRIVEN SCHEDULER.");
-				scheduler = new RunDrivenScheduler(	distributorProgress, runs, runqueues, executor, 
-												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation, 
-												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
-			}
-		} else {
-			
-			distributor = new DoubleQueueDistributor(distributorProgress, events, runs, runqueues, HPrunqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);	
-			
-			if (scheduling_strategy == 3) {
-			
-				System.out.println("QUERY DRIVEN SCHEDULER.");
-				scheduler = new QueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation,
-												HP_frequency, LP_frequency);
-			} else {
-			
-				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
-				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, lastXway, lastXwayUnidir, lastSec, startOfSimulation,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
-		}}
-		Thread prodThread = new Thread(distributor);
-		prodThread.setPriority(10);
-		prodThread.start();
-		
-		Thread consThread = new Thread(scheduler);
-		consThread.setPriority(10);
-		consThread.start();
+		EventPreprocessor preprocessor2 = new EventPreprocessor (filename2, scheduling_strategy, runs2, executor, done2, lastXway, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
+		Thread ppThread2 = new Thread(preprocessor2);
+		ppThread2.setPriority(10);
+		ppThread2.start();		
 							
 		try {
 			/*** Wait till all input events are processed and terminate the executor ***/
-			done.await();		
+			done1.await();		
+			done2.await();
 			executor.shutdown();	
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runs, HP_frequency, LP_frequency);  			
+			OutputFileGenerator.write2File (runs1, runs2, HP_frequency, LP_frequency);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }

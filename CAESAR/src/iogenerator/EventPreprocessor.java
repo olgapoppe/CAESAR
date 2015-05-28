@@ -1,21 +1,20 @@
 package iogenerator;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import parser.TupleParser;
+//import parser.TupleParser;
 import run.*;
 import scheduler.*;
 import distributor.*;
 import driver.*;
-import event.*;
+//import event.*;
 
-public class EventPreprocessor {
+public class EventPreprocessor implements Runnable {
 	
-	/*String filename;
+	String filename;
 	int scheduling_strategy; 
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
@@ -40,13 +39,9 @@ public class EventPreprocessor {
 		lastSec = lS;
 		HP_frequency = HP_freq;
 		LP_frequency = LP_freq;		
-	}*/
+	}
 	
-	public static void preprocess (String filename, int scheduling_strategy, HashMap<RunID,Run> runs, ExecutorService executor, 
-			CountDownLatch done, int lastXway, boolean lastXwayUnidir, int lastSec, int HP_frequency, int LP_frequency) {
-		
-		/*** Parse input tuples and store events in the hash table ***/
-		HashMap<Integer,ArrayList<PositionReport>> input = TupleParser.parseTuples(filename, lastSec);				
+	public void run () {
 		
 		/*** Create shared data structures ***/
 		AtomicInteger driverProgress = new AtomicInteger(-1);
@@ -61,13 +56,16 @@ public class EventPreprocessor {
 		AtomicInteger xway0dir1firstHPseg = new AtomicInteger(-1);	
 		long startOfSimulation = System.currentTimeMillis();		
 		
-		/*** Create and start data driver ***/
-		/*DataDriver dataDriver = new DataDriver(driverProgress, input, events, lastSec, startOfSimulation);
+		/*** Create and start data driver.
+		 *   Data driver continuously reads from file and writes into event queue. ***/
+		DataDriver dataDriver = new DataDriver(driverProgress, filename, events, lastSec, startOfSimulation);
 		Thread drThread = new Thread(dataDriver);
 		drThread.setPriority(10);
-		drThread.start();*/
+		drThread.start();
 		
-		/*** Depending on scheduling strategy, create and start event distributing and query scheduling threads ***/
+		/*** Depending on scheduling strategy, create and start event distributing and query scheduling threads.
+		 *   Distributor reads from the event queue and writes into runs and run queues.
+		 *   Scheduler reads from runs and run queues and submits tasks to executor. ***/
 		EventDistributor distributor;
 		Scheduler scheduler;
 		

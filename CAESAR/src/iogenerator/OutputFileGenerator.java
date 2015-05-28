@@ -16,7 +16,7 @@ import run.RunID;
  */
 public class OutputFileGenerator {
 	
-	public static void write2File (HashMap<RunID,Run> runs1, int HP_frequency, int LP_frequency) { 
+	public static void write2File (HashMap<RunID,Run> runs1, HashMap<RunID,Run> runs2, int HP_frequency, int LP_frequency) { 
 		
 		try {
 			/*
@@ -58,7 +58,15 @@ public class OutputFileGenerator {
 	     		
 	     		total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
-	     	}		     	
+	     	}	
+	     	Set<RunID> runids2 = runs2.keySet();
+	     	for (RunID runid : runids2) {
+	     		
+	     		Run run = runs2.get(runid);	     		
+	     		
+	     		run.output.write2FileTollNotifications(tollalerts_output);
+	     		run.output.write2FileAccidentWarnings(accidentalerts_output);     		
+	     	}	
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 
 	        				total_time + " " + total_garbageCollectionTime + " " + total_priorityMaintenanceTime + " " +
