@@ -28,6 +28,7 @@ public abstract class Scheduler implements Runnable {
 	
 	CountDownLatch transaction_number;
 	CountDownLatch done;
+	int firstXway;
 	int lastXway;
 	boolean lastXwayUnidir;
 	int lastSec;
@@ -36,7 +37,8 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	Scheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, CountDownLatch tn, CountDownLatch d, int lastR, boolean unidir, int lastS, long start) {
+	Scheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
+			CountDownLatch tn, CountDownLatch d, int firstR, int lastR, boolean unidir, int lastS, long start) {
 		
 		distributorProgress = dp;
 		runs = rs;
@@ -46,6 +48,7 @@ public abstract class Scheduler implements Runnable {
 		
 		transaction_number = tn;
 		done = d;
+		firstXway = firstR;
 		lastXway = lastR;
 		lastXwayUnidir = unidir;
 		lastSec = lastS;
@@ -212,7 +215,7 @@ public abstract class Scheduler implements Runnable {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
-		for (int xway=0; xway<=lastXway; xway++) {
+		for (int xway=firstXway; xway<=lastXway; xway++) {
 			
 			boolean skipLastHalfXway = (xway==lastXway && lastXwayUnidir);
 			

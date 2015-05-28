@@ -27,7 +27,10 @@ public class Main {
 		
 		/*** Set local variables ***/
 		// input data dependent
-		int lastXway = 9;
+		int firstXway1 = 0;
+		int lastXway1 = 4;
+		int firstXway2 = 5;
+		int lastXway2 = 9;		
 		boolean lastXwayUnidir = false;
 		int lastSec = 10784;		
 				
@@ -54,12 +57,14 @@ public class Main {
 		ExecutorService executor = Executors.newFixedThreadPool(thread_number);	
 		
 		/*** Start drivers, distributers and schedulers ***/
-		EventPreprocessor preprocessor1 = new EventPreprocessor (filename1, scheduling_strategy, runs1, executor, done1, lastXway, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
+		EventPreprocessor preprocessor1 = new EventPreprocessor (filename1, scheduling_strategy, runs1, executor, 
+				done1, firstXway1, lastXway1, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
 		Thread ppThread1 = new Thread(preprocessor1);
 		ppThread1.setPriority(10);
 		ppThread1.start();
 		
-		EventPreprocessor preprocessor2 = new EventPreprocessor (filename2, scheduling_strategy, runs2, executor, done2, lastXway, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
+		EventPreprocessor preprocessor2 = new EventPreprocessor (filename2, scheduling_strategy, runs2, executor, 
+				done2, firstXway2, lastXway2, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
 		Thread ppThread2 = new Thread(preprocessor2);
 		ppThread2.setPriority(10);
 		ppThread2.start();		
