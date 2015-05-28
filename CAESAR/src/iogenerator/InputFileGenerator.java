@@ -13,8 +13,41 @@ import event.*;
  */
 public class InputFileGenerator {
 	
+	/***
+	 * Generate input files
+	 * @param args: action: 1 for clean file and 2 for merge files
+	 * 				if clean file: input file name, output file name, xway
+	 * 				if merge files: first input file name, second input file name, output file name
+	 */
 	public static void main (String[] args) {
 		
+		/*** Validate the input parameter ***/
+		if (args.length != 4) {
+			System.out.println("4 input parameters are expected.");
+			return;
+		}	
+		
+		/*** Instantiate local variables ***/
+		String path = "src/input/"; // local path
+		//String path = "../../input/"; // remote path
+		
+		/*** Clean or merge files ***/
+		int action = Integer.parseInt(args[0]);
+		
+		if (action == 1) {
+			
+			String inputfile = path + args[1];
+			String outputfile = path + args[2];
+			int xway = Integer.parseInt(args[3]);
+			cleanFile(inputfile,outputfile,xway);
+			
+		} else {
+			
+			String inputfile1 = path + args[1];
+			String inputfile2 = path + args[2];
+			String outputfile = path + args[3];
+			mergeFiles(inputfile1,inputfile2,outputfile);
+		}		
 	}
 	
 	/****************************************************************************
@@ -159,34 +192,6 @@ public class InputFileGenerator {
 	}
 	
 	/****************************************************************************
-	 * Count number of tuples in the merged file
-	 * @param inputfilename
-	 */
-	public static void countTuples (String inputfilename) {
-	
-		Scanner input = null;
-		try {		
-			/*** Input file ***/
-			File input_file = new File(inputfilename);
-            input = new Scanner(input_file);           
-            
-            /*** Call method ***/                      
-            String eventString = "";	
-    		int count = 0; 
-    		while (input.hasNextLine()) {         	
-            			
-    			count++;
-    			eventString = input.nextLine();
-    		} 
-    		System.out.println("Count: " + count + " Last event: " + eventString);	
-            
-            /*** Close the files ***/       		
-       		input.close();       		       		
-        
-		} catch (IOException e) { System.err.println(e); }		  
-	}	
-	
-	/****************************************************************************
 	 * Copy all tuples with given direction or just a given number of tuples
 	 * @param inputfilename
 	 * @param outputfilename
@@ -262,5 +267,5 @@ public class InputFileGenerator {
 				output.write(eventString + "\n");            	            	            	         	
 			}   
 		} catch (IOException e) { System.err.println(e); }				
-	}
+	}	
 }
