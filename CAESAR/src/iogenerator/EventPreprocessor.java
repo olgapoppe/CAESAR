@@ -47,10 +47,8 @@ public class EventPreprocessor implements Runnable {
 	public void run () {
 		
 		/*** Create shared data structures ***/
-		AtomicInteger driverProgress = new AtomicInteger(-1);
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
 		
-		EventQueue events = new EventQueue(driverProgress);					
 		RunQueues runqueues = new RunQueues(distributorProgress);
 		RunQueues HPrunqueues = new RunQueues(distributorProgress);	
 		
@@ -59,22 +57,15 @@ public class EventPreprocessor implements Runnable {
 		AtomicInteger xway0dir1firstHPseg = new AtomicInteger(-1);	
 		long startOfSimulation = System.currentTimeMillis();		
 		
-		/*** Create and start data driver.
-		 *   Data driver continuously reads from file and writes into event queue. ***/
-		DataDriver dataDriver = new DataDriver(driverProgress, filename, events, lastSec, startOfSimulation);
-		Thread drThread = new Thread(dataDriver);
-		drThread.setPriority(10);
-		drThread.start();
-		
 		/*** Depending on scheduling strategy, create and start event distributing and query scheduling threads.
-		 *   Distributor reads from the event queue and writes into runs and run queues.
+		 *   Distributor reads from the file and writes into runs and run queues.
 		 *   Scheduler reads from runs and run queues and submits tasks to executor. ***/
 		EventDistributor distributor;
 		Scheduler scheduler;
 		
 		if (scheduling_strategy < 3) {
 			
-			distributor = new SingleQueueDistributor(distributorProgress, events, runs, runqueues,
+			distributor = new SingleQueueDistributor(distributorProgress, filename, runs, runqueues,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);		
 			
 			if (scheduling_strategy == 1) {
@@ -91,7 +82,7 @@ public class EventPreprocessor implements Runnable {
 			}
 		} else {
 			
-			distributor = new DoubleQueueDistributor(distributorProgress, events, runs, runqueues, HPrunqueues,
+			distributor = new DoubleQueueDistributor(distributorProgress, filename, runs, runqueues, HPrunqueues,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);	
 			
 			if (scheduling_strategy == 3) {

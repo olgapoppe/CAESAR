@@ -513,7 +513,6 @@ public class Run {
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed) {
 		
-		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		//System.out.println(event.timesToString());
 		
 		// Set auxiliary variables
@@ -580,6 +579,7 @@ public class Run {
 				existingVehicle.lane = event.lane;
 				existingVehicle.pos = event.pos;
 		}} 
+		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 	}	
 	
 	/**
@@ -589,8 +589,6 @@ public class Run {
 	 * @param segWithAccAhead		segment with accident ahead 
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, AtomicBoolean tollNotificationsFailed) { 
-		
-		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -668,6 +666,7 @@ public class Run {
 				vehicle.spds.put(event.min, new_speeds_per_min);			
 			}		
 		} 	
+		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 	}	
 	
 	/************************************************* Output *************************************************/

@@ -50,7 +50,7 @@ public class DataDriver implements Runnable {
 		 		while (event != null && event.sec == curr_app_sec) {
 		 			
 		 			// Write the event to the output file and append its driver time	
-		 			event.driverTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 			//event.driverTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 			events.contents.add(event);
 		 			
 		 			//System.out.println(event.toString());
