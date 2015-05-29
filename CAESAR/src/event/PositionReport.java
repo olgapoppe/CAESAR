@@ -1,8 +1,5 @@
 package event;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-
 /**
  * In addition to type, time stamp and vehicle identifier, 
  * a position report has minute, speed, expressway, lane, direction, segment, position and processing time. 

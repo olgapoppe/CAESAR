@@ -1,16 +1,12 @@
 package iogenerator;
 
-//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-//import parser.TupleParser;
 import run.*;
 import scheduler.*;
 import distributor.*;
-import driver.*;
-//import event.*;
 
 public class EventPreprocessor implements Runnable {
 	

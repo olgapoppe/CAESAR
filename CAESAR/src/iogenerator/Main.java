@@ -38,13 +38,13 @@ public class Main {
 		
 		int numberOfInputFiles = args.length - 4;
 		int numberOfHelperThreads = numberOfInputFiles * 2;
-		int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - 2; //numberOfHelperThreads;
+		int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfExeThreads);
 		
-		String path = "src/input/"; // local path
-		String extension = ".txt";
-		//String path = "../../input/"; // remote path
-		//String extension = ".dat";
+		//String path = "src/input/"; // local path
+		//String extension = ".txt";
+		String path = "../../input/"; // remote path
+		String extension = ".dat";
 		
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
