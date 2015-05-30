@@ -18,7 +18,7 @@ public class PositionReport extends Event {
 	//public double driverTime;
 	public double distributorTime;
 	public double schedulerTime;
-	public double executorTime;
+	//public double executorTime;
 	
 	public PositionReport (double t, double sec, double m, double v, double s, double x, double l, double d, double s1, double p) {
 		super(t, sec, v);	
@@ -130,7 +130,7 @@ public class PositionReport extends Event {
 		return 	"application time: " + sec +
 				//"   driver time: " + driverTime +
 				"   distributor time: " + distributorTime + 
-				"   scheduler time: " + schedulerTime + 
-				"   executor time: " + executorTime;
+				"   scheduler time: " + schedulerTime; 
+				//"   executor time: " + executorTime;
 	}	
 }

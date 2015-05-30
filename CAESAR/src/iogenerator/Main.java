@@ -36,10 +36,10 @@ public class Main {
 		// Input file determined parameters
 		int lastSec = Integer.parseInt(args[3]); // 10784
 		
-		int numberOfInputFiles = args.length - 4;
-		int numberOfHelperThreads = numberOfInputFiles * 2;
-		int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
-		ExecutorService executor = Executors.newFixedThreadPool(numberOfExeThreads);
+		//int numberOfInputFiles = args.length - 4;
+		//int numberOfHelperThreads = numberOfInputFiles * 2;
+		//int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
+		ExecutorService executor = Executors.newFixedThreadPool(2); //numberOfExeThreads);
 		
 		//String path = "src/input/"; // local path
 		//String extension = ".txt";

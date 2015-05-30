@@ -579,7 +579,7 @@ public class Run {
 				existingVehicle.lane = event.lane;
 				existingVehicle.pos = event.pos;
 		}} 
-		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+		//event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 	}	
 	
 	/**
@@ -666,7 +666,7 @@ public class Run {
 				vehicle.spds.put(event.min, new_speeds_per_min);			
 			}		
 		} 	
-		event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+		//event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 	}	
 	
 	/************************************************* Output *************************************************/
