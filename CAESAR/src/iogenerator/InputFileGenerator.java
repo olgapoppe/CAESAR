@@ -15,39 +15,59 @@ public class InputFileGenerator {
 	
 	/***
 	 * Generate input files
-	 * @param args: action: 1 for clean file and 2 for merge files
-	 * 				if clean file: input file name, output file name, xway
-	 * 				if merge files: first input file name, second input file name, output file name
+	 * @param args: action: 1 for clean file, 2 for merge files, 3 for select tuples with direction, 4 for copy n tuples
+	 * 				path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
+	 * 				extension : .txt or .dat
+	 * 				if clean file: input file, output file, xway
+	 * 				if merge files: first input file, second input file, output file
+	 * 				if select tuples: input file, output file, direction
+	 * 				if copy tuples: input file, output file, n
 	 */
 	public static void main (String[] args) {
 		
 		/*** Validate the input parameter ***/
-		if (args.length != 4) {
-			System.out.println("4 input parameters are expected.");
+		if (args.length != 6) {
+			System.out.println("6 input parameters are expected.");
 			return;
 		}	
 		
 		/*** Instantiate local variables ***/
-		String path = "src/input/"; // local path
-		//String path = "../../input/"; // remote path
-		
-		/*** Clean or merge files ***/
 		int action = Integer.parseInt(args[0]);
+		String path = args[1];
+		String extension = args[2];
 		
+		/*** Clean file ***/		
 		if (action == 1) {
 			
-			String inputfile = path + args[1];
-			String outputfile = path + args[2];
-			int xway = Integer.parseInt(args[3]);
-			cleanFile(inputfile,outputfile,xway);
+			String inputfile = path + args[3] + extension;
+			String outputfile = path + args[4] + extension;
+			int xway = Integer.parseInt(args[5]);
+			cleanFile(inputfile,outputfile,xway);			
+		} 
+		/*** Merge file ***/
+		if (action == 2) {
 			
-		} else {
-			
-			String inputfile1 = path + args[1];
-			String inputfile2 = path + args[2];
-			String outputfile = path + args[3];
+			String inputfile1 = path + args[3] + extension;
+			String inputfile2 = path + args[4] + extension;
+			String outputfile = path + args[5] + extension;
 			mergeFiles(inputfile1,inputfile2,outputfile);
-		}		
+		}	
+		/*** Select tuples with direction dir ***/
+		if (action == 3) {
+			
+			String inputfile = path + args[3] + extension;
+			String outputfile = path + args[4] + extension;
+			int dir = Integer.parseInt(args[5]);
+			getTuples(1,inputfile,outputfile,dir);
+		}	
+		/*** Copy n tuples ***/
+		if (action == 4) {
+			
+			String inputfile = path + args[3] + extension;
+			String outputfile = path + args[4] + extension;
+			int n = Integer.parseInt(args[5]);
+			getTuples(2,inputfile,outputfile,n);
+		}	
 	}
 	
 	/****************************************************************************
@@ -192,10 +212,11 @@ public class InputFileGenerator {
 	}
 	
 	/****************************************************************************
-	 * Copy all tuples with given direction or just a given number of tuples
+	 * Copy all tuples with given direction or first n tuples
+	 * @param choice: 1 for select tuples with given direction, 2 for copy first n tuples
 	 * @param inputfilename
 	 * @param outputfilename
-	 * @param dir
+	 * @param dir or n
 	 */
 	public static void getTuples (int choice, String inputfilename, String outputfilename, int n) {
 		
@@ -214,8 +235,7 @@ public class InputFileGenerator {
             	selectTuples(input,output,n);
             } else {
             	copyTuples(input,output,n);
-            }
-	            
+            }	            
 	        /*** Close the files ***/       		
 	       	input.close();       		       		
 	       	output.close();
