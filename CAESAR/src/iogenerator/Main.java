@@ -10,7 +10,7 @@ import run.*;
 public class Main {
 	
 	/**
-	 * Create and call the chain: Input files -> Drivers -> Distributors -> Schedulers -> Executor pool -> Output files
+	 * Create and call the chain: Input files -> Drivers/Distributors -> Schedulers -> Executor pool -> Output files
 	 * @param args: scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
 	 * 				HP frequency 
 	 * 				LP frequency 

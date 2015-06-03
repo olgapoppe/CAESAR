@@ -39,11 +39,6 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 				all_queries_all_runs (curr_sec, false, false);
 				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing
 				
-				// Output the current progress every 5 min 
-				if (curr_sec == sec+300) {
-					System.out.println("Scheduler: " + curr_sec);
-					sec += 300;
-				}			 
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/					
 				if (curr_sec == lastSec) {						
 					transaction_number.await();						

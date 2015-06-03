@@ -24,8 +24,8 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int HPquery_frequency;
 	int LPquery_frequency;
 
-	public QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
-							CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, int hpqf, int lpqf) {		
+	public QueryDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, int hpqf, int lpqf) {		
 		super(dp,rs,rq,e,tn,d,xds,lastS,start);
 		HPrunqueues = hprq;
 		HPquery_frequency = hpqf;
@@ -38,59 +38,56 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	 */	
 	public void run() {	
 		
-		/*** Local variables ***/
+		// Local variables
 		double hp_sec = -1;
 		double lp_sec = -1;
-		int number = 0;
 		int hp_count = 0;
 		int lp_count = 0;
 					
-		//while (!shutdown) {
+		// Get the permission to schedule current second
+		while (hp_sec <= lastSec && runqueues.getDistributorProgress(hp_sec)) { 
 			try {				 
-				/*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***/
-				int distr_progr = distributorProgress.get();
-				
-				if (distr_progr > hp_sec) { 
+				/*** HP queries are always processed faster ***/
+				if (hp_count < HPquery_frequency && lp_count < LPquery_frequency && hp_sec > lp_sec) {
 					
-					/*** HP queries are always processed faster ***/
-					if (hp_count < HPquery_frequency && lp_count < LPquery_frequency && hp_sec > lp_sec) {
+					//System.out.println("All queries process " + hp_sec);
+					
+					all_queries_all_runs(hp_sec, false, true);
+					hp_sec++;
+					lp_sec = hp_sec;
+					hp_count++;
+					lp_count++;					
 						
-						hp_sec++;
-						lp_sec = hp_sec;
-						hp_count++;
-						lp_count++;					
-						number = all_queries_all_runs(hp_sec, false, true);						
-						
-					} else {
+				} else {
 					if (hp_count < HPquery_frequency) {
 						
+						//System.out.println("HP queries process " + hp_sec);
+						
+						one_query_all_runs_wrapper(hp_sec, 1, false, false);
 						hp_sec++;
-						hp_count++;					
-						number = one_query_all_runs_wrapper(hp_sec, 1, false, false); 
+						hp_count++;						 
 					}
 					if (hp_count == HPquery_frequency && lp_count == LPquery_frequency) {
 						
 						hp_count = 0;
 						lp_count = 0;
-					}}					
-				} else {
+					}
+				}				
 				/*** If the stream is over, catch up LP queries, wait for acknowledgment of the previous transactions and sleep. ***/					
-					if (hp_sec == lastSec) {
+				if (hp_sec-1 == lastSec) {
 						
-						System.out.println("HP queries are done. LP queries are processed from second " + lp_sec);
+					/*System.out.println("HP queries are done. LP queries are processed from second " + lp_sec);
 						
-						while (lp_sec < lastSec) {
-						
-							lp_sec++;
-							number = one_query_all_runs_wrapper(lp_sec, 2, false, false);
-						}
-						transaction_number.await();						
-						done.countDown();						
-					}					
-					//Thread.sleep(getSleepTime(number));				
-				}
-			} catch (final InterruptedException ex) { ex.printStackTrace(); }
-		//}			
+					while (lp_sec < lastSec) {						
+						lp_sec++;
+						one_query_all_runs_wrapper(lp_sec, 2, false, false);
+					}*/
+					transaction_number.await();						
+					done.countDown();						
+				}				
+			} catch (final InterruptedException ex) { ex.printStackTrace(); }	
+		}
+		System.out.println("Scheduler is done.");
 	}	
 	
 	public Transaction one_query_one_run (double sec, RunID runid, int query, boolean run_priorization, boolean catchup) {

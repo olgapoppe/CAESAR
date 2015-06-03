@@ -220,8 +220,7 @@ public abstract class Scheduler implements Runnable {
 					RunID runid0 = new RunID(pair.xway,0,seg);
 					Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup);
 					if (t0!=null) transactions.add(t0);	
-				}			
-				
+				}				
 				if (pair.dir == 1 || pair.dir == 2 ) { 
 					
 					RunID runid1 = new RunID(pair.xway,1,seg); 

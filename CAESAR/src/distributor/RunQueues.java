@@ -23,11 +23,11 @@ public class RunQueues {
 		
 		distributorProgress.set(d.intValue());
 		
-		// Output the current progress every 5 min
+		/*// Output the current progress every 5 min
 		if (d == sec+300) {
 			System.out.println("Distributor: " + d);
 			sec += 300;
-		}			
+		}*/			
 		notifyAll();
 	}
 

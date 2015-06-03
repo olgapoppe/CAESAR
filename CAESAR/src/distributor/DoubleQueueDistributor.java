@@ -60,12 +60,12 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 				// Append event's distributor time and write it into the run queue
 		 				event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 				
-		 				LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
+		 				/*LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
 		 				if (runtaskqueue == null) {    
 		 					runtaskqueue = new LinkedBlockingQueue<PositionReport>();
 		 					runqueues.contents.put(runid, runtaskqueue);		 				
 		 				}		 				
-		 				runtaskqueue.add(event);	
+		 				runtaskqueue.add(event);*/	
 		 				
 		 				LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);
 		 				if (HPruntaskqueue == null) {    
