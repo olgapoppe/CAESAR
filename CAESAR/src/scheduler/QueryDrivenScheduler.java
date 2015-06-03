@@ -10,6 +10,7 @@ import run.*;
 import transaction.*;
 import event.*;
 import distributor.*;
+import iogenerator.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -24,8 +25,8 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int LPquery_frequency;
 
 	public QueryDrivenScheduler (	AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
-							CountDownLatch tn, CountDownLatch d, int firstR, int lastR, boolean unidir, int lastS, long start, int hpqf, int lpqf) {		
-		super(dp,rs,rq,e,tn,d,firstR,lastR,unidir,lastS,start);
+							CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, int hpqf, int lpqf) {		
+		super(dp,rs,rq,e,tn,d,xds,lastS,start);
 		HPrunqueues = hprq;
 		HPquery_frequency = hpqf;
 		LPquery_frequency = lpqf;
@@ -58,14 +59,14 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 						lp_sec = hp_sec;
 						hp_count++;
 						lp_count++;					
-						number = all_queries_all_runs(hp_sec, false, true);	// 2 waitings						
+						number = all_queries_all_runs(hp_sec, false, true);						
 						
 					} else {
 					if (hp_count < HPquery_frequency) {
 						
 						hp_sec++;
 						hp_count++;					
-						number = one_query_all_runs_wrapper(hp_sec, 1, false, false); // 1 waiting
+						number = one_query_all_runs_wrapper(hp_sec, 1, false, false); 
 					}
 					if (hp_count == HPquery_frequency && lp_count == LPquery_frequency) {
 						

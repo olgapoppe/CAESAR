@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import driver.EventQueue;
 import run.*;
 import event.PositionReport;
 
@@ -28,83 +26,83 @@ public class DoubleQueueDistributor extends EventDistributor {
 	 */	
 	public void run() {	
 		
-		/*Scanner scanner;
+		Scanner scanner;
 		try {
-			*//*** Local variables ***//*
+			// Input file
 			scanner = new Scanner(new File(filename));
-			double curr_min = 0;		
-			Double curr_sec = new Double(-1);
-			int event_count = 0;
-					 			
-		 	while (scanner.hasNextLine()) {
 			
-		 		*//******************************************* Event *******************************************//*
-		 		String line = scanner.nextLine();   
-		 		PositionReport event = PositionReport.parse(line);  
-   			 	
-		 		*//*** Current minute ***//*
-		 		if (event.min > curr_min) {   			 		
-		 			System.out.println("Minute: " + event.min);
-		 			curr_min = event.min;  			 		   			 		
-		 		}   	
+			// First event
+			double curr_app_sec = 0;
+			double curr_sec = 0;
+						
+			// First event
+			String line = scanner.nextLine();
+			PositionReport event = PositionReport.parse(line);	
+					 			
+			while (curr_app_sec <= lastSec) {
+			
+				// Put events with time stamp curr_app_sec into the run queue 		
+		 		while (event != null && event.sec == curr_app_sec) {
 		 		
-		 		if (event.type == 0) {
+		 			if (event.correctPositionReport()) {
 		 			
-		 			*//******************************************* Run *******************************************//*
-		 			RunID runid = new RunID (event.xway, event.dir, event.seg); 
-		 			Run run;        		
-		 			if (runs.containsKey(runid)) {
-		 				run = runs.get(runid);             			          			
-		 			} else {
-		 				AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-		 				run = new Run(runid, event.sec, event.min, firstHPseg);
-		 				runs.put(runid, run);
-		 			}  			 	
-		 			*//************************************* Run task queues *************************************//*
-		 			LinkedBlockingQueue<PositionReport> runtaskqueue = runtaskqueues.get(runid);
-		 			if (runtaskqueue == null) {    
-		 				runtaskqueue = new LinkedBlockingQueue<PositionReport>();
-		 				runtaskqueues.put(runid, runtaskqueue);		 				
-		 			}
-		 			runtaskqueue.add(event);	 	
-		 			LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPruntaskqueues.get(runid);
-		 			if (HPruntaskqueue == null) {    
-		 				HPruntaskqueue = new LinkedBlockingQueue<PositionReport>();
-		 				HPruntaskqueues.put(runid, HPruntaskqueue);		 				
-		 			}
-		 			HPruntaskqueue.add(event);
-		 			
-		 			*//*** Max number of stored events per run ***//*
-		 			int size = runtaskqueue.size() + HPruntaskqueue.size();
-		 			if (run.output.maxNumberOfStoredEvents < size) run.output.maxNumberOfStoredEvents = size;	 
-		 			
-		 			if (event.sec > curr_sec) {			 				
-		 						 				
-		 			*//********************************** Distributer progress **********************************//*
-		 				distributorProgress.set(curr_sec.intValue());
-		 							 					
-		 				*//*** Min and max stream rate ***//*
-		 				if (curr_sec >= 0) {
-		 					if (min_stream_rate > event_count) min_stream_rate = event_count;
-		 					if (max_stream_rate < event_count) max_stream_rate = event_count;
-		 				}		 				
-		 				curr_sec = event.sec;
-		 				event_count = 1;
+		 				/******************************************* Run *******************************************/
+		 				RunID runid = new RunID (event.xway, event.dir, event.seg); 
+		 				Run run;        		
+		 				if (runs.containsKey(runid)) {
+		 					run = runs.get(runid);             			          			
+		 				} else {
+		 					AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
+		 					run = new Run(runid, event.sec, event.min, firstHPseg);
+		 					runs.put(runid, run);
+		 				}  			 	
+		 				/*************************************** Run queues ****************************************/
+		 				// Append event's distributor time and write it into the run queue
+		 				event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 				
-		 			} else { 
-		 				event_count++;
-		 			}	 			
-		 	}}
-		 	*//************************************** Last second **************************************//*
-		 	distributorProgress.set(curr_sec.intValue());			
-							
-			*//*** Min and max stream rate ***//*
-			if (min_stream_rate > event_count) min_stream_rate = event_count;
-			if (max_stream_rate < event_count) max_stream_rate = event_count;
-				
-		 	*//*** Close scanner ***//*		
-			scanner.close();			
+		 				LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
+		 				if (runtaskqueue == null) {    
+		 					runtaskqueue = new LinkedBlockingQueue<PositionReport>();
+		 					runqueues.contents.put(runid, runtaskqueue);		 				
+		 				}		 				
+		 				runtaskqueue.add(event);	
+		 				
+		 				LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);
+		 				if (HPruntaskqueue == null) {    
+		 					HPruntaskqueue = new LinkedBlockingQueue<PositionReport>();
+		 					HPrunqueues.contents.put(runid, HPruntaskqueue);		 				
+		 				}
+		 				HPruntaskqueue.add(event);
+		 			}
+		 			// Reset event
+		 			if (scanner.hasNextLine()) {		 				
+		 				line = scanner.nextLine();   
+		 				event = PositionReport.parse(line);		 				
+		 			} else {
+		 				event = null;		 				
+		 			}
+		 		}
+		 		// Update distributer progress
+		 		runqueues.setDistributorProgress(curr_app_sec);		 					 				
+		 						 				
+		 		// Sleep if curr_sec is smaller than curr_app_sec
+		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 		
+		 		if (curr_sec < curr_app_sec && curr_app_sec < lastSec) {
+		 			
+		 			int sleep_time = new Double(curr_app_sec - curr_sec).intValue();
+		 			
+		 			//System.out.println("Driver sleeps " + sleep_time + " seconds.");
+		 			
+		 			Thread.sleep(sleep_time * 1000);
+		 		}
+		 		curr_app_sec++;
+			}			
+		 	/*** Close scanner ***/		
+			scanner.close();
+			System.out.println("Distributor is done.");
 		
-		} catch (FileNotFoundException e1) { e1.printStackTrace(); } 	*/					 
+		} catch (InterruptedException e) { e.printStackTrace(); }
+		  catch (FileNotFoundException e1) { e1.printStackTrace(); } 						 
 	}
 }

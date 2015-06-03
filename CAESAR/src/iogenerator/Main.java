@@ -14,8 +14,10 @@ public class Main {
 	 * @param args: scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
 	 * 				HP frequency 
 	 * 				LP frequency 
-	 * 				last second
-	 * 				input file names 				
+	 * 				last second : 10784
+	 * 				path : src/input/ or ../../input/
+	 * 				extension : .txt or .dat
+	 * 				input file names in xway;dir-xway;dir-xway;dir format				
 	 */
 	public static void main (String[] args) { 
 		
@@ -34,32 +36,36 @@ public class Main {
 		int LP_frequency = Integer.parseInt(args[2]);		
 		
 		// Input file determined parameters
-		int lastSec = Integer.parseInt(args[3]); // 10784
+		int lastSec = Integer.parseInt(args[3]);
+		String path = args[4];
+		String extension = args[5];
 		
-		//int numberOfInputFiles = args.length - 4;
+		//int numberOfInputFiles = args.length - 6;
 		//int numberOfHelperThreads = numberOfInputFiles * 2;
 		//int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
-		ExecutorService executor = Executors.newFixedThreadPool(2); //numberOfExeThreads);
-		
-		//String path = "src/input/"; // local path
-		//String extension = ".txt";
-		String path = "../../input/"; // remote path
-		String extension = ".dat";
+		ExecutorService executor = Executors.newFixedThreadPool(2); //numberOfExeThreads);	
 		
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		for (int i=4; i<args.length; i++) {
+		for (int i=6; i<args.length; i++) {
 			
 			/*** Input file ***/	
 			String filename = path + args[i] + extension;
 			
-			/*** Local variables ***/
-			String[] limits = args[i].split("-");
-			int firstXway = Integer.parseInt(limits[0]);
-			int lastXway = Integer.parseInt(limits[1]);
-			boolean lastXwayUnidir = limits[1].contains(".");
+			/*** Highways and directions ***/
+			String[] inputs = args[i].split("-");
+			ArrayList<XwayDirPair> xways_and_dirs = new ArrayList<XwayDirPair> ();
 			
+			for (String input : inputs) {
+				
+				String[] components = input.split(";");			
+				int xway = Integer.parseInt(components[0]);
+				int dir = Integer.parseInt(components[1]);
+				XwayDirPair xd = new XwayDirPair(xway,dir);
+				xways_and_dirs.add(xd);				
+				System.out.println(xd.toString());
+			}			
 			/*** Define shared objects ***/
 			HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
 			runtables.add(runs);
@@ -68,7 +74,7 @@ public class Main {
 			
 			/*** Start driver, distributer and scheduler ***/
 			EventPreprocessor preprocessor = new EventPreprocessor (filename, scheduling_strategy, runs, executor, 
-					done, firstXway, lastXway, lastXwayUnidir, lastSec, HP_frequency, LP_frequency);
+					done, xways_and_dirs, lastSec, HP_frequency, LP_frequency);
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
 			ppThread.start();			

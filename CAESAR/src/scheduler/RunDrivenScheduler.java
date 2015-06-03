@@ -1,5 +1,6 @@
 package scheduler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import distributor.*;
 import event.*;
 import run.*;
+import iogenerator.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -23,9 +25,9 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 	int LPrun_frequency;
 	
 	public RunDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-						CountDownLatch tn, CountDownLatch d, int firstR, int lastR, boolean unidir, int lastS, long start, 
+						CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, 
 						AtomicInteger x0, AtomicInteger x1, int hprf, int lprf) {		
-		super(dp,rs,rq,e,tn,d,firstR,lastR,unidir,lastS,start);
+		super(dp,rs,rq,e,tn,d,xds,lastS,start);
 		xway0dir0HPrunsFromSeg = x0;
 		xway0dir1HPrunsFromSeg = x1;
 		HPrun_frequency = hprf;

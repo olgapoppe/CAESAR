@@ -1,5 +1,6 @@
 package iogenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -16,15 +17,13 @@ public class EventPreprocessor implements Runnable {
 	ExecutorService executor;
 	
 	CountDownLatch done;
-	int firstXway;
-	int lastXway;
-	boolean lastXwayUnidir;
+	ArrayList<XwayDirPair> xways_and_dirs;
 	int lastSec;
 	int HP_frequency;
 	int LP_frequency;
 	
 	EventPreprocessor(String f, int ss, HashMap<RunID,Run> rs, ExecutorService e, 
-			CountDownLatch d, int firstR, int lastR, boolean lXU, int lS, int HP_freq, int LP_freq) {
+			CountDownLatch d, ArrayList<XwayDirPair> xds, int lS, int HP_freq, int LP_freq) {
 		
 		filename = f;
 		scheduling_strategy = ss; 
@@ -32,9 +31,7 @@ public class EventPreprocessor implements Runnable {
 		executor = e;
 		
 		done = d;
-		firstXway = firstR;
-		lastXway = lastR;
-		lastXwayUnidir = lXU;
+		xways_and_dirs = xds;
 		lastSec = lS;
 		HP_frequency = HP_freq;
 		LP_frequency = LP_freq;		
@@ -68,12 +65,12 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
 				scheduler = new TimeDrivenScheduler(distributorProgress, runs, runqueues, executor, 
-												transaction_number, done, firstXway, lastXway, lastXwayUnidir, lastSec, startOfSimulation);
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation);
 			} else {			
 			
 				System.out.println("RUN DRIVEN SCHEDULER.");
 				scheduler = new RunDrivenScheduler(	distributorProgress, runs, runqueues, executor, 
-												transaction_number, done, firstXway, lastXway, lastXwayUnidir, lastSec, startOfSimulation, 
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation, 
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
 			}
 		} else {
@@ -85,13 +82,13 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("QUERY DRIVEN SCHEDULER.");
 				scheduler = new QueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, firstXway, lastXway, lastXwayUnidir, lastSec, startOfSimulation,
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
 												HP_frequency, LP_frequency);
 			} else {
 			
 				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
 				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, firstXway, lastXway, lastXwayUnidir, lastSec, startOfSimulation,
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
 		}}
 		Thread prodThread = new Thread(distributor);

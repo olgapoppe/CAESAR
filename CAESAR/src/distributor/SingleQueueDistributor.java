@@ -53,13 +53,14 @@ public class SingleQueueDistributor extends EventDistributor {
 							runs.put(runid, run);
 						}  			 	
 						/*************************************** Run queues ****************************************/
+						// Append event's distributor time and write it into the run queue
+						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+						
 						LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
 						if (runtaskqueue == null) {    
 							runtaskqueue = new LinkedBlockingQueue<PositionReport>();
 							runqueues.contents.put(runid, runtaskqueue);		 				
 						}
-						// Append event's distributor time and write it into run queue
-						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						runtaskqueue.add(event);	 	
 					}
 		 			// Reset event

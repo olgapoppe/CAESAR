@@ -1,11 +1,13 @@
 package scheduler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import distributor.*;
+import iogenerator.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -17,8 +19,8 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	int sec;
 			
 	public TimeDrivenScheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, int firstR, int lastR, boolean unidir, int lastS, long start) {		
-		super(dp,rs,rq,e,tn,d,firstR,lastR,unidir,lastS,start);
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {		
+		super(dp,rs,rq,e,tn,d,xds,lastS,start);
 		sec = 0;
 	}
 	
