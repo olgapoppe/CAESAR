@@ -72,10 +72,11 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			}
 		 		}			
 		 		// Update distributer progress and save it
-		 		runqueues.setDistributorProgress(curr_app_sec);		 	
-		 			 		
 		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
-		 		distributorProgressPerSec.put(curr_app_sec, curr_sec);
+		 		double value = curr_app_sec > curr_sec ? curr_app_sec : curr_sec;
+		 		distributorProgressPerSec.put(curr_app_sec, value);
+		 		
+		 		runqueues.setDistributorProgress(curr_app_sec);
 		 		
 		 		// Sleep if curr_sec is smaller than curr_app_sec
 		 		if (curr_sec < curr_app_sec && curr_app_sec < lastSec) {
