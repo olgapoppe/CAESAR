@@ -19,14 +19,17 @@ public abstract class Transaction implements Runnable {
 		
 	HashMap<RunID,Run> runs;
 	long startOfSimulation;
+	HashMap<Double,Double> distributorProgressPerSec;
+	
 	public CountDownLatch transaction_number;
 			
-	public Transaction (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start) {
+	public Transaction (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Double> distrProgrPerSec) {
 		
 		run = r;	
 		events = eventList;
 		
 		runs = rs;
-		startOfSimulation = start;				
+		startOfSimulation = start;		
+		distributorProgressPerSec = distrProgrPerSec;
 	}	
 }

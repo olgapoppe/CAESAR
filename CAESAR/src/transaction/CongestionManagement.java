@@ -11,8 +11,8 @@ public class CongestionManagement extends Transaction {
 	
 	AtomicBoolean tollNotificationsFailed;
 	
-	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicBoolean tnf) {
-		super(r,eventList,rs,start);
+	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicBoolean tnf, HashMap<Double,Double> distrProgrPerSec) {
+		super(r,eventList,rs,start,distrProgrPerSec);
 		tollNotificationsFailed = tnf;
 	}
 	
@@ -36,7 +36,8 @@ public class CongestionManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run and remove old data
-			run.congestionManagement(event, startOfSimulation, segWithAccAhead, tollNotificationsFailed); 	
+			double distrTimeStamp = distributorProgressPerSec.get(event.sec);
+			run.congestionManagement(event, startOfSimulation, segWithAccAhead, tollNotificationsFailed, distrTimeStamp); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

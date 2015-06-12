@@ -19,9 +19,9 @@ public abstract class Event {
 		vid = v;
 	}
 	
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, double distrTimeStamp, String s) {
 		
-		int diff = new Double(emit).intValue() - new Double(p.sec).intValue();
+		int diff = new Double(emit).intValue() - new Double(distrTimeStamp).intValue();
 		
 		if (!failed.get() && diff > 5) {
 			

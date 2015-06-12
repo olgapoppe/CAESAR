@@ -2,8 +2,6 @@ package distributor;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import driver.EventQueue;
 import run.*;
 
 /**
@@ -14,6 +12,8 @@ import run.*;
 public abstract class EventDistributor implements Runnable {
 	
 	AtomicInteger distributorProgress;
+	HashMap<Double,Double> distributorProgressPerSec;
+	
 	String filename;
 	HashMap<RunID,Run> runs;
 	final RunQueues runqueues;
@@ -23,9 +23,11 @@ public abstract class EventDistributor implements Runnable {
 	int lastSec;
 	long startOfSimulation;
 		
-	public EventDistributor (AtomicInteger dp, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
+	public EventDistributor (AtomicInteger dp, HashMap<Double,Double> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
 		
 		distributorProgress = dp;
+		distributorProgressPerSec = distrProgrPerSec;
+		
 		filename = f;
 		runs = rs;
 		runqueues = rq;	

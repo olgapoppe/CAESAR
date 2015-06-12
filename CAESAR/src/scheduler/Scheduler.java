@@ -22,6 +22,8 @@ import distributor.*;
 public abstract class Scheduler implements Runnable {
 	
 	AtomicInteger distributorProgress;
+	HashMap<Double,Double> distributorProgressPerSec;
+	
 	HashMap<RunID,Run> runs;
 	public final RunQueues runqueues;		
 	ExecutorService executor;
@@ -35,10 +37,12 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	Scheduler (AtomicInteger dp, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
+	Scheduler (AtomicInteger dp, HashMap<Double,Double> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {
 		
 		distributorProgress = dp;
+		distributorProgressPerSec = distrProgrPerSec;
+		
 		runs = rs;
 		runqueues = rq;			
 		
@@ -356,7 +360,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed);											
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);											
 				}}
 				
 				/*** Congestion management ***/
@@ -381,7 +385,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed);					
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);					
 				}}
 		}}
 		return null;

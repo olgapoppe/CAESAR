@@ -12,13 +12,13 @@ public class AccidentWarning extends Event {
 	double emit;
 	double seg;
 		
-	public AccidentWarning (PositionReport p, double s, long startOfSimulation, AtomicBoolean awf) {
+	public AccidentWarning (PositionReport p, double s, long startOfSimulation, AtomicBoolean awf, double distrTimeStamp) {
 		
 		super(1,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
 		seg = s;
 				
-		printError (p, emit, awf, "ACCIDENT WARNINGS");			
+		printError (p, emit, awf, distrTimeStamp, "ACCIDENT WARNINGS");			
 	}	
 
 	/** 

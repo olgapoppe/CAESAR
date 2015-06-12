@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import event.*;
 
-public class SingleQueueDistributor extends EventDistributor {
+public class SingleQueueDistributor extends EventDistributor {	
 		
-	public SingleQueueDistributor (AtomicInteger dp, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
-		super(dp, f, rs, rq, x1, x2, last, start);
+	public SingleQueueDistributor (AtomicInteger dp, HashMap<Double,Double> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
+		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start);		 
 	}
 
 	/** 
@@ -71,12 +71,13 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				event = null;		 				
 		 			}
 		 		}			
-		 		// Update distributer progress
-		 		runqueues.setDistributorProgress(curr_app_sec);		 		
+		 		// Update distributer progress and save it
+		 		runqueues.setDistributorProgress(curr_app_sec);		 	
+		 			 		
+		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 		distributorProgressPerSec.put(curr_app_sec, curr_sec);
 		 		
 		 		// Sleep if curr_sec is smaller than curr_app_sec
-		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
-		 		
 		 		if (curr_sec < curr_app_sec && curr_app_sec < lastSec) {
 		 			
 		 			int sleep_time = new Double(curr_app_sec - curr_sec).intValue();
