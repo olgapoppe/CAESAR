@@ -17,7 +17,6 @@ public class InputFileGenerator {
 	 * Generate input files
 	 * @param args: action: 1 for clean file, 2 for merge files, 3 for select tuples with direction, 4 for copy n tuples
 	 * 				path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
-	 * 				extension : .txt or .dat
 	 * 				if clean file: input file, output file, xway
 	 * 				if merge files: first input file, second input file, output file
 	 * 				if select tuples: input file, output file, direction
@@ -26,46 +25,45 @@ public class InputFileGenerator {
 	public static void main (String[] args) {
 		
 		/*** Validate the input parameter ***/
-		if (args.length != 6) {
-			System.out.println("6 input parameters are expected.");
+		if (args.length != 5) {
+			System.out.println("5 input parameters are expected.");
 			return;
 		}	
 		
 		/*** Instantiate local variables ***/
 		int action = Integer.parseInt(args[0]);
 		String path = args[1];
-		String extension = args[2];
-		
+				
 		/*** Clean file ***/		
 		if (action == 1) {
 			
-			String inputfile = path + args[3] + extension;
-			String outputfile = path + args[4] + extension;
-			int xway = Integer.parseInt(args[5]);
+			String inputfile = path + args[2];
+			String outputfile = path + args[3];
+			int xway = Integer.parseInt(args[4]);
 			cleanFile(inputfile,outputfile,xway);			
 		} 
 		/*** Merge file ***/
 		if (action == 2) {
 			
-			String inputfile1 = path + args[3] + extension;
-			String inputfile2 = path + args[4] + extension;
-			String outputfile = path + args[5] + extension;
+			String inputfile1 = path + args[2];
+			String inputfile2 = path + args[3];
+			String outputfile = path + args[4];
 			mergeFiles(inputfile1,inputfile2,outputfile);
 		}	
 		/*** Select tuples with direction dir ***/
 		if (action == 3) {
 			
-			String inputfile = path + args[3] + extension;
-			String outputfile = path + args[4] + extension;
-			int dir = Integer.parseInt(args[5]);
+			String inputfile = path + args[2];
+			String outputfile = path + args[3];
+			int dir = Integer.parseInt(args[4]);
 			getTuples(1,inputfile,outputfile,dir);
 		}	
 		/*** Copy n tuples ***/
 		if (action == 4) {
 			
-			String inputfile = path + args[3] + extension;
-			String outputfile = path + args[4] + extension;
-			int n = Integer.parseInt(args[5]);
+			String inputfile = path + args[2];
+			String outputfile = path + args[3];
+			int n = Integer.parseInt(args[4]);
 			getTuples(2,inputfile,outputfile,n);
 		}	
 	}
