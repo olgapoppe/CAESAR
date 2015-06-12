@@ -80,7 +80,7 @@ public abstract class Scheduler implements Runnable {
 			long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
 			
 			if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
-				System.out.println(sec + ": Scheduler waiting time for executor is " + durationOfFirstWaiting + " and " + durationOfSecondWaiting);
+				System.out.println(sec + ": Scheduler waited for executor " + durationOfFirstWaiting + " and " + durationOfSecondWaiting + "ms");
 			
 			transaction_number = new CountDownLatch(number);				
 			for (Transaction t : transactions2) { 

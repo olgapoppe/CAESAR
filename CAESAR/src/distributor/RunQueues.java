@@ -32,15 +32,16 @@ public class RunQueues {
 		notifyAll();
 	}
 
-	public synchronized boolean getDistributorProgress (double sec, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {	
+	public synchronized boolean getDistributorProgress (double sec, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {	
 		
 		try {
 			while (distributorProgress.get() < sec) {
 				long startOfWaiting = System.currentTimeMillis();
+				long startOfScheduler = startOfWaiting - startOfSimulation;
 				wait();
 				long durationOfWaiting = System.currentTimeMillis() - startOfWaiting;
 				if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
-					System.out.println(sec + ": Scheduler waiting time for distributor is " + durationOfWaiting);
+					System.out.println(sec + ": Scheduler started at " + startOfScheduler + " and waited for distributor " + durationOfWaiting + "ms");
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			

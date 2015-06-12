@@ -33,7 +33,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		double curr_sec = -1;
 		
 		// Get the permission to schedule current second
-		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec,accidentWarningsFailed,tollNotificationsFailed)) {  
+		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) {  
 			try {	
 				// Schedule the current second
 				all_queries_all_runs (curr_sec, false, false);
