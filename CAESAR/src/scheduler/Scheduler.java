@@ -61,7 +61,11 @@ public abstract class Scheduler implements Runnable {
 		try {		
 			// Schedule HP query of all runs							
 			ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup);
-			transaction_number.await();
+			
+			long startOfFirstWaiting = System.currentTimeMillis();					
+			transaction_number.await();			
+			long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
+			
 			transaction_number = new CountDownLatch(transactions1.size());			
 			for (Transaction t : transactions1) { 
 				t.transaction_number = transaction_number;
@@ -70,7 +74,14 @@ public abstract class Scheduler implements Runnable {
 			// Schedule LP query of all runs
 			ArrayList<Transaction> transactions2 = one_query_all_runs(sec, 2, run_priorization, catchup);
 			number = transactions2.size();
-			transaction_number.await();
+			
+			long startOfSecondWaiting = System.currentTimeMillis();			
+			transaction_number.await();			
+			long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
+			
+			if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
+				System.out.println(sec + ": Scheduler waiting time for executor is " + durationOfFirstWaiting + " and " + durationOfSecondWaiting);
+			
 			transaction_number = new CountDownLatch(number);				
 			for (Transaction t : transactions2) { 
 				t.transaction_number = transaction_number;

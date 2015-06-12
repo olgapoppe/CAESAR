@@ -45,7 +45,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		int lp_count = 0;
 					
 		// Get the permission to schedule current second
-		while (hp_sec <= lastSec && runqueues.getDistributorProgress(hp_sec)) { 
+		while (hp_sec <= lastSec && runqueues.getDistributorProgress(hp_sec,accidentWarningsFailed,tollNotificationsFailed)) { 
 			try {				 
 				/*** HP queries are always processed faster ***/
 				if (hp_count < HPquery_frequency && lp_count < LPquery_frequency && hp_sec > lp_sec) {

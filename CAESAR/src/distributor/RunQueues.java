@@ -2,6 +2,7 @@ package distributor;
 
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.RunID;
 import event.PositionReport;
@@ -31,11 +32,15 @@ public class RunQueues {
 		notifyAll();
 	}
 
-	public synchronized boolean getDistributorProgress (double sec) {	
+	public synchronized boolean getDistributorProgress (double sec, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {	
 		
 		try {
 			while (distributorProgress.get() < sec) {
+				long startOfWaiting = System.currentTimeMillis();
 				wait();
+				long durationOfWaiting = System.currentTimeMillis() - startOfWaiting;
+				if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
+					System.out.println(sec + ": Scheduler waiting time for distributor is " + durationOfWaiting);
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			
