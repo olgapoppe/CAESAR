@@ -25,7 +25,7 @@ public abstract class Event {
 		
 		if (!failed.get() && diff > 5) {
 			
-			System.err.println(s + " FAILED!!! " + p.timesToString() + " triggered " + this.toString());
+			System.err.println(s + " FAILED!!! " + p.timesToString() + " triggered " + this.toString() + ". Distibuter time stamp is " + distrTimeStamp);
 			failed.compareAndSet(false, true);
 		}
 	}
