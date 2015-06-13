@@ -66,9 +66,9 @@ public abstract class Scheduler implements Runnable {
 			// Schedule HP query of all runs							
 			ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup);
 			
-			long startOfFirstWaiting = System.currentTimeMillis();					
+			//long startOfFirstWaiting = System.currentTimeMillis();					
 			transaction_number.await();			
-			long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
+			//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
 			
 			transaction_number = new CountDownLatch(transactions1.size());			
 			for (Transaction t : transactions1) { 
@@ -79,12 +79,12 @@ public abstract class Scheduler implements Runnable {
 			ArrayList<Transaction> transactions2 = one_query_all_runs(sec, 2, run_priorization, catchup);
 			number = transactions2.size();
 			
-			long startOfSecondWaiting = System.currentTimeMillis();			
+			//long startOfSecondWaiting = System.currentTimeMillis();			
 			transaction_number.await();			
-			long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
+			//long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
 			
-			if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
-				System.out.println(sec + ": Scheduler waited for executor " + durationOfFirstWaiting + " and " + durationOfSecondWaiting + "ms");
+			//if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
+			//	System.out.println(sec + ": Scheduler waited for executor " + durationOfFirstWaiting + " and " + durationOfSecondWaiting + "ms");
 			
 			transaction_number = new CountDownLatch(number);				
 			for (Transaction t : transactions2) { 

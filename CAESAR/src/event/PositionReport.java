@@ -129,8 +129,8 @@ public class PositionReport extends Event {
 	public String timesToString() {
 		return 	"application time: " + sec +
 				//"   driver time: " + driverTime +
-				"   distributor time: " + distributorTime + 
-				"   scheduler time: " + schedulerTime; 
+				" distributor time: " + distributorTime + 
+				" scheduler time: " + schedulerTime + "\n"; 
 				//"   executor time: " + executorTime;
 	}	
 }

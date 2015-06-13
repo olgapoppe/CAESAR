@@ -36,12 +36,12 @@ public class RunQueues {
 		
 		try {
 			while (distributorProgress.get() < sec) {
-				long startOfWaiting = System.currentTimeMillis();
-				long startOfScheduler = startOfWaiting - startOfSimulation;
+				//long startOfWaiting = System.currentTimeMillis();
+				//long startOfScheduler = startOfWaiting - startOfSimulation;
 				wait();
-				long durationOfWaiting = System.currentTimeMillis() - startOfWaiting;
-				if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
-					System.out.println(sec + ": Scheduler started at " + startOfScheduler + " and waited for distributor " + durationOfWaiting + "ms");
+				//long durationOfWaiting = System.currentTimeMillis() - startOfWaiting;
+				//if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
+					//System.out.println(sec + ": Scheduler started at " + startOfScheduler + " and waited for distributor " + durationOfWaiting + "ms");
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			
