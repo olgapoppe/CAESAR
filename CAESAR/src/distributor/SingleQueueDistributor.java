@@ -34,12 +34,12 @@ public class SingleQueueDistributor extends EventDistributor {
 			int min = 6;
 			int max = 14;
 			
-			double batch_limit = 1; //random.nextInt(max - min + 1) + min;
+			double batch_limit = random.nextInt(max - min + 1) + min;
  			if (batch_limit > lastSec) batch_limit = lastSec;
  			
  			long curr_ms = System.currentTimeMillis() - startOfSimulation;
  		
- 			// Sleep if curr_ms is smaller than batch_limit ms		 		
+ 			/*** Sleep if curr_ms is smaller than batch_limit ms ***/		 		
  			if (curr_ms < batch_limit*1000) {
  			
  				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
@@ -58,7 +58,18 @@ public class SingleQueueDistributor extends EventDistributor {
 				// Put events within the current batch into the run queue 		
 		 		while (event != null && event.sec <= batch_limit) {
 		 			
-		 			if (event.correctPositionReport()) {	 				
+		 			if (event.correctPositionReport()) {
+		 				
+		 				/*** Update distributer progress ***/
+			 			if (event.sec > prev_sec) {
+			 				
+			 				curr_ms = System.currentTimeMillis() - startOfSimulation;
+			 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
+			 				runqueues.setDistributorProgress(prev_sec);		 				
+			 				//System.out.println("Distr progr:" + prev_sec + " Distr ms: " + curr_ms);
+			 				
+			 				prev_sec = event.sec;
+			 			}
 						
 						/*** Create run if it does not exist yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
@@ -82,18 +93,8 @@ public class SingleQueueDistributor extends EventDistributor {
 						runtaskqueue.add(event);
 						
 						//System.out.println(event.toString());
-					}		 			
-		 			// Update distributer progress
-		 			if (event.sec > prev_sec) {
-		 				
-		 				curr_ms = System.currentTimeMillis() - startOfSimulation;
-		 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
-		 				runqueues.setDistributorProgress(prev_sec);		 				
-		 				//System.out.println("Distr progr:" + prev_sec + " Distr ms: " + curr_ms);
-		 				
-		 				prev_sec = event.sec;
-		 			}		 		
-			 		// Reset event
+					}		 					 		
+			 		/*** Reset event ***/
 		 			if (scanner.hasNextLine()) {		 				
 		 				line = scanner.nextLine();   
 		 				event = PositionReport.parse(line);		 				
@@ -101,7 +102,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				event = null;		 				
 		 			}
 		 		}
-		 		// Update distributer progress
+		 		/*** Update distributer progress ***/
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
  				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
  				runqueues.setDistributorProgress(batch_limit); 				
@@ -111,13 +112,13 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			break;
 		 		} else {
 		 		
-		 			// Rest prev_sec and batch_limit
+		 			/*** Rest prev_sec and batch_limit ***/
 		 			prev_sec = event.sec;
 		 			
-		 			batch_limit += 1; //random.nextInt(max - min + 1) + min;		 			
+		 			batch_limit += random.nextInt(max - min + 1) + min;		 			
 		 			if (batch_limit > lastSec) batch_limit = lastSec;
 		 		
-		 			// Sleep if curr_ms is smaller than batch_limit ms		 		
+		 			/*** Sleep if curr_ms is smaller than batch_limit ms ***/		 		
 		 			if (curr_ms < batch_limit*1000) {
 		 			
 		 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
