@@ -105,9 +105,7 @@ public class SingleQueueDistributor extends EventDistributor {
  				runqueues.setDistributorProgress(batch_limit); 				
  				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);		
  				
- 				prev_sec++;
- 				 		
-		 		if (batch_limit == lastSec) {
+ 				if (batch_limit == lastSec) {
 		 			break;
 		 		} else {
 		 			
