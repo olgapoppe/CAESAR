@@ -11,7 +11,7 @@ import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {	
 		
-	public SingleQueueDistributor (AtomicInteger dp, HashMap<Double,Double> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
+	public SingleQueueDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
 		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start);		 
 	}
 
@@ -29,7 +29,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			
 			// Time
 			double curr_app_sec = 0;
-			double curr_sec = 0;
+			long curr_ms;
 																
 			// First event
 			String line = scanner.nextLine();
@@ -72,20 +72,20 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			}
 		 		}			
 		 		// Update distributer progress
-		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;
-		 		double value = (curr_app_sec > curr_sec) ? curr_app_sec : curr_sec;
-		 		distributorProgressPerSec.put(curr_app_sec, value);
-		 		
+		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
+		 		distributorProgressPerSec.put(curr_app_sec, curr_ms);		 		
 		 		runqueues.setDistributorProgress(curr_app_sec);
 		 		
+		 		//System.out.println("Curr app sec:" + curr_app_sec + " Curr ms: " + curr_ms);
+		 		
 		 		// Sleep if curr_sec is smaller than curr_app_sec
-		 		if (curr_sec < curr_app_sec && curr_app_sec < lastSec) {
+		 		if (curr_ms < (curr_app_sec+1)*1000 && curr_app_sec < lastSec) {
 		 			
-		 			int sleep_time = new Double(curr_app_sec - curr_sec).intValue();
+		 			int sleep_time = new Double((curr_app_sec+1)*1000 - curr_ms).intValue();
 		 			
-		 			//System.out.println("Driver sleeps " + sleep_time + " seconds.");
+		 			//System.out.println("Driver sleeps " + sleep_time + " ms");
 		 			
-		 			Thread.sleep(sleep_time * 1000);
+		 			Thread.sleep(sleep_time);
 		 		}
 		 		curr_app_sec++;
 			}			

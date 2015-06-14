@@ -41,7 +41,7 @@ public class EventPreprocessor implements Runnable {
 		
 		/*** Create shared data structures ***/
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
-		HashMap<Double,Double> distributorProgressPerSec = new HashMap<Double,Double>();
+		HashMap<Double,Long> distributorProgressPerSec = new HashMap<Double,Long>();
 		
 		RunQueues runqueues = new RunQueues(distributorProgress);
 		RunQueues HPrunqueues = new RunQueues(distributorProgress);	

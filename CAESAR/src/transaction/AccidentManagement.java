@@ -12,7 +12,7 @@ public class AccidentManagement extends Transaction {
 	boolean run_priorization;
 	AtomicBoolean accidentWarningsFailed;
 	
-	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, AtomicBoolean awf, HashMap<Double,Double> distrProgrPerSec) {
+	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, AtomicBoolean awf, HashMap<Double,Long> distrProgrPerSec) {
 		super(r,eventList,rs,start,distrProgrPerSec);
 		run_priorization = rp;
 		accidentWarningsFailed = awf;

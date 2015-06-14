@@ -22,7 +22,7 @@ import distributor.*;
 public abstract class Scheduler implements Runnable {
 	
 	AtomicInteger distributorProgress;
-	HashMap<Double,Double> distributorProgressPerSec;
+	HashMap<Double,Long> distributorProgressPerSec;
 	
 	HashMap<RunID,Run> runs;
 	public final RunQueues runqueues;		
@@ -37,7 +37,7 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	Scheduler (AtomicInteger dp, HashMap<Double,Double> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
+	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {
 		
 		distributorProgress = dp;

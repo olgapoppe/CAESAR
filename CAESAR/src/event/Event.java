@@ -21,7 +21,7 @@ public abstract class Event {
 	
 	public void printError (PositionReport p, double emit, AtomicBoolean failed, double distrTimeStamp, String s) {
 		
-		int diff = new Double(emit).intValue() - new Double(distrTimeStamp).intValue();
+		int diff = new Double(emit).intValue() - new Double(distrTimeStamp/1000).intValue();
 		
 		if (!failed.get() && diff > 5) {
 			
