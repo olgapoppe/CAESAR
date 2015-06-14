@@ -29,7 +29,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			scanner = new Scanner(new File(filename));
 			
 			// Time
-			double prev_sec = 0;
+			double prev_sec = -1;
 			Random random = new Random();
 			int min = 6;
 			int max = 14;
@@ -60,14 +60,13 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			
 		 			if (event.correctPositionReport()) {
 						
-						/******************************************* Run *******************************************/
+						/************************************** Run creation ***************************************/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
-						Run run;        		
-						if (runs.containsKey(runid)) {
-							run = runs.get(runid);             			          			
-						} else {
+						      		
+						if (!runs.containsKey(runid)) {
+							
 							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-							run = new Run(runid, event.sec, event.min, firstHPseg);
+							Run run = new Run(runid, event.sec, event.min, firstHPseg);
 							runs.put(runid, run);
 						}  			 	
 						/*************************************** Run queues ****************************************/

@@ -27,7 +27,7 @@ public class CongestionManagement extends Transaction {
 			
 			if (event == null) System.out.println("NULL EVENT!!!");
 			if (run == null) System.out.println("NULL RUN!!!");			
-			if (run.vehicles.get(event.vid)==null) System.out.println("NO SUCH VEHICLE!!!");
+			if (run.vehicles.get(event.vid) == null) System.out.println("NO SUCH VEHICLE!!!");
 		
 			// READ: If a new vehicle on a travel lane arrives, lookup accidents ahead
 			if (run.vehicles.get(event.vid).appearance_sec == event.sec && event.lane < 4) {
