@@ -42,10 +42,8 @@ public class SingleQueueDistributor extends EventDistributor {
  			/*** Sleep if curr_ms is smaller than batch_limit ms ***/		 		
  			if (curr_ms < batch_limit*1000) {
  			
- 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
- 			
- 				//System.out.println("Driver sleeps " + sleep_time + " ms");
- 			
+ 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue(); 			
+ 				//System.out.println("Driver sleeps " + sleep_time + " ms"); 			
  				Thread.sleep(sleep_time);
  			} 			
 																
@@ -55,7 +53,7 @@ public class SingleQueueDistributor extends EventDistributor {
 	 								
 			while (true) {
 				
-				// Put events within the current batch into the run queue 		
+				/*** Put events within the current batch into the run queue ***/ 		
 		 		while (event != null && event.sec <= batch_limit) {
 		 			
 		 			if (event.correctPositionReport()) {
@@ -90,8 +88,7 @@ public class SingleQueueDistributor extends EventDistributor {
 							runtaskqueue = new LinkedBlockingQueue<PositionReport>();
 							runqueues.contents.put(runid, runtaskqueue);		 				
 						}
-						runtaskqueue.add(event);
-						
+						runtaskqueue.add(event);						
 						//System.out.println(event.toString());
 					}		 					 		
 			 		/*** Reset event ***/
@@ -121,10 +118,8 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			/*** Sleep if curr_ms is smaller than batch_limit ms ***/		 		
 		 			if (curr_ms < batch_limit*1000) {
 		 			
-		 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
-		 			
-		 				//System.out.println("Driver sleeps " + sleep_time + " ms");
-		 			
+		 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();		 			
+		 				//System.out.println("Driver sleeps " + sleep_time + " ms");		 			
 		 				Thread.sleep(sleep_time);
 		 			}		 			
 		 		}
