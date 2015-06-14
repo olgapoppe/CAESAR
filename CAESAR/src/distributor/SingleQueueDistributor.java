@@ -101,16 +101,14 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		}
 		 		/*** Update distributer progress ***/
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
- 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
- 				runqueues.setDistributorProgress(prev_sec); 				
+ 				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
+ 				runqueues.setDistributorProgress(batch_limit); 				
  				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);				
  				 		
 		 		if (batch_limit == lastSec) {
 		 			break;
 		 		} else {
 		 			
-		 			prev_sec = event.sec;
-		 		
 		 			/*** Rest batch_limit ***/	
 		 			batch_limit += random.nextInt(max - min + 1) + min;		 			
 		 			if (batch_limit > lastSec) batch_limit = lastSec;
