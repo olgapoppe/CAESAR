@@ -69,7 +69,7 @@ public class SingleQueueDistributor extends EventDistributor {
 							Run run = new Run(runid, event.sec, event.min, firstHPseg);
 							runs.put(runid, run);
 							
-							//System.out.println("Run " + runid.toString() + " is created.");
+							System.out.println("Run " + runid.toString() + " is created.");
 						}  			 	
 						/*** Put the event into the run queue ***/
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
