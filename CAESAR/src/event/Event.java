@@ -28,7 +28,7 @@ public abstract class Event {
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
 								"triggered " + this.toString() + 
-								"Distibutor progress at " + p.sec + " is " + distrTimeStamp);
+								"Distibutor progress at " + p.sec + " is " + distrTimeStamp/1000);
 			failed.compareAndSet(false, true);
 		}
 	}

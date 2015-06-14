@@ -3,6 +3,7 @@ package distributor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,17 +29,34 @@ public class SingleQueueDistributor extends EventDistributor {
 			scanner = new Scanner(new File(filename));
 			
 			// Time
-			double curr_app_sec = 0;
-			long curr_ms;
+			double prev_sec = 0;
+			Random random = new Random();
+			int min = 6;
+			int max = 14;
+			
+			double batch_limit = random.nextInt(max - min + 1) + min;
+ 			if (batch_limit > lastSec) batch_limit = lastSec;
+ 			
+ 			long curr_ms = System.currentTimeMillis() - startOfSimulation;
+ 		
+ 			// Sleep if curr_ms is smaller than batch_limit ms		 		
+ 			if (curr_ms < batch_limit*1000) {
+ 			
+ 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
+ 			
+ 				System.out.println("Driver sleeps " + sleep_time + " ms");
+ 			
+ 				Thread.sleep(sleep_time);
+ 			} 			
 																
 			// First event
 			String line = scanner.nextLine();
 	 		PositionReport event = PositionReport.parse(line);	
 	 								
-			while (curr_app_sec <= lastSec) {
+			while (true) {
 				
-				// Put events with time stamp curr_app_sec into the run queue 		
-		 		while (event != null && event.sec == curr_app_sec) {
+				// Put events within the current batch into the run queue 		
+		 		while (event != null && event.sec <= batch_limit) {
 		 			
 		 			if (event.correctPositionReport()) {
 						
@@ -62,33 +80,53 @@ public class SingleQueueDistributor extends EventDistributor {
 							runqueues.contents.put(runid, runtaskqueue);		 				
 						}
 						runtaskqueue.add(event);	 	
-					}
-		 			// Reset event
+					}		 			
+		 			// Update distributer progress
+		 			if (event.sec > prev_sec) {
+		 				
+		 				curr_ms = System.currentTimeMillis() - startOfSimulation;
+		 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
+		 				runqueues.setDistributorProgress(prev_sec);		 				
+		 				System.out.println("App sec:" + prev_sec + " Distr ms: " + curr_ms);
+		 				
+		 				prev_sec = event.sec;
+		 			}		 		
+			 		// Reset event
 		 			if (scanner.hasNextLine()) {		 				
 		 				line = scanner.nextLine();   
 		 				event = PositionReport.parse(line);		 				
 		 			} else {
 		 				event = null;		 				
 		 			}
-		 		}			
+		 		}
 		 		// Update distributer progress
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
-		 		distributorProgressPerSec.put(curr_app_sec, curr_ms);		 		
-		 		runqueues.setDistributorProgress(curr_app_sec);
+ 				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
+ 				runqueues.setDistributorProgress(batch_limit); 				
+ 				System.out.println("App sec:" + batch_limit + " Distr ms: " + curr_ms); 				
 		 		
-		 		//System.out.println("Curr app sec:" + curr_app_sec + " Curr ms: " + curr_ms);
+		 		if (batch_limit == lastSec) {
+		 			break;
+		 		} else {
 		 		
-		 		// Sleep if curr_sec is smaller than curr_app_sec
-		 		if (curr_ms < (curr_app_sec+1)*1000 && curr_app_sec < lastSec) {
+		 			prev_sec = event.sec;
 		 			
-		 			int sleep_time = new Double((curr_app_sec+1)*1000 - curr_ms).intValue();
+		 			int rand = random.nextInt(max - min + 1) + min;
+		 			double next_batch_limit = batch_limit + rand + 1;
+		 			if (next_batch_limit > lastSec) next_batch_limit = lastSec;
+		 		
+		 			// Sleep if curr_ms is smaller than batch_limit ms		 		
+		 			if (curr_ms < next_batch_limit*1000) {
 		 			
-		 			//System.out.println("Driver sleeps " + sleep_time + " ms");
+		 				int sleep_time = new Double(next_batch_limit*1000 - curr_ms).intValue();
 		 			
-		 			Thread.sleep(sleep_time);
+		 				System.out.println("Driver sleeps " + sleep_time + " ms");
+		 			
+		 				Thread.sleep(sleep_time);
+		 			}
+		 			batch_limit = next_batch_limit;
 		 		}
-		 		curr_app_sec++;
-			}			
+		 	}			
 			/*** Clean-up ***/		
 			scanner.close();				
 			System.out.println("Distributor is done.");
