@@ -29,7 +29,8 @@ public class SingleQueueDistributor extends EventDistributor {
 			scanner = new Scanner(new File(filename));
 			
 			// Time
-			double prev_sec = -1;
+			double curr_sec = -1;
+			double ackn_sec = -1;
 			Random random = new Random();
 			int min = 6;
 			int max = 14;
@@ -58,15 +59,20 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			
 		 			if (event.correctPositionReport()) {
 		 				
+		 				if (event.sec <= ackn_sec) 
+		 					System.err.println(event.toString() + " arrives late! Ackn: " + ackn_sec + " Curr: " + curr_sec);
+		 				
 		 				/*** Update distributer progress ***/
-			 			if (event.sec > prev_sec) {
+			 			if (event.sec > curr_sec) {
 			 				
 			 				curr_ms = System.currentTimeMillis() - startOfSimulation;
-			 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
-			 				//runqueues.setDistributorProgress(prev_sec);		!!! 				
+			 				distributorProgressPerSec.put(curr_sec, curr_ms);		 		
+			 				runqueues.setDistributorProgress(curr_sec);	 
 			 				//System.out.println("Distr progr:" + prev_sec + " Distr ms: " + curr_ms);
 			 				
-			 				prev_sec++;
+			 				ackn_sec = curr_sec;
+			 				
+			 				curr_sec++;
 			 			}
 						
 						/*** Create run if it does not exist yet ***/
@@ -103,9 +109,11 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
  				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
  				runqueues.setDistributorProgress(batch_limit); 				
- 				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);		
+ 				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);	
  				
- 				prev_sec++;
+ 				ackn_sec = batch_limit;
+ 				
+ 				curr_sec++;
  				
  				if (batch_limit == lastSec) {
 		 			break;
