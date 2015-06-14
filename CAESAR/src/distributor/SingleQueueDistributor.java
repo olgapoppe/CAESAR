@@ -44,7 +44,7 @@ public class SingleQueueDistributor extends EventDistributor {
  			
  				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
  			
- 				//System.out.println("Driver sleeps " + sleep_time + " ms");
+ 				System.out.println("Driver sleeps " + sleep_time + " ms");
  			
  				Thread.sleep(sleep_time);
  			} 			
@@ -58,19 +58,20 @@ public class SingleQueueDistributor extends EventDistributor {
 				// Put events within the current batch into the run queue 		
 		 		while (event != null && event.sec <= batch_limit) {
 		 			
-		 			if (event.correctPositionReport()) {
+		 			if (event.correctPositionReport()) {	 				
 						
-						/************************************** Run creation ***************************************/
+						/*** Create run if it does not exit yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
 						      		
-						if (runs.get(runid) == null) {
+						if (!runs.containsKey(runid)) {
 							
 							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
 							Run run = new Run(runid, event.sec, event.min, firstHPseg);
 							runs.put(runid, run);
+							
+							//System.out.println("Run " + runid.toString() + " is created.");
 						}  			 	
-						/*************************************** Run queues ****************************************/
-						// Append event's distributor time and write it into the run queue
+						/*** Put the event into the run queue ***/
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						
 						LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
@@ -78,7 +79,9 @@ public class SingleQueueDistributor extends EventDistributor {
 							runtaskqueue = new LinkedBlockingQueue<PositionReport>();
 							runqueues.contents.put(runid, runtaskqueue);		 				
 						}
-						runtaskqueue.add(event);	 	
+						runtaskqueue.add(event);
+						
+						System.out.println(event.toString());
 					}		 			
 		 			// Update distributer progress
 		 			if (event.sec > prev_sec) {
@@ -86,7 +89,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				curr_ms = System.currentTimeMillis() - startOfSimulation;
 		 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
 		 				runqueues.setDistributorProgress(prev_sec);		 				
-		 				//System.out.println("App sec:" + prev_sec + " Distr ms: " + curr_ms);
+		 				System.out.println("Distr progr:" + prev_sec + " Distr ms: " + curr_ms);
 		 				
 		 				prev_sec = event.sec;
 		 			}		 		
@@ -102,7 +105,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
  				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
  				runqueues.setDistributorProgress(batch_limit); 				
- 				//System.out.println("App sec:" + batch_limit + " Distr ms: " + curr_ms); 				
+ 				System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms); 				
 		 		
 		 		if (batch_limit == lastSec) {
 		 			break;
@@ -119,7 +122,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			
 		 				int sleep_time = new Double(next_batch_limit*1000 - curr_ms).intValue();
 		 			
-		 				//System.out.println("Driver sleeps " + sleep_time + " ms");
+		 				System.out.println("Driver sleeps " + sleep_time + " ms");
 		 			
 		 				Thread.sleep(sleep_time);
 		 			}
