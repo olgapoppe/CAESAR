@@ -112,7 +112,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			prev_sec = event.sec;
 		 			
 		 			int rand = random.nextInt(max - min + 1) + min;
-		 			double next_batch_limit = batch_limit + rand + 1;
+		 			double next_batch_limit = batch_limit + rand;
 		 			if (next_batch_limit > lastSec) next_batch_limit = lastSec;
 		 		
 		 			// Sleep if curr_ms is smaller than batch_limit ms		 		
