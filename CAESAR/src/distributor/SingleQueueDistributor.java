@@ -59,7 +59,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			if (event.correctPositionReport()) {
 		 				
 		 				/*** Update distributer progress ***/
-			 			if (event.sec > prev_sec) {
+			 			/*if (event.sec > prev_sec) {
 			 				
 			 				curr_ms = System.currentTimeMillis() - startOfSimulation;
 			 				distributorProgressPerSec.put(prev_sec, curr_ms);		 		
@@ -67,7 +67,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			 				//System.out.println("Distr progr:" + prev_sec + " Distr ms: " + curr_ms);
 			 				
 			 				prev_sec = event.sec;
-			 			}
+			 			}*/
 						
 						/*** Create run if it does not exist yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
