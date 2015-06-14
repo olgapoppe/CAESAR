@@ -60,7 +60,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			
 		 			if (event.correctPositionReport()) {	 				
 						
-						/*** Create run if it does not exit yet ***/
+						/*** Create run if it does not exist yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
 						      		
 						if (!runs.containsKey(runid)) {
@@ -69,7 +69,7 @@ public class SingleQueueDistributor extends EventDistributor {
 							Run run = new Run(runid, event.sec, event.min, firstHPseg);
 							runs.put(runid, run);
 							
-							System.out.println("Run " + runid.toString() + " is created.");
+							//System.out.println("Run " + runid.toString() + " is created.");
 						}  			 	
 						/*** Put the event into the run queue ***/
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
@@ -111,22 +111,21 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			break;
 		 		} else {
 		 		
+		 			// Rest prev_sec and batch_limit
 		 			prev_sec = event.sec;
 		 			
-		 			int rand = random.nextInt(max - min + 1) + min;
-		 			double next_batch_limit = batch_limit + rand;
-		 			if (next_batch_limit > lastSec) next_batch_limit = lastSec;
+		 			batch_limit += random.nextInt(max - min + 1) + min;		 			
+		 			if (batch_limit > lastSec) batch_limit = lastSec;
 		 		
 		 			// Sleep if curr_ms is smaller than batch_limit ms		 		
-		 			if (curr_ms < next_batch_limit*1000) {
+		 			if (curr_ms < batch_limit*1000) {
 		 			
-		 				int sleep_time = new Double(next_batch_limit*1000 - curr_ms).intValue();
+		 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();
 		 			
 		 				//System.out.println("Driver sleeps " + sleep_time + " ms");
 		 			
 		 				Thread.sleep(sleep_time);
-		 			}
-		 			batch_limit = next_batch_limit;
+		 			}		 			
 		 		}
 		 	}			
 			/*** Clean-up ***/		
