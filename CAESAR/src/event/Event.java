@@ -19,16 +19,15 @@ public abstract class Event {
 		vid = v;
 	}
 	
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, double distrTimeStamp, String s) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
 		
-		int diff = new Double(emit).intValue() - new Double(distrTimeStamp/1000).intValue();
+		int diff = new Double(emit).intValue() - new Double(p.sec).intValue();
 		
 		if (!failed.get() && diff > 5) {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
-								"triggered " + this.toString() + 
-								"Distibutor progress at " + p.sec + " is " + distrTimeStamp/1000);
+								"triggered " + this.toString());
 			failed.compareAndSet(false, true);
 		}
 	}

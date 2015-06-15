@@ -21,14 +21,14 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, double distrTimeStamp) {
+	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf) {
 		
 		super(0,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
-		printError (p, emit, tnf, distrTimeStamp, "TOLL NOTIFICATIONS");		 	
+		printError (p, emit, tnf, "TOLL NOTIFICATIONS");		 	
 	}
 	
 	/**
@@ -38,14 +38,14 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf, double distrTimeStamp) {
+	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf) {
 		
 		super(0,p.sec,p.vid);
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
 		avgSpd = a;
 		toll = 0;
 		
-		printError (p, emit, tnf, distrTimeStamp, "TOLL NOTIFICATIONS");			
+		printError (p, emit, tnf, "TOLL NOTIFICATIONS");			
 	}
 	
 	/** 

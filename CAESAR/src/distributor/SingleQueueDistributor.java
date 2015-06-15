@@ -29,25 +29,17 @@ public class SingleQueueDistributor extends EventDistributor {
 			scanner = new Scanner(new File(filename));
 			
 			// Time
-			double curr_sec = -1;
+			long curr_ms = 0;
+			
 			Random random = new Random();
 			int min = 6;
 			int max = 14;
 			
 			double batch_limit = random.nextInt(max - min + 1) + min;
- 			if (batch_limit > lastSec) batch_limit = lastSec;
+ 			if (batch_limit > lastSec) batch_limit = lastSec;	
+ 			//System.out.println("Batch limit: " + batch_limit);
  			
- 			long curr_ms = System.currentTimeMillis() - startOfSimulation;
- 		
- 			/*** Sleep if curr_ms is smaller than batch_limit ms ***/		 		
- 			if (curr_ms < batch_limit*1000) {
- 			
- 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue(); 			
- 				//System.out.println("Driver sleeps " + sleep_time + " ms"); 			
- 				Thread.sleep(sleep_time);
- 			} 			
-																
-			// First event
+ 			// First event
 			String line = scanner.nextLine();
 	 		PositionReport event = PositionReport.parse(line);	
 	 								
@@ -58,27 +50,14 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			
 		 			if (event.correctPositionReport()) {		 				
 		 				
-		 				/*** Update distributer progress ***/
-			 			if (event.sec > curr_sec) {
-			 				
-			 				curr_ms = System.currentTimeMillis() - startOfSimulation;
-			 				distributorProgressPerSec.put(curr_sec, curr_ms);		 		
-			 				if (curr_sec > 500) { 
-			 					runqueues.setDistributorProgress(curr_sec);
-			 					//System.out.println("Distr progr:" + curr_sec + " Distr ms: " + curr_ms);
-			 				}		 				
-			 				curr_sec++;
-			 			}
-						
-						/*** Create run if it does not exist yet ***/
+		 				/*** Create run if it does not exist yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
 						      		
 						if (!runs.containsKey(runid) || runs.get(runid) == null) {
 							
 							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
 							Run run = new Run(runid, event.sec, event.min, firstHPseg);
-							runs.put(runid, run);							
-							//System.out.println("Run " + runid.toString() + " is created.");
+							runs.put(runid, run);						
 						}  			
 						
 						/*** Put the event into the run queue ***/
@@ -99,31 +78,31 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			} else {
 		 				event = null;		 				
 		 			}
-		 		}
-		 		/*** Update distributer progress ***/
-		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
- 				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
- 				runqueues.setDistributorProgress(batch_limit); 				
- 				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);	
- 				
- 				curr_sec++;
- 				
- 				if (batch_limit == lastSec) {
-		 			break;
-		 		} else {
+		 		}	
+		 		/*** Update distributer progress ***/			 	
+	 			runqueues.setDistributorProgress(batch_limit); 				
+	 			//System.out.println("Distr progr: " + batch_limit);		 			
 		 			
-		 			/*** Rest batch_limit ***/	
-		 			batch_limit += random.nextInt(max - min + 1) + min;		 			
-		 			if (batch_limit > lastSec) batch_limit = lastSec;
-		 		
-		 			/*** Sleep if curr_ms is smaller than batch_limit ms ***/		 		
-		 			if (curr_ms < batch_limit*1000) {
+	 			if (batch_limit < lastSec) { 			
+	 				
+	 				/*** Sleep if curr_ms is smaller than batch_limit ms ***/
+	 				curr_ms = System.currentTimeMillis() - startOfSimulation;
+ 					
+ 					if (curr_ms < batch_limit*1000) {
 		 			
-		 				int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();		 			
-		 				//System.out.println("Driver sleeps " + sleep_time + " ms");		 			
-		 				Thread.sleep(sleep_time);
-		 			}		 			
-		 		}
+ 						int sleep_time = new Double(batch_limit*1000 - curr_ms).intValue();		 			
+ 						//System.out.println("Driver sleeps " + sleep_time + " ms");		 			
+ 						Thread.sleep(sleep_time);
+ 					}
+ 					
+ 					/*** Rest batch_limit ***/
+	 				batch_limit += random.nextInt(max - min + 1) + min;		 			
+	 				if (batch_limit > lastSec) batch_limit = lastSec;
+	 				//System.out.println("Batch limit: " + batch_limit);
+	 				
+	 			} else { /*** Terminate ***/	 				
+	 				break;
+	 			} 			
 		 	}			
 			/*** Clean-up ***/		
 			scanner.close();				

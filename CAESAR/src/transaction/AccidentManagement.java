@@ -45,9 +45,8 @@ public class AccidentManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run	
-			double distrTimeStamp = distributorProgressPerSec.get(event.sec);
 			//System.out.println(event.sec + " " + distrTimeStamp);			
-			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed, distrTimeStamp); 									
+			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed); 									
 		}		
 		// Count down the number of transactions
 		transaction_number.countDown();
