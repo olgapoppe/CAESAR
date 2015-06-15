@@ -65,12 +65,13 @@ public abstract class Scheduler implements Runnable {
 		try {		
 			// Schedule HP query of all runs							
 			ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup);
+			number = transactions1.size();
 			
 			//long startOfFirstWaiting = System.currentTimeMillis();					
 			transaction_number.await();			
 			//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
 			
-			transaction_number = new CountDownLatch(transactions1.size());			
+			transaction_number = new CountDownLatch(number);			
 			for (Transaction t : transactions1) { 
 				t.transaction_number = transaction_number;
 				executor.execute(t); 
