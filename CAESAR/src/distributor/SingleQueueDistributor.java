@@ -67,8 +67,10 @@ public class SingleQueueDistributor extends EventDistributor {
 			 				
 			 				curr_ms = System.currentTimeMillis() - startOfSimulation;
 			 				distributorProgressPerSec.put(curr_sec, curr_ms);		 		
-			 				runqueues.setDistributorProgress(curr_sec);	 
-			 				System.out.println("Distr progr:" + curr_sec + " Distr ms: " + curr_ms);
+			 				if (curr_sec > 500) { 
+			 					runqueues.setDistributorProgress(curr_sec);
+			 					System.out.println("Distr progr:" + curr_sec + " Distr ms: " + curr_ms);
+			 				}		 				
 			 				
 			 				ackn_sec = curr_sec;
 			 				
