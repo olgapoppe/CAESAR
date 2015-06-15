@@ -77,10 +77,10 @@ public class SingleQueueDistributor extends EventDistributor {
 							
 							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
 							Run run = new Run(runid, event.sec, event.min, firstHPseg);
-							runs.put(runid, run);
-							
+							runs.put(runid, run);							
 							//System.out.println("Run " + runid.toString() + " is created.");
-						}  			 	
+						}  			
+						
 						/*** Put the event into the run queue ***/
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						
