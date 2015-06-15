@@ -68,7 +68,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			 				curr_ms = System.currentTimeMillis() - startOfSimulation;
 			 				distributorProgressPerSec.put(curr_sec, curr_ms);		 		
 			 				runqueues.setDistributorProgress(curr_sec);	 
-			 				//System.out.println("Distr progr:" + prev_sec + " Distr ms: " + curr_ms);
+			 				System.out.println("Distr progr:" + curr_sec + " Distr ms: " + curr_ms);
 			 				
 			 				ackn_sec = curr_sec;
 			 				
@@ -109,7 +109,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
  				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
  				runqueues.setDistributorProgress(batch_limit); 				
- 				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);	
+ 				System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);	
  				
  				ackn_sec = batch_limit;
  				

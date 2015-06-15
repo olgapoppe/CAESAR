@@ -27,8 +27,8 @@ public class AccidentManagement extends Transaction {
 		
 		for (PositionReport event : events) {	
 			
-			/*if (event == null) System.out.println("NULL EVENT!!!");
-			if (run == null) System.out.println("NULL RUN!!!" + event.toString());*/	
+			if (event == null) System.out.println("NULL EVENT!!!");
+			if (run == null) System.out.println("NULL RUN!!!" + event.toString());	
 		
 			// READ: If a new vehicle on a travel lane arrives, lookup or update accidents ahead
 			if (run.vehicles.get(event.vid) == null && event.lane < 4) {
