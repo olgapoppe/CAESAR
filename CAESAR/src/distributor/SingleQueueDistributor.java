@@ -30,7 +30,6 @@ public class SingleQueueDistributor extends EventDistributor {
 			
 			// Time
 			double curr_sec = -1;
-			double ackn_sec = -1;
 			Random random = new Random();
 			int min = 6;
 			int max = 14;
@@ -57,10 +56,7 @@ public class SingleQueueDistributor extends EventDistributor {
 				/*** Put events within the current batch into the run queue ***/ 		
 		 		while (event != null && event.sec <= batch_limit) {
 		 			
-		 			if (event.correctPositionReport()) {
-		 				
-		 				if (event.sec <= ackn_sec) 
-		 					System.err.println(event.toString() + " arrives late! Ackn: " + ackn_sec + " Curr: " + curr_sec);
+		 			if (event.correctPositionReport()) {		 				
 		 				
 		 				/*** Update distributer progress ***/
 			 			if (event.sec > curr_sec) {
@@ -69,11 +65,8 @@ public class SingleQueueDistributor extends EventDistributor {
 			 				distributorProgressPerSec.put(curr_sec, curr_ms);		 		
 			 				if (curr_sec > 500) { 
 			 					runqueues.setDistributorProgress(curr_sec);
-			 					System.out.println("Distr progr:" + curr_sec + " Distr ms: " + curr_ms);
+			 					//System.out.println("Distr progr:" + curr_sec + " Distr ms: " + curr_ms);
 			 				}		 				
-			 				
-			 				ackn_sec = curr_sec;
-			 				
 			 				curr_sec++;
 			 			}
 						
@@ -111,9 +104,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		curr_ms = System.currentTimeMillis() - startOfSimulation;
  				distributorProgressPerSec.put(batch_limit, curr_ms);		 		
  				runqueues.setDistributorProgress(batch_limit); 				
- 				System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);	
- 				
- 				ackn_sec = batch_limit;
+ 				//System.out.println("Distr progr:" + batch_limit + " Distr ms: " + curr_ms);	
  				
  				curr_sec++;
  				
