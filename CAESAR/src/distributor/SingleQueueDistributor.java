@@ -29,7 +29,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			scanner = new Scanner(new File(filename));
 			
 			// Time
-			double curr_app_sec = -1;
+			double prev_batch_limit = -1;
 			long now = 0;
 			
 			Random random = new Random();
@@ -51,9 +51,6 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			
 		 			if (event.correctPositionReport()) {
 		 				
-		 				/*** Get current system second ***/
-		 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
-		 				
 		 				/*** Create run if it does not exist yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
 						      		
@@ -65,7 +62,7 @@ public class SingleQueueDistributor extends EventDistributor {
 						}  			
 						
 						/*** Put the event into the run queue ***/						
-						event.distributorTime = now;
+						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						
 						LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
 						if (runtaskqueue == null) {    
@@ -73,15 +70,7 @@ public class SingleQueueDistributor extends EventDistributor {
 							runqueues.contents.put(runid, runtaskqueue);		 				
 						}
 						runtaskqueue.add(event);						
-						//System.out.println(event.toString());
-						
-						/*** Set distributor progress per second ***/
-						if (event.sec > curr_app_sec) {
-							
-							//System.out.println("Distributor progress for " + curr_app_sec + " is " + now);
-							distributorProgressPerSec.put(curr_app_sec,now);
-							curr_app_sec++;
-						}						
+						//System.out.println(event.toString());											
 					}		 					 		
 			 		/*** Reset event ***/
 		 			if (scanner.hasNextLine()) {		 				
@@ -93,8 +82,13 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		}	
 		 		/*** Set distributor progress per second ***/
 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
-				//System.out.println("Distributor progress for " + batch_limit + " is " + now);
-				distributorProgressPerSec.put(batch_limit,now);
+				
+				for (double i=prev_batch_limit+1; i<=batch_limit; i++) {
+					
+					System.out.println("Distributor progress for " + i + " is " + now);
+					distributorProgressPerSec.put(i,now);
+				}
+				prev_batch_limit = batch_limit;
 						 		
 		 		/*** Update distributer progress ***/			 	
 	 			runqueues.setDistributorProgress(batch_limit); 				
