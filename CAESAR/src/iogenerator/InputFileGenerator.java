@@ -50,7 +50,7 @@ public class InputFileGenerator {
 			String outputfile = path + args[4];
 			mergeFiles(inputfile1,inputfile2,outputfile);
 		}	
-		/*** Select tuples with direction dir ***/
+		/*** Select tuples with given direction ***/
 		if (action == 3) {
 			
 			String inputfile = path + args[2];

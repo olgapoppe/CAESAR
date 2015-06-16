@@ -19,7 +19,7 @@ public abstract class Event {
 		vid = v;
 	}
 	
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, long distrProgr) {
 		
 		int diff = new Double(emit).intValue() - new Double(p.sec).intValue();
 		
@@ -27,7 +27,8 @@ public abstract class Event {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
-								"triggered " + this.toString());
+								"triggered " + this.toString() +
+								"Distributer progress in " + p.sec + " is " + distrProgr);
 			failed.compareAndSet(false, true);
 		}
 	}
