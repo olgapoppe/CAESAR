@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import accident.*;
 import event.*;
 
@@ -505,11 +504,147 @@ public class Run {
 	
 	/************************************************* Traffic management *************************************************/
 	/**
+	 * trafficManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings (like accidentManagement) and 
+	 * 					 maintains average speeds and vehicle counts and derives toll notifications (like congestionManagement).   
+	 * @param event					incoming position report
+	 * @param startOfSimulation 	start of simulation
+	 * @param segWithAccAhead		segment with accident ahead
+	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
+	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
+	 * @param distrProgr			distributor progress in event.sec
+	 */
+	public void trafficManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
+		
+		// Set auxiliary variables
+		double next_min = event.min+1;
+		boolean isAccident = segWithAccAhead != -1;   
+		
+		// Set event processing time
+		/*if (time.minOfLastStorageOfEventProcessingTime < event.min) {
+					
+			event.processingTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+			output.positionReports.add(event);
+			time.minOfLastStorageOfEventProcessingTime = event.min;  		   			 	
+		}*/	
+
+		// Update run data: avgSpd, time, numberOfProcessedEvents
+		if (time.min < event.min) {  
+
+			avgSpd = getAvgSpdFor5Min(event.min);   		
+			time.min = event.min;
+		}   	
+		time.sec = event.sec;
+		//output.numberOfProcessedEvents++;	
+
+		/************************************************* If the vehicle is new in the segment *************************************************/
+		if (vehicles.get(event.vid) == null) {
+			
+			// Update vehicles, vehCounts
+			Vehicle newVehicle = new Vehicle (event);
+			Vector<Double> new_speeds_per_min = new Vector<Double>();
+			new_speeds_per_min.add(event.spd);
+			newVehicle.spds.put(event.min,new_speeds_per_min);
+			vehicles.put(event.vid,newVehicle);    	   
+
+			double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
+			vehCounts.put(next_min, new_count);
+			    
+			// Derive complex events
+			if (event.lane < 4) {    
+				
+				TollNotification tollNotification;
+				if 	(!isAccident && congested(event.min)) { 
+	
+					double vehCount = lookUpVehCount(event.min);
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 					
+				} else {
+					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
+				}	
+				output.tollNotifications.add(tollNotification);
+				
+				if (isAccident) {		
+					
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
+					output.accidentWarnings.add(accidentWarning);				
+			}}
+			/************************************************* If the vehicle was in the segment before *************************************************/
+		} else {
+			// Get previous info about the vehicle
+			Vehicle existingVehicle = vehicles.get(event.vid);
+		
+			// Update vehCounts
+			// Update existingVehicle: time
+			existingVehicle.sec = event.sec;  		
+			
+			if (event.min > existingVehicle.min) {
+				
+				existingVehicle.min = event.min;
+				
+				double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
+				vehCounts.put(next_min, new_count);			
+			}
+			// Update existingVehicle: spd, spds
+			existingVehicle.spd = event.spd;
+			if (existingVehicle.spds.containsKey(event.min)) {    
+
+				existingVehicle.spds.get(event.min).add(event.spd);    			
+ 				
+			} else {             					
+	
+				Vector<Double> new_speeds_per_min = new Vector<Double>();
+				new_speeds_per_min.add(event.spd);
+				existingVehicle.spds.put(event.min, new_speeds_per_min);			
+			}			
+			
+			// Accident detection and clearance	
+			// Update stoppedVehicles
+			// Update existingVehicle: count, lane, pos
+			if (existingVehicle.pos == event.pos && existingVehicle.lane == event.lane) { // Same position is reported      
+
+				existingVehicle.count++;
+
+				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
+				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
+
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+
+					if (stoppedVehicles.containsKey(accidentLocation)) {
+	
+						Vector<StoppedVehicle> stopped_vehicles = stoppedVehicles.get(accidentLocation);
+						if (stopped_vehicles.size() < 2) { 
+							stopped_vehicles.add(stopped_vehicle);
+							toAccident(event, startOfSimulation, false);
+						}    					
+					} else {
+						Vector<StoppedVehicle> stopped_vehicles = new Vector<StoppedVehicle>();
+						stopped_vehicles.add(stopped_vehicle);
+						stoppedVehicles.put(accidentLocation,stopped_vehicles);
+					}}
+				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
+
+					StoppedVehicle stopped_vehicle = getStoppedVehicle(event.lane, event.pos, event.vid);
+					if (stopped_vehicle != null) stopped_vehicle.sec = event.sec;
+				}
+			} else { // Other position is reported
+	      					
+				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) {     				
+					setRemovalTime(event.vid, event.sec); 	
+					fromAccident(event, startOfSimulation, false);
+				}  
+				existingVehicle.count = 1;    			
+				existingVehicle.lane = event.lane;
+				existingVehicle.pos = event.pos;
+			}} 	
+	}
+	/**
 	 * accidentManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings.   
 	 * @param event					incoming position report
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param run_priorization		whether run priorities are maintained
+	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
+	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, AtomicBoolean accidentWarningsFailed, long distrProgr) {
 		
@@ -587,6 +722,8 @@ public class Run {
 	 * @param event					incoming position report
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead 
+	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
+	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, AtomicBoolean tollNotificationsFailed, long distrProgr) { 
 		

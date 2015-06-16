@@ -17,11 +17,13 @@ import iogenerator.*;
 public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	
 	int sec;
+	boolean splitQueries;
 			
-	public TimeDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
+	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
 			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {		
 		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);
 		sec = 0;
+		splitQueries = sq;
 	}
 	
 	/**
@@ -36,7 +38,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) {  
 			try {	
 				// Schedule the current second
-				all_queries_all_runs (curr_sec, false, false);
+				all_queries_all_runs (splitQueries, curr_sec, false, false);
 				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing
 				
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/					

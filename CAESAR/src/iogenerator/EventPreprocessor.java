@@ -12,6 +12,7 @@ import distributor.*;
 public class EventPreprocessor implements Runnable {
 	
 	String filename;
+	boolean splitQueries;
 	int scheduling_strategy; 
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
@@ -22,10 +23,11 @@ public class EventPreprocessor implements Runnable {
 	int HP_frequency;
 	int LP_frequency;
 	
-	EventPreprocessor(String f, int ss, HashMap<RunID,Run> rs, ExecutorService e, 
+	EventPreprocessor(String f, boolean sq, int ss, HashMap<RunID,Run> rs, ExecutorService e, 
 		CountDownLatch d, ArrayList<XwayDirPair> xds, int lS, int HP_freq, int LP_freq) {
 		
 		filename = f;
+		splitQueries = sq;
 		scheduling_strategy = ss; 
 		runs = rs;
 		executor = e;
@@ -65,7 +67,7 @@ public class EventPreprocessor implements Runnable {
 			if (scheduling_strategy == 1) {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
-				scheduler = new TimeDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, runqueues, executor, 
+			scheduler = new TimeDrivenScheduler(splitQueries, distributorProgress, distributorProgressPerSec, runs, runqueues, executor, 
 												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation);
 			} else {			
 			

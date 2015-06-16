@@ -68,7 +68,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 							lp_sec = hp_sec;
 							hp_count++;
 							lp_count++;	
-							number = all_queries_all_runs(hp_sec, true, true);	// 2 waitings
+							number = all_queries_all_runs(true, hp_sec, true, true);	// 2 waitings
 							
 							//System.out.println("All queries all runs: " + number);
 							
@@ -96,12 +96,12 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 						
 						if (LPruns_catchup) {							
 							
-							number = all_queries_all_runs (lp_sec, true, true); // 2 waitings
+							number = all_queries_all_runs (true, lp_sec, true, true); // 2 waitings
 							LPruns_catchup = false;
 							
 						} else {
 						
-							number = all_queries_all_runs (lp_sec, true, false); // 2 waitings
+							number = all_queries_all_runs (true, lp_sec, true, false); // 2 waitings
 					}}														
 				} else {
 				/*** If the stream is over, catch up LP runs if any, wait for acknowledgment of the previous transactions and sleep. ***/
@@ -113,7 +113,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 						while (lp_sec < lastSec) { // Never called if the last accident is cleared before the end of the stream
 							
 							lp_sec++;
-							number = all_queries_all_runs (lp_sec, true, false); // 2 waitings !!! No need to iterate over HP runs !!!						
+							number = all_queries_all_runs (true, lp_sec, true, false); // 2 waitings !!! No need to iterate over HP runs !!!						
 						}						
 						transaction_number.await(); 						
 						done.countDown();												

@@ -58,40 +58,56 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (double sec, boolean run_priorization, boolean catchup) {
+	public int all_queries_all_runs (boolean splitQueries, double sec, boolean run_priorization, boolean catchup) {
 		
 		int number = 0;
 		
-		try {		
-			// Schedule HP query of all runs							
-			ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup);
-			number = transactions1.size();
+		try {	
+			if (!splitQueries) {
+				
+				// Schedule all queries
+				ArrayList<Transaction> transactions = one_query_all_runs(sec, 0, run_priorization, catchup);
+				number = transactions.size();
 			
-			//long startOfFirstWaiting = System.currentTimeMillis();					
-			transaction_number.await();			
-			//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
+				//long startOfFirstWaiting = System.currentTimeMillis();					
+				transaction_number.await();			
+				//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
 			
-			transaction_number = new CountDownLatch(number);			
-			for (Transaction t : transactions1) { 
-				t.transaction_number = transaction_number;
-				executor.execute(t); 
-			}			
-			// Schedule LP query of all runs
-			ArrayList<Transaction> transactions2 = one_query_all_runs(sec, 2, run_priorization, catchup);
-			number = transactions2.size();
+				transaction_number = new CountDownLatch(number);			
+				for (Transaction t : transactions) { 
+					t.transaction_number = transaction_number;
+					executor.execute(t); 
+				}				
+			} else {
+				// Schedule HP query of all runs							
+				ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup);
+				number = transactions1.size();
 			
-			//long startOfSecondWaiting = System.currentTimeMillis();			
-			transaction_number.await();			
-			//long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
+				//long startOfFirstWaiting = System.currentTimeMillis();					
+				transaction_number.await();			
+				//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
 			
-			//if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
-			//	System.out.println(sec + ": Scheduler waited for executor " + durationOfFirstWaiting + " and " + durationOfSecondWaiting + "ms");
+				transaction_number = new CountDownLatch(number);			
+				for (Transaction t : transactions1) { 
+					t.transaction_number = transaction_number;
+					executor.execute(t); 
+				}			
+				// Schedule LP query of all runs
+				ArrayList<Transaction> transactions2 = one_query_all_runs(sec, 2, run_priorization, catchup);
+				number = transactions2.size();
 			
-			transaction_number = new CountDownLatch(number);				
-			for (Transaction t : transactions2) { 
-				t.transaction_number = transaction_number;
-				executor.execute(t); 
-			}		
+				//long startOfSecondWaiting = System.currentTimeMillis();			
+				transaction_number.await();			
+				//long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
+			
+				//if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
+				//	System.out.println(sec + ": Scheduler waited for executor " + durationOfFirstWaiting + " and " + durationOfSecondWaiting + "ms");
+			
+				transaction_number = new CountDownLatch(number);				
+				for (Transaction t : transactions2) { 
+					t.transaction_number = transaction_number;
+					executor.execute(t); 
+			}}		
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 		
 		return number;
@@ -323,7 +339,7 @@ public abstract class Scheduler implements Runnable {
 	 */
 	public Transaction one_query_one_run (double sec, RunID runid, int query, boolean run_priorization, boolean catchup) {
 		
-		if (query!=1 && query!=2) System.err.println("Non-existing query is called by scheduler.");
+		if (0<query && query<2) System.err.println("Non-existing query is called by scheduler.");
 		
 		if (runqueues.contents.containsKey(runid)) {
 			
@@ -331,7 +347,25 @@ public abstract class Scheduler implements Runnable {
 			
 			if (runtaskqueue!=null && !runtaskqueue.isEmpty()) {			
 				
-				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();				
+				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();		
+				
+				/*** Traffic management ***/
+				if (query == 0) {
+					
+					// Put all events with the same time stamp as this transaction into the event list
+					PositionReport event = runtaskqueue.peek();					
+					while (event!=null && event.sec==sec) { 				
+						runtaskqueue.poll();
+						event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+						event_list.add(event);				
+						event = runtaskqueue.peek();
+					}					
+					// If the event list is not empty, generate a transaction and submit it for execution
+					if (!event_list.isEmpty()) {
+						
+						Run run = runs.get(runid);
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);											
+				}}
 				
 				/*** Accident management ***/
 				if (query == 1) {

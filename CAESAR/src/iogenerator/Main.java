@@ -11,7 +11,8 @@ public class Main {
 	
 	/**
 	 * Create and call the chain: Input files -> Drivers/Distributors -> Schedulers -> Executor pool -> Output files
-	 * @param args: scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
+	 * @param args: split queries: 0 for false, 1 for true
+	 * 				scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
 	 * 				HP frequency 
 	 * 				LP frequency 
 	 * 				last second : 10784
@@ -22,23 +23,25 @@ public class Main {
 	public static void main (String[] args) { 
 		
 		/*** Validate the input parameter ***/
-		if (args.length < 5) {
-			System.out.println("At least 5 input parameters are expected.");
+		if (args.length < 8) {
+			System.out.println("At least 8 input parameters are expected.");
 			return;
 		}	
+		boolean splitQueries = args[0].equals("1");
+		
 		// Scheduling determined parameters
-		int scheduling_strategy = Integer.parseInt(args[0]);
+		int scheduling_strategy = Integer.parseInt(args[1]);
 		if (scheduling_strategy<1 || scheduling_strategy>4) {
 			System.out.println("First input parameter is a scheduling strategy which is an integer from 1 to 4.");
 			return;
 		}
-		int HP_frequency = Integer.parseInt(args[1]);	
-		int LP_frequency = Integer.parseInt(args[2]);		
+		int HP_frequency = Integer.parseInt(args[2]);	
+		int LP_frequency = Integer.parseInt(args[3]);		
 		
 		// Input file determined parameters
-		int lastSec = Integer.parseInt(args[3]);
-		String path = args[4];
-		String extension = args[5];
+		int lastSec = Integer.parseInt(args[4]);
+		String path = args[5];
+		String extension = args[6];
 		
 		//int numberOfInputFiles = args.length - 6;
 		//int numberOfHelperThreads = numberOfInputFiles * 2;
@@ -48,7 +51,7 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		for (int i=6; i<args.length; i++) {
+		for (int i=7; i<args.length; i++) {
 			
 			/*** Input file ***/	
 			String filename = path + args[i] + extension;
@@ -73,7 +76,7 @@ public class Main {
 			dones.add(done);
 			
 			/*** Start driver, distributer and scheduler ***/
-			EventPreprocessor preprocessor = new EventPreprocessor (filename, scheduling_strategy, runs, executor, 
+			EventPreprocessor preprocessor = new EventPreprocessor (filename, splitQueries, scheduling_strategy, runs, executor, 
 					done, xways_and_dirs, lastSec, HP_frequency, LP_frequency);
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
