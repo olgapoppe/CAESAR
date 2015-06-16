@@ -85,7 +85,7 @@ public class SingleQueueDistributor extends EventDistributor {
 				
 				for (double i=prev_batch_limit+1; i<=batch_limit; i++) {
 					
-					System.out.println("Distributor progress for " + i + " is " + now);
+					//System.out.println("Distributor progress for " + i + " is " + now);
 					distributorProgressPerSec.put(i,now);
 				}
 				prev_batch_limit = batch_limit;
