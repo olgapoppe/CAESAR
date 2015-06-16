@@ -40,6 +40,7 @@ public class InputFileGenerator {
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
 			int xway = Integer.parseInt(args[4]);
+			System.out.println("The file " + inputfile + " is cleaned, the xway is set to " + xway + ", the result is saved in the file" + outputfile);
 			cleanFile(inputfile,outputfile,xway);			
 		} 
 		/*** Merge file ***/
@@ -48,6 +49,7 @@ public class InputFileGenerator {
 			String inputfile1 = path + args[2];
 			String inputfile2 = path + args[3];
 			String outputfile = path + args[4];
+			System.out.println("The files " + inputfile1 + " and " + inputfile2 + " are merged into the file" + outputfile);
 			mergeFiles(inputfile1,inputfile2,outputfile);
 		}	
 		/*** Select tuples with given direction ***/
@@ -56,6 +58,7 @@ public class InputFileGenerator {
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
 			int dir = Integer.parseInt(args[4]);
+			System.out.println("All events with direction " + dir + " from the file " + inputfile + " are copied to the file" + outputfile);
 			getTuples(1,inputfile,outputfile,dir);
 		}	
 		/*** Copy n tuples ***/
@@ -64,6 +67,7 @@ public class InputFileGenerator {
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
 			int n = Integer.parseInt(args[4]);
+			System.out.println(n + " events from the file " + inputfile + " are copied to the file" + outputfile);
 			getTuples(2,inputfile,outputfile,n);
 		}	
 	}
