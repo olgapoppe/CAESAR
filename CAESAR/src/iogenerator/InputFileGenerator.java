@@ -70,6 +70,7 @@ public class InputFileGenerator {
 			System.out.println(n + " events from the file " + inputfile + " are copied to the file" + outputfile);
 			getTuples(2,inputfile,outputfile,n);
 		}	
+		System.out.println("Done!");
 	}
 	
 	/****************************************************************************
@@ -261,7 +262,7 @@ public class InputFileGenerator {
 				eventString = input.nextLine();
 				PositionReport event = PositionReport.parse(eventString);
 				
-				if (event.correctPositionReport() && event.dir == 0) {
+				if (event.correctPositionReport() && event.dir == dir) {
 					
 					count++;
 					output.write(eventString + "\n");            	            	            	         	
