@@ -16,8 +16,8 @@ public class Output {
 	public ArrayList<TollNotification> tollNotifications;
 	public ArrayList<AccidentWarning> accidentWarnings;
 	
-	//public int numberOfProcessedEvents;
-	//public int maxNumberOfStoredEvents;
+	public int position_reports_count;
+	public int maxLengthOfEventQueue;
 	
 	public Output () {
 		
@@ -25,8 +25,8 @@ public class Output {
 		tollNotifications  = new ArrayList<TollNotification>();
 		accidentWarnings = new ArrayList<AccidentWarning>();
 		
-		//numberOfProcessedEvents = 0;
-		//maxNumberOfStoredEvents = 0;
+		position_reports_count = 0;
+		maxLengthOfEventQueue = 0;
 	}
 	
 	/**
@@ -40,10 +40,24 @@ public class Output {
 	}*/
 	
 	/**
+	 * Write the number of input and output events to the given file.  
+	 * @param file
+	 */
+	public void writeEventCounts2File (RunID runid, BufferedWriter file) {
+		try {
+			file.write(runid.toString() + " " + 
+					position_reports_count + " " + 
+					maxLengthOfEventQueue + " " +
+					tollNotifications.size() + " " + 
+					accidentWarnings.size() + "\n");   
+		} catch (IOException e) { e.printStackTrace(); }
+	}
+	
+	/**
 	 * Write the toll notifications to the given file.  
 	 * @param file
 	 */
-	public void write2FileTollNotifications (BufferedWriter file) {
+	public void writeTollNotifications2File (BufferedWriter file) {
 		for (TollNotification t : tollNotifications) {
 			try { file.write(t.toString()); } catch (IOException e) { e.printStackTrace(); }
 		}  
@@ -53,7 +67,7 @@ public class Output {
 	 * Write the accident warnings to the given file. 
 	 * @param file
 	 */
-	public void write2FileAccidentWarnings (BufferedWriter file) {
+	public void writeAccidentWarnings2File (BufferedWriter file) {
 		for (AccidentWarning a : accidentWarnings) {			
 			try { file.write(a.toString()); } catch (IOException e) { e.printStackTrace(); }
 		}  

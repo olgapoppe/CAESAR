@@ -53,23 +53,28 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				
 		 				/*** Create run if it does not exist yet ***/
 						RunID runid = new RunID (event.xway, event.dir, event.seg); 
+						Run run;
 						      		
 						if (!runs.containsKey(runid) || runs.get(runid) == null) {
 							
 							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-							Run run = new Run(runid, event.sec, event.min, firstHPseg);
+							run = new Run(runid, event.sec, event.min, firstHPseg);
 							runs.put(runid, run);						
-						}  			
+						} else {
+							run = runs.get(runid);
+						}
+						run.output.position_reports_count++;
 						
 						/*** Put the event into the run queue ***/						
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						
-						LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
-						if (runtaskqueue == null) {    
-							runtaskqueue = new LinkedBlockingQueue<PositionReport>();
-							runqueues.contents.put(runid, runtaskqueue);		 				
+						LinkedBlockingQueue<PositionReport> eventqueue = runqueues.contents.get(runid);
+						if (eventqueue == null) {    
+							eventqueue = new LinkedBlockingQueue<PositionReport>();
+							runqueues.contents.put(runid, eventqueue);		 				
 						}
-						runtaskqueue.add(event);						
+						eventqueue.add(event);	
+						if (eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
 						//System.out.println(event.toString());											
 					}		 					 		
 			 		/*** Reset event ***/

@@ -33,6 +33,9 @@ public class OutputFileGenerator {
 			/*** Output files for validation ***/
 			String path = "../../output/";
 			
+			File eventcounts_file = new File("../../eventcounts.dat");
+			BufferedWriter eventcounts_output = new BufferedWriter(new FileWriter(eventcounts_file));
+			
 			File tollalerts_file = new File(path + "tollalerts.dat");
 			BufferedWriter tollalerts_output = new BufferedWriter(new FileWriter(tollalerts_file));		
 
@@ -59,10 +62,11 @@ public class OutputFileGenerator {
 				
 				for (RunID runid : runids) {
 	     		
-					Run run = runs.get(runid);	     		
-	     		
-					run.output.write2FileTollNotifications(tollalerts_output);
-					run.output.write2FileAccidentWarnings(accidentalerts_output);
+					Run run = runs.get(runid);						
+					
+					run.output.writeEventCounts2File(runid, eventcounts_output);										
+					run.output.writeTollNotifications2File(tollalerts_output);
+					run.output.writeAccidentWarnings2File(accidentalerts_output);
 	     		
 					/*run.write2FileEventStorage(eventstorage_output);
 	     			run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -78,6 +82,7 @@ public class OutputFileGenerator {
 	        times_output.write(line);*/
 		
 	        /*** Clean-up ***/
+			eventcounts_output.close();
 	       	tollalerts_output.close();
 	       	accidentalerts_output.close();
 	       	/*eventstorage_output.close();

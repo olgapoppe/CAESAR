@@ -61,7 +61,7 @@ public class Run {
 		accidentsAhead = new HashMap<Double,Double>();
 		firstHPseg = f;
 			
-		output = new Output();		
+		output = new Output();	
 	}
 	
 	/************************************************* Vehicle count *************************************************/
