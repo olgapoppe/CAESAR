@@ -91,7 +91,7 @@ public class Main {
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runtables, HP_frequency, LP_frequency);  			
+			OutputFileGenerator.write2File (runtables, HP_frequency, LP_frequency, lastSec);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }

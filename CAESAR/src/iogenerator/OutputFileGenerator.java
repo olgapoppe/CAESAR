@@ -23,7 +23,7 @@ public class OutputFileGenerator {
 	 * @param HP_frequency
 	 * @param LP_frequency
 	 */
-	public static void write2File (ArrayList<HashMap<RunID,Run>> runtables, int HP_frequency, int LP_frequency) { 
+	public static void write2File (ArrayList<HashMap<RunID,Run>> runtables, int HP_frequency, int LP_frequency, int lastSec) { 
 		
 		try {
 			/*
@@ -33,8 +33,11 @@ public class OutputFileGenerator {
 			/*** Output files for validation ***/
 			String path = "../../output/";
 			
-			File eventcounts_file = new File("../../eventcounts.dat");
+			File eventcounts_file = new File(path + "eventcounts.dat");
 			BufferedWriter eventcounts_output = new BufferedWriter(new FileWriter(eventcounts_file));
+			
+			File streamrates_file = new File(path + "streamrates.dat");
+			BufferedWriter streamrates_output = new BufferedWriter(new FileWriter(streamrates_file));
 			
 			File tollalerts_file = new File(path + "tollalerts.dat");
 			BufferedWriter tollalerts_output = new BufferedWriter(new FileWriter(tollalerts_file));		
@@ -64,7 +67,8 @@ public class OutputFileGenerator {
 	     		
 					Run run = runs.get(runid);						
 					
-					run.output.writeEventCounts2File(runid, eventcounts_output);										
+					run.output.writeEventCounts2File(runid, eventcounts_output);	
+					run.output.writeStreamRates2File(runid, streamrates_output, lastSec);
 					run.output.writeTollNotifications2File(tollalerts_output);
 					run.output.writeAccidentWarnings2File(accidentalerts_output);
 	     		

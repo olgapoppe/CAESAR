@@ -533,10 +533,10 @@ public class Run {
 
 			avgSpd = getAvgSpdFor5Min(event.min);   		
 			time.min = event.min;
-		}   	
+		}   
 		time.sec = event.sec;
-		//output.numberOfProcessedEvents++;	
-
+		output.update_positionreport_rates(event.sec);
+		
 		/************************************************* If the vehicle is new in the segment *************************************************/
 		if (vehicles.get(event.vid) == null) {
 			
@@ -561,11 +561,13 @@ public class Run {
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
 				}	
+				output.update_tollnotification_rates(event.sec);
 				output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		
 					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
+					output.update_accidentwarning_rates(event.sec);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
 			/************************************************* If the vehicle was in the segment before *************************************************/
@@ -635,7 +637,7 @@ public class Run {
 				existingVehicle.count = 1;    			
 				existingVehicle.lane = event.lane;
 				existingVehicle.pos = event.pos;
-			}} 	
+		}}		
 	}
 	/**
 	 * accidentManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings.   
