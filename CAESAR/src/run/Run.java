@@ -1,7 +1,5 @@
 package run;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
@@ -535,7 +533,7 @@ public class Run {
 			time.min = event.min;
 		}   
 		time.sec = event.sec;
-		output.update_positionreport_rates(event.sec);
+		output.update_positionreport_rates(runID, event.sec);
 		
 		/************************************************* If the vehicle is new in the segment *************************************************/
 		if (vehicles.get(event.vid) == null) {
@@ -557,17 +555,17 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 					
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 
+					output.update_tollnotification_rates(runID, event.sec);
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
 				}	
-				output.update_tollnotification_rates(event.sec);
 				output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		
 					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
-					output.update_accidentwarning_rates(event.sec);
+					output.update_accidentwarning_rates(runID, event.sec);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
 			/************************************************* If the vehicle was in the segment before *************************************************/
