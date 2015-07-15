@@ -68,7 +68,7 @@ public class OutputFileGenerator {
 					Run run = runs.get(runid);						
 					
 					run.output.writeEventCounts2File(runid, eventcounts_output);	
-					if (runid.xway == 0 && runid.dir == 0 && runid.seg == 85) run.output.writeStreamRates2File(runid, streamrates_output, lastSec);
+					if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(runid, streamrates_output, lastSec);
 					run.output.writeTollNotifications2File(tollalerts_output);
 					run.output.writeAccidentWarnings2File(accidentalerts_output);
 	     		

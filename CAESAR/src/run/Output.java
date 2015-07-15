@@ -60,7 +60,7 @@ public class Output {
 	}
 	
 	public void update_tollnotification_rates (RunID runid, double sec) {
-		if (runid.xway == 0 && runid.dir == 0 && runid.seg == 85) {
+		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
 			if (toll_notification_rates.containsKey(sec)) {
 				int count = toll_notification_rates.get(sec);
 				toll_notification_rates.put(sec, count+1);
@@ -70,7 +70,7 @@ public class Output {
 	}
 	
 	public void update_accidentwarning_rates (RunID runid, double sec) {
-		if (runid.xway == 0 && runid.dir == 0 && runid.seg == 85) {
+		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
 			if (accident_warning_rates.containsKey(sec)) {
 				int count = accident_warning_rates.get(sec);
 				accident_warning_rates.put(sec, count+1);
@@ -95,8 +95,6 @@ public class Output {
 			}
 		} catch (IOException e) { e.printStackTrace(); }
 	}
-	
-	
 	
 	/**
 	 * Write the total number of input and output events and 
