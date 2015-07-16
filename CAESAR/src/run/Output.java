@@ -22,7 +22,8 @@ public class Output {
 	public int maxLengthOfEventQueue;
 	
 	HashMap<Double,Integer> position_report_rates;
-	HashMap<Double,Integer> toll_notification_rates;
+	HashMap<Double,Integer> real_toll_notification_rates;
+	HashMap<Double,Integer> zero_toll_notification_rates;
 	HashMap<Double,Integer> accident_warning_rates;
 	
 	public Output () {
@@ -35,7 +36,8 @@ public class Output {
 		maxLengthOfEventQueue = 0;
 		
 		position_report_rates = new HashMap<Double,Integer>();
-		toll_notification_rates = new HashMap<Double,Integer>();
+		real_toll_notification_rates = new HashMap<Double,Integer>();
+		zero_toll_notification_rates = new HashMap<Double,Integer>();
 		accident_warning_rates = new HashMap<Double,Integer>();
 	}
 	
@@ -65,17 +67,32 @@ public class Output {
 	}
 	
 	/**
-	 * Toll notification rate is maintained for only one run with identifier 0,1,85.  
+	 * Real toll notification rate is maintained for only one run with identifier 0,1,85.  
 	 * @param runid
 	 * @param second
 	 */
-	public void update_tollnotification_rates (RunID runid, double sec) {
+	public void update_real_tollnotification_rates (RunID runid, double sec) {
 		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
-			if (toll_notification_rates.containsKey(sec)) {
-				int count = toll_notification_rates.get(sec);
-				toll_notification_rates.put(sec, count+1);
+			if (real_toll_notification_rates.containsKey(sec)) {
+				int count = real_toll_notification_rates.get(sec);
+				real_toll_notification_rates.put(sec, count+1);
 			} else {
-				toll_notification_rates.put(sec,1);
+				real_toll_notification_rates.put(sec,1);
+		}}	
+	}
+	
+	/**
+	 * Zero toll notification rate is maintained for only one run with identifier 0,1,85.  
+	 * @param runid
+	 * @param second
+	 */
+	public void update_zero_tollnotification_rates (RunID runid, double sec) {
+		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
+			if (zero_toll_notification_rates.containsKey(sec)) {
+				int count = zero_toll_notification_rates.get(sec);
+				zero_toll_notification_rates.put(sec, count+1);
+			} else {
+				zero_toll_notification_rates.put(sec,1);
 		}}	
 	}
 	
@@ -101,13 +118,14 @@ public class Output {
 	 * @param aw_file stores rates of accident warnings
 	 * @param lastSec is last second of simulation
 	 */
-	public void writeStreamRates2File (BufferedWriter pr_file, BufferedWriter tn_file, BufferedWriter aw_file, int lastSec) {
+	public void writeStreamRates2File (BufferedWriter pr_file, BufferedWriter rtn_file, BufferedWriter ztn_file, BufferedWriter aw_file, int lastSec) {
 		
 		try {
 			for (double sec=0; sec<=lastSec; sec++) {
 				
 				if (position_report_rates.containsKey(sec)) pr_file.write(Math.round(sec) + " " + position_report_rates.get(sec) + "\n");
-				if (toll_notification_rates.containsKey(sec)) tn_file.write(Math.round(sec) + " " + toll_notification_rates.get(sec) + "\n");
+				if (real_toll_notification_rates.containsKey(sec)) rtn_file.write(Math.round(sec) + " " + real_toll_notification_rates.get(sec) + "\n");
+				if (zero_toll_notification_rates.containsKey(sec)) ztn_file.write(Math.round(sec) + " " + zero_toll_notification_rates.get(sec) + "\n");
 				if (accident_warning_rates.containsKey(sec)) aw_file.write(Math.round(sec) + " " + accident_warning_rates.get(sec) + "\n");  
 			}
 		} catch (IOException e) { e.printStackTrace(); }
