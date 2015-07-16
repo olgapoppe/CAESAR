@@ -121,7 +121,7 @@ public class OutputFileGenerator {
 			aw_counts_output.close();
 			
 			pr_rates_output.close();
-			rtn_rates_output.		close();
+			rtn_rates_output.close();
 			ztn_rates_output.close();
 			aw_rates_output.close();
 			
