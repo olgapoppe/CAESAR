@@ -79,19 +79,14 @@ public class Output {
 		}}	
 	}
 	
-	public void writeStreamRates2File (RunID runid, BufferedWriter file, int lastSec) {
+	public void writeStreamRates2File (BufferedWriter pr_file, BufferedWriter tn_file, BufferedWriter aw_file, int lastSec) {
 		
 		try {
 			for (double sec=0; sec<=lastSec; sec++) {
 				
-				int position_report_count = position_report_rates.containsKey(sec) ? position_report_rates.get(sec) : 0;	
-				int toll_notification_count = toll_notification_rates.containsKey(sec) ? toll_notification_rates.get(sec) : 0;
-				int accident_warning_count = accident_warning_rates.containsKey(sec) ? accident_warning_rates.get(sec) : 0;
-				file.write(runid.toString() + " " + 
-						Math.round(sec) + " " +
-						position_report_count + " " +
-						toll_notification_count + " " +
-						accident_warning_count + "\n");   
+				if (position_report_rates.containsKey(sec)) pr_file.write(Math.round(sec) + " " + position_report_rates.get(sec) + "\n");
+				if (toll_notification_rates.containsKey(sec)) tn_file.write(Math.round(sec) + " " + toll_notification_rates.get(sec) + "\n");
+				if (accident_warning_rates.containsKey(sec)) aw_file.write(Math.round(sec) + " " + accident_warning_rates.get(sec) + "\n");  
 			}
 		} catch (IOException e) { e.printStackTrace(); }
 	}
@@ -101,13 +96,12 @@ public class Output {
 	 * max number of stored events to the given file.  
 	 * @param file
 	 */
-	public void writeEventCounts2File (RunID runid, BufferedWriter file) {
+	public void writeEventCounts2File (int seg, BufferedWriter pr_count_file, BufferedWriter max_num_stored_events_file, BufferedWriter tn_count_file, BufferedWriter aw_count_file) {
 		try {
-			file.write(runid.toString() + " " + 
-					position_reports_count + " " + 
-					maxLengthOfEventQueue + " " +
-					tollNotifications.size() + " " + 
-					accidentWarnings.size() + "\n");   
+			pr_count_file.write(seg + " " + position_reports_count + "\n");  
+			max_num_stored_events_file.write(seg + " " +  maxLengthOfEventQueue + "\n"); 
+			if (tollNotifications.size() > 0) tn_count_file.write(seg + " " + tollNotifications.size() + "\n"); 
+			if (accidentWarnings.size() > 0) aw_count_file.write(seg + " " + accidentWarnings.size() + "\n"); 
 		} catch (IOException e) { e.printStackTrace(); }
 	}
 	

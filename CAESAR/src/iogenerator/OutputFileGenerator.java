@@ -33,12 +33,30 @@ public class OutputFileGenerator {
 			/*** Output files for validation ***/
 			String path = "../../output/";
 			
-			File eventcounts_file = new File(path + "eventcounts.dat");
-			BufferedWriter eventcounts_output = new BufferedWriter(new FileWriter(eventcounts_file));
+			// Total event counts
+			File pr_counts_file = new File(path + "pr_counts.dat");
+			BufferedWriter pr_counts_output = new BufferedWriter(new FileWriter(pr_counts_file));
 			
-			File streamrates_file = new File(path + "streamrates.dat");
-			BufferedWriter streamrates_output = new BufferedWriter(new FileWriter(streamrates_file));
+			File max_num_stored_events_file = new File(path + "max_num_stored_events.dat");
+			BufferedWriter max_num_stored_events_output = new BufferedWriter(new FileWriter(max_num_stored_events_file));		
 			
+			File tn_counts_file = new File(path + "tn_counts.dat");
+			BufferedWriter tn_counts_output = new BufferedWriter(new FileWriter(tn_counts_file));
+			
+			File aw_counts_file = new File(path + "aw_counts.dat");
+			BufferedWriter aw_counts_output = new BufferedWriter(new FileWriter(aw_counts_file));
+			
+			// Event rates
+			File pr_rates_file = new File(path + "pr_rates.dat");
+			BufferedWriter pr_rates_output = new BufferedWriter(new FileWriter(pr_rates_file));
+			
+			File tn_rates_file = new File(path + "tn_rates.dat");
+			BufferedWriter tn_rates_output = new BufferedWriter(new FileWriter(tn_rates_file));
+			
+			File aw_rates_file = new File(path + "aw_rates.dat");
+			BufferedWriter aw_rates_output = new BufferedWriter(new FileWriter(aw_rates_file));
+			
+			// Complex events
 			File tollalerts_file = new File(path + "tollalerts.dat");
 			BufferedWriter tollalerts_output = new BufferedWriter(new FileWriter(tollalerts_file));		
 
@@ -66,9 +84,10 @@ public class OutputFileGenerator {
 				for (RunID runid : runids) {
 	     		
 					Run run = runs.get(runid);						
+					int seg = new Double(runid.seg).intValue();
 					
-					run.output.writeEventCounts2File(runid, eventcounts_output);	
-					if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(runid, streamrates_output, lastSec);
+					if (runid.xway == 0 && runid.dir == 1) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, tn_counts_output, aw_counts_output);	
+					if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, tn_rates_output, aw_rates_output, lastSec);
 					run.output.writeTollNotifications2File(tollalerts_output);
 					run.output.writeAccidentWarnings2File(accidentalerts_output);
 	     		
@@ -86,8 +105,15 @@ public class OutputFileGenerator {
 	        times_output.write(line);*/
 		
 	        /*** Clean-up ***/
-			eventcounts_output.close();
-			streamrates_output.close();
+			pr_counts_output.close();
+			max_num_stored_events_output.close();
+			tn_counts_output.close();
+			aw_counts_output.close();
+			
+			pr_rates_output.close();
+			tn_rates_output.close();
+			aw_rates_output.close();
+			
 	       	tollalerts_output.close();
 	       	accidentalerts_output.close();
 	       	/*eventstorage_output.close();
