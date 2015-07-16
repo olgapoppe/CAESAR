@@ -31,39 +31,44 @@ public class OutputFileGenerator {
 			long total_priorityMaintenanceTime = 0;*/
 			
 			/*** Output files for validation ***/
-			String path = "../../output/";
+			String output = "../../output/";
+			String counts = "../../output/counts/";
+			String rates = "../../output/rates/";
 			
 			// Total event counts
-			/*File pr_counts_file = new File(path + "pr_counts.dat");
+			File pr_counts_file = new File(counts + "pr_counts.dat");
 			BufferedWriter pr_counts_output = new BufferedWriter(new FileWriter(pr_counts_file));
 			
-			File max_num_stored_events_file = new File(path + "max_num_stored_events.dat");
+			File max_num_stored_events_file = new File(counts + "max_num_stored_events.dat");
 			BufferedWriter max_num_stored_events_output = new BufferedWriter(new FileWriter(max_num_stored_events_file));		
 			
-			File tn_counts_file = new File(path + "tn_counts.dat");
-			BufferedWriter tn_counts_output = new BufferedWriter(new FileWriter(tn_counts_file));
+			File rtn_counts_file = new File(counts + "rtn_counts.dat");
+			BufferedWriter rtn_counts_output = new BufferedWriter(new FileWriter(rtn_counts_file));
 			
-			File aw_counts_file = new File(path + "aw_counts.dat");
+			File ztn_counts_file = new File(counts + "ztn_counts.dat");
+			BufferedWriter ztn_counts_output = new BufferedWriter(new FileWriter(ztn_counts_file));
+			
+			File aw_counts_file = new File(counts + "aw_counts.dat");
 			BufferedWriter aw_counts_output = new BufferedWriter(new FileWriter(aw_counts_file));
 			
 			// Event rates
-			File pr_rates_file = new File(path + "pr_rates.dat");
+			File pr_rates_file = new File(rates + "pr_rates.dat");
 			BufferedWriter pr_rates_output = new BufferedWriter(new FileWriter(pr_rates_file));
 			
-			File rtn_rates_file = new File(path + "rtn_rates.dat");
+			File rtn_rates_file = new File(rates + "rtn_rates.dat");
 			BufferedWriter rtn_rates_output = new BufferedWriter(new FileWriter(rtn_rates_file));
 			
-			File ztn_rates_file = new File(path + "ztn_rates.dat");
+			File ztn_rates_file = new File(rates + "ztn_rates.dat");
 			BufferedWriter ztn_rates_output = new BufferedWriter(new FileWriter(ztn_rates_file));
 			
-			File aw_rates_file = new File(path + "aw_rates.dat");
-			BufferedWriter aw_rates_output = new BufferedWriter(new FileWriter(aw_rates_file));*/
+			File aw_rates_file = new File(rates + "aw_rates.dat");
+			BufferedWriter aw_rates_output = new BufferedWriter(new FileWriter(aw_rates_file));
 			
 			// Complex events
-			File tollalerts_file = new File(path + "tollalerts.dat");
+			File tollalerts_file = new File(output + "tollalerts.dat");
 			BufferedWriter tollalerts_output = new BufferedWriter(new FileWriter(tollalerts_file));		
 
-			File accidentalerts_file = new File(path + "accidentalerts.dat");
+			File accidentalerts_file = new File(output + "accidentalerts.dat");
 			BufferedWriter accidentalerts_output = new BufferedWriter(new FileWriter(accidentalerts_file)); 
 
 			/*** Output files for experiments ***/
@@ -86,11 +91,12 @@ public class OutputFileGenerator {
 				
 				for (RunID runid : runids) {
 	     		
-					Run run = runs.get(runid);						
-					//int seg = new Double(runid.seg).intValue();
+					Run run = runs.get(runid);		
+					int seg = new Double(runid.seg).intValue();
+					int lastMin =  new Double(Math.floor(lastSec/60) + 1).intValue();
 					
-					//if (runid.xway == 0 && runid.dir == 1) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, tn_counts_output, aw_counts_output);	
-					//if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastSec);
+					if (runid.xway == 0 && runid.dir == 0) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, rtn_counts_output, ztn_counts_output, aw_counts_output);	
+					if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastMin);
 					run.output.writeTollNotifications2File(tollalerts_output);
 					run.output.writeAccidentWarnings2File(accidentalerts_output);
 	     		
@@ -108,15 +114,16 @@ public class OutputFileGenerator {
 	        times_output.write(line);*/
 		
 	        /*** Clean-up ***/
-			/*pr_counts_output.close();
+			pr_counts_output.close();
 			max_num_stored_events_output.close();
-			tn_counts_output.close();
+			rtn_counts_output.close();
+			ztn_counts_output.close();
 			aw_counts_output.close();
 			
 			pr_rates_output.close();
 			rtn_rates_output.close();
 			ztn_rates_output.close();
-			aw_rates_output.close();*/
+			aw_rates_output.close();
 			
 	       	tollalerts_output.close();
 	       	accidentalerts_output.close();

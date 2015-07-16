@@ -63,7 +63,7 @@ public class SingleQueueDistributor extends EventDistributor {
 						} else {
 							run = runs.get(runid);
 						}
-						//run.output.position_reports_count++;
+						run.output.position_reports_count++;
 						
 						/*** Put the event into the run queue ***/						
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
@@ -74,7 +74,7 @@ public class SingleQueueDistributor extends EventDistributor {
 							runqueues.contents.put(runid, eventqueue);		 				
 						}
 						eventqueue.add(event);	
-						//if (eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
+						if (eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
 						//System.out.println(event.toString());											
 					}		 					 		
 			 		/*** Reset event ***/
