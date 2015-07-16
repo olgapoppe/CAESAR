@@ -555,11 +555,11 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 
-					output.update_tollnotification_rates(runID, event.sec);
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 					
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
-				}	
+				}
+				output.update_tollnotification_rates(runID, event.sec);
 				output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		

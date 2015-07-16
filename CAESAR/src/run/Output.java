@@ -49,6 +49,11 @@ public class Output {
 		}  
 	}*/
 	
+	/**
+	 * Position report rate is maintained only for one run with identifier 0,1,85.  
+	 * @param runid
+	 * @param second
+	 */	
 	public void update_positionreport_rates (RunID runid, double sec) {
 		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
 			if (position_report_rates.containsKey(sec)) {
@@ -59,6 +64,11 @@ public class Output {
 		}}
 	}
 	
+	/**
+	 * Toll notification rate is maintained for only one run with identifier 0,1,85.  
+	 * @param runid
+	 * @param second
+	 */
 	public void update_tollnotification_rates (RunID runid, double sec) {
 		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
 			if (toll_notification_rates.containsKey(sec)) {
@@ -69,6 +79,11 @@ public class Output {
 		}}	
 	}
 	
+	/**
+	 * Accident warning rate is maintained only for one run with identifier 0,1,85.  
+	 * @param runid
+	 * @param second
+	 */
 	public void update_accidentwarning_rates (RunID runid, double sec) {
 		if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) {
 			if (accident_warning_rates.containsKey(sec)) {
@@ -79,6 +94,13 @@ public class Output {
 		}}	
 	}
 	
+	/**
+	 * Rates of events of each event type are written into separate files. This method is called for only one run with identifier 0,1,85.  
+	 * @param pr_file stores rates of position reports
+	 * @param tn_file stores rates of toll notifications
+	 * @param aw_file stores rates of accident warnings
+	 * @param lastSec is last second of simulation
+	 */
 	public void writeStreamRates2File (BufferedWriter pr_file, BufferedWriter tn_file, BufferedWriter aw_file, int lastSec) {
 		
 		try {
