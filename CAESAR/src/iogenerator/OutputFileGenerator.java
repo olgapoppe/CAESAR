@@ -34,7 +34,7 @@ public class OutputFileGenerator {
 			String path = "../../output/";
 			
 			// Total event counts
-			File pr_counts_file = new File(path + "pr_counts.dat");
+			/*File pr_counts_file = new File(path + "pr_counts.dat");
 			BufferedWriter pr_counts_output = new BufferedWriter(new FileWriter(pr_counts_file));
 			
 			File max_num_stored_events_file = new File(path + "max_num_stored_events.dat");
@@ -57,7 +57,7 @@ public class OutputFileGenerator {
 			BufferedWriter ztn_rates_output = new BufferedWriter(new FileWriter(ztn_rates_file));
 			
 			File aw_rates_file = new File(path + "aw_rates.dat");
-			BufferedWriter aw_rates_output = new BufferedWriter(new FileWriter(aw_rates_file));
+			BufferedWriter aw_rates_output = new BufferedWriter(new FileWriter(aw_rates_file));*/
 			
 			// Complex events
 			File tollalerts_file = new File(path + "tollalerts.dat");
@@ -87,10 +87,10 @@ public class OutputFileGenerator {
 				for (RunID runid : runids) {
 	     		
 					Run run = runs.get(runid);						
-					int seg = new Double(runid.seg).intValue();
+					//int seg = new Double(runid.seg).intValue();
 					
-					if (runid.xway == 0 && runid.dir == 1) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, tn_counts_output, aw_counts_output);	
-					if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastSec);
+					//if (runid.xway == 0 && runid.dir == 1) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, tn_counts_output, aw_counts_output);	
+					//if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastSec);
 					run.output.writeTollNotifications2File(tollalerts_output);
 					run.output.writeAccidentWarnings2File(accidentalerts_output);
 	     		
@@ -108,7 +108,7 @@ public class OutputFileGenerator {
 	        times_output.write(line);*/
 		
 	        /*** Clean-up ***/
-			pr_counts_output.close();
+			/*pr_counts_output.close();
 			max_num_stored_events_output.close();
 			tn_counts_output.close();
 			aw_counts_output.close();
@@ -116,7 +116,7 @@ public class OutputFileGenerator {
 			pr_rates_output.close();
 			rtn_rates_output.close();
 			ztn_rates_output.close();
-			aw_rates_output.close();
+			aw_rates_output.close();*/
 			
 	       	tollalerts_output.close();
 	       	accidentalerts_output.close();
