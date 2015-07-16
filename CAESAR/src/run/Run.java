@@ -533,7 +533,7 @@ public class Run {
 			time.min = event.min;
 		}   
 		time.sec = event.sec;
-		output.update_positionreport_rates(runID, event.sec);
+		output.update_positionreport_rates(runID, event.min);
 		
 		/************************************************* If the vehicle is new in the segment *************************************************/
 		if (vehicles.get(event.vid) == null) {
@@ -556,17 +556,19 @@ public class Run {
 	
 					double vehCount = lookUpVehCount(event.min);
 					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 	
-					output.update_real_tollnotification_rates(runID, event.sec);
+					output.real_toll_count++;
+					output.update_real_tollnotification_rates(runID, event.min);
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	
-					output.update_zero_tollnotification_rates(runID, event.sec);
+					output.zero_toll_count++;
+					output.update_zero_tollnotification_rates(runID, event.min);
 				}
 				output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		
 					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
-					output.update_accidentwarning_rates(runID, event.sec);
+					output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
 			/************************************************* If the vehicle was in the segment before *************************************************/
