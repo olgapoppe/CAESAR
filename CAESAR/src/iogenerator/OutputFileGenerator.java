@@ -95,7 +95,7 @@ public class OutputFileGenerator {
 					int seg = new Double(runid.seg).intValue();
 					int lastMin =  new Double(Math.floor(lastSec/60) + 1).intValue();
 					
-					if (runid.xway == 0 && runid.dir == 1) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, rtn_counts_output, ztn_counts_output, aw_counts_output);	
+					if (runid.xway == 0 && runid.dir == 0) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, rtn_counts_output, ztn_counts_output, aw_counts_output);	
 					if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastMin);
 					run.output.writeTollNotifications2File(tollalerts_output);
 					run.output.writeAccidentWarnings2File(accidentalerts_output);
