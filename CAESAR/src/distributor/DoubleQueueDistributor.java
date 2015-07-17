@@ -14,8 +14,8 @@ public class DoubleQueueDistributor extends EventDistributor {
 	final RunQueues HPrunqueues;
 	
 	public DoubleQueueDistributor (AtomicInteger dp,  HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq,
-								   AtomicInteger x1, AtomicInteger x2, int last, long start) {
-		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start);
+								   AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
+		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start, cr);
 		HPrunqueues = hprq;
 	}
 
@@ -53,7 +53,7 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 					run = runs.get(runid);             			          			
 		 				} else {
 		 					AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-		 					run = new Run(runid, event.sec, event.min, firstHPseg);
+		 					run = new Run(runid, event.sec, event.min, firstHPseg, count_and_rate);
 		 					runs.put(runid, run);
 		 				}  			 	
 		 				/*************************************** Run queues ****************************************/

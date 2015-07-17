@@ -12,6 +12,7 @@ public class Main {
 	/**
 	 * Create and call the chain: Input files -> Drivers/Distributors -> Schedulers -> Executor pool -> Output files
 	 * @param args: split queries: 0 for false, 1 for true
+	 * 				count and rate computation: 0 for no, 1 for yes
 	 * 				scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
 	 * 				HP frequency 
 	 * 				LP frequency 
@@ -23,25 +24,26 @@ public class Main {
 	public static void main (String[] args) { 
 		
 		/*** Validate the input parameter ***/
-		if (args.length < 8) {
+		if (args.length < 9) {
 			System.out.println("At least 8 input parameters are expected.");
 			return;
 		}	
-		boolean splitQueries = args[0].equals("1");
+		boolean splitQueries = args[0].equals("1");		
+		boolean count_and_rate = args[1].equals("1");
 		
 		// Scheduling determined parameters
-		int scheduling_strategy = Integer.parseInt(args[1]);
+		int scheduling_strategy = Integer.parseInt(args[2]);
 		if (scheduling_strategy<1 || scheduling_strategy>4) {
 			System.out.println("First input parameter is a scheduling strategy which is an integer from 1 to 4.");
 			return;
 		}
-		int HP_frequency = Integer.parseInt(args[2]);	
-		int LP_frequency = Integer.parseInt(args[3]);		
+		int HP_frequency = Integer.parseInt(args[3]);	
+		int LP_frequency = Integer.parseInt(args[4]);		
 		
 		// Input file determined parameters
-		int lastSec = Integer.parseInt(args[4]);
-		String path = args[5];
-		String extension = args[6];
+		int lastSec = Integer.parseInt(args[5]);
+		String path = args[6];
+		String extension = args[7];
 		
 		//int numberOfInputFiles = args.length - 6;
 		//int numberOfHelperThreads = numberOfInputFiles * 2;
@@ -51,7 +53,7 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		for (int i=7; i<args.length; i++) {
+		for (int i=8; i<args.length; i++) {
 			
 			/*** Input file ***/	
 			String filename = path + args[i] + extension;
@@ -76,7 +78,7 @@ public class Main {
 			dones.add(done);
 			
 			/*** Start driver, distributer and scheduler ***/
-			EventPreprocessor preprocessor = new EventPreprocessor (filename, splitQueries, scheduling_strategy, runs, executor, 
+			EventPreprocessor preprocessor = new EventPreprocessor (filename, splitQueries, count_and_rate, scheduling_strategy, runs, executor, 
 					done, xways_and_dirs, lastSec, HP_frequency, LP_frequency);
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
@@ -91,7 +93,7 @@ public class Main {
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runtables, HP_frequency, LP_frequency, lastSec);  			
+			OutputFileGenerator.write2File (runtables, HP_frequency, LP_frequency, lastSec, count_and_rate);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }

@@ -40,7 +40,9 @@ public class Run {
 	
 	public Output output;	
 	
-	public Run (RunID id, double s, double m, AtomicInteger f) {
+	boolean count_and_rate;
+	
+	public Run (RunID id, double s, double m, AtomicInteger f, boolean cr) {
 		
 		runID = id;		
 		time = new Time(s,m);
@@ -60,6 +62,8 @@ public class Run {
 		firstHPseg = f;
 			
 		output = new Output();	
+		
+		count_and_rate = cr;
 	}
 	
 	/************************************************* Vehicle count *************************************************/
@@ -533,7 +537,7 @@ public class Run {
 			time.min = event.min;
 		}   
 		time.sec = event.sec;
-		output.update_positionreport_rates(runID, event.min);
+		if (count_and_rate) output.update_positionreport_rates(runID, event.min);
 		
 		/************************************************* If the vehicle is new in the segment *************************************************/
 		if (vehicles.get(event.vid) == null) {
@@ -556,19 +560,23 @@ public class Run {
 	
 					double vehCount = lookUpVehCount(event.min);
 					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 	
-					output.real_toll_count++;
-					output.update_real_tollnotification_rates(runID, event.min);
+					if (count_and_rate) {
+						output.real_toll_count++;
+						output.update_real_tollnotification_rates(runID, event.min);
+					}
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	
-					output.zero_toll_count++;
-					output.update_zero_tollnotification_rates(runID, event.min);
+					if (count_and_rate) { 
+						output.zero_toll_count++;
+						output.update_zero_tollnotification_rates(runID, event.min);
+					}
 				}
 				output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		
 					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
-					output.update_accidentwarning_rates(runID, event.min);
+					if (count_and_rate) output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
 			/************************************************* If the vehicle was in the segment before *************************************************/

@@ -144,8 +144,8 @@ public class Output {
 		try {
 			pr_count_file.write(seg + " " + position_reports_count + "\n");  
 			max_num_stored_events_file.write(seg + " " +  maxLengthOfEventQueue + "\n"); 
-			rtn_count_file.write(seg + " " + real_toll_count + "\n"); 
-			ztn_count_file.write(seg + " " + zero_toll_count + "\n");
+			if (real_toll_count > 0) rtn_count_file.write(seg + " " + real_toll_count + "\n"); 
+			if (zero_toll_count > 0) ztn_count_file.write(seg + " " + zero_toll_count + "\n");
 			if (accidentWarnings.size() > 0) aw_count_file.write(seg + " " + accidentWarnings.size() + "\n"); 
 		} catch (IOException e) { e.printStackTrace(); }
 	}

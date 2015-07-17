@@ -13,6 +13,7 @@ public class EventPreprocessor implements Runnable {
 	
 	String filename;
 	boolean splitQueries;
+	boolean count_and_rate;
 	int scheduling_strategy; 
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
@@ -23,11 +24,12 @@ public class EventPreprocessor implements Runnable {
 	int HP_frequency;
 	int LP_frequency;
 	
-	EventPreprocessor(String f, boolean sq, int ss, HashMap<RunID,Run> rs, ExecutorService e, 
+	EventPreprocessor(String f, boolean sq, boolean cr, int ss, HashMap<RunID,Run> rs, ExecutorService e, 
 		CountDownLatch d, ArrayList<XwayDirPair> xds, int lS, int HP_freq, int LP_freq) {
 		
 		filename = f;
 		splitQueries = sq;
+		count_and_rate = cr;
 		scheduling_strategy = ss; 
 		runs = rs;
 		executor = e;
@@ -62,7 +64,7 @@ public class EventPreprocessor implements Runnable {
 		if (scheduling_strategy < 3) {
 			
 			distributor = new SingleQueueDistributor(distributorProgress, distributorProgressPerSec, filename, runs, runqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);		
+												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation, count_and_rate);		
 			
 			if (scheduling_strategy == 1) {
 			
@@ -79,7 +81,7 @@ public class EventPreprocessor implements Runnable {
 		} else {
 			
 			distributor = new DoubleQueueDistributor(distributorProgress, distributorProgressPerSec, filename, runs, runqueues, HPrunqueues,
-												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation);	
+												xway0dir0firstHPseg, xway0dir1firstHPseg, lastSec, startOfSimulation, count_and_rate);	
 			
 			if (scheduling_strategy == 3) {
 			

@@ -12,8 +12,9 @@ import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {	
 		
-	public SingleQueueDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
-		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start);		 
+	public SingleQueueDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, 
+			AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
+		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start, cr);		 
 	}
 
 	/** 
@@ -58,12 +59,12 @@ public class SingleQueueDistributor extends EventDistributor {
 						if (!runs.containsKey(runid) || runs.get(runid) == null) {
 							
 							AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-							run = new Run(runid, event.sec, event.min, firstHPseg);
+							run = new Run(runid, event.sec, event.min, firstHPseg, count_and_rate);
 							runs.put(runid, run);						
 						} else {
 							run = runs.get(runid);
 						}
-						run.output.position_reports_count++;
+						if (count_and_rate) run.output.position_reports_count++;
 						
 						/*** Put the event into the run queue ***/						
 						event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
@@ -74,7 +75,7 @@ public class SingleQueueDistributor extends EventDistributor {
 							runqueues.contents.put(runid, eventqueue);		 				
 						}
 						eventqueue.add(event);	
-						if (eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
+						if (count_and_rate && eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
 						//System.out.println(event.toString());											
 					}		 					 		
 			 		/*** Reset event ***/

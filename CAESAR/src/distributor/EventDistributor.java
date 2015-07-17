@@ -22,8 +22,10 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger xway0dir1firstHPseg;
 	int lastSec;
 	long startOfSimulation;
+	boolean count_and_rate;
 		
-	public EventDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, AtomicInteger x1, AtomicInteger x2, int last, long start) {
+	public EventDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, 
+			AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
 		
 		distributorProgress = dp;
 		distributorProgressPerSec = distrProgrPerSec;
@@ -36,5 +38,6 @@ public abstract class EventDistributor implements Runnable {
 		xway0dir1firstHPseg = x2;
 		lastSec = last;
 		startOfSimulation = start;
+		count_and_rate = cr;
 	}
 }
