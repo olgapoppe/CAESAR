@@ -7,13 +7,15 @@ import run.*;
 import event.PositionReport;
 
 public class TrafficManagement extends Transaction {
-		
+	
+	Run run;
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
 			AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
-		super(r,eventList,rs,start,distrProgrPerSec);
+		super(eventList,rs,start,distrProgrPerSec);
+		run = r;
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;
 	}

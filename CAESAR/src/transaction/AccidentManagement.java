@@ -9,11 +9,13 @@ import event.PositionReport;
 
 public class AccidentManagement extends Transaction {
 	
+	Run run;
 	boolean run_priorization;
 	AtomicBoolean accidentWarningsFailed;
 	
 	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, AtomicBoolean awf, HashMap<Double,Long> distrProgrPerSec) {
-		super(r,eventList,rs,start,distrProgrPerSec);
+		super(eventList,rs,start,distrProgrPerSec);
+		run = r;
 		run_priorization = rp;
 		accidentWarningsFailed = awf;
 	}

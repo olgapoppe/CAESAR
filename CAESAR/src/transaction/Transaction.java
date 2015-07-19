@@ -14,20 +14,16 @@ import event.*;
  */
 public abstract class Transaction implements Runnable {
 	
-	public Run run;
-	ArrayList<PositionReport> events;
-		
+	ArrayList<PositionReport> events;		
 	HashMap<RunID,Run> runs;
 	long startOfSimulation;
 	HashMap<Double,Long> distributorProgressPerSec;
 	
 	public CountDownLatch transaction_number;
 			
-	public Transaction (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Long> distrProgrPerSec) {
+	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Long> distrProgrPerSec) {
 		
-		run = r;	
-		events = eventList;
-		
+		events = eventList;		
 		runs = rs;
 		startOfSimulation = start;		
 		distributorProgressPerSec = distrProgrPerSec;
