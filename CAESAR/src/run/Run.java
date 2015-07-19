@@ -750,15 +750,14 @@ public class Run {
 			time.minOfLastStorageOfEventProcessingTime = event.min;  		   			 	
 		}*/	
 
-		// Update run data: avgSpd, time, numberOfProcessedEvents
+		// Update run data: avgSpd, time
 		if (time.min < event.min) {  
 
 			avgSpd = getAvgSpdFor5Min(event.min);   		
 			time.min = event.min;
 		}   	
 		time.sec = event.sec;
-		//output.numberOfProcessedEvents++;	
-		
+				
 		// Get previous info about the vehicle
 		Vehicle vehicle = vehicles.get(event.vid);
 		

@@ -50,8 +50,7 @@ public class Vehicle {
 	}
 	
 	/**
-	 * Compute the average speed of this vehicle during the given minute
-	 * 
+	 * Compute the average speed of this vehicle during the given minute 
 	 * @param min	minute
 	 * @return 		average speed 
 	 */	
