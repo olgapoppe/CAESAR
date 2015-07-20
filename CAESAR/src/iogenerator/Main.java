@@ -11,39 +11,62 @@ public class Main {
 	
 	/**
 	 * Create and call the chain: Input files -> Drivers/Distributors -> Schedulers -> Executor pool -> Output files
-	 * @param args: split queries: 0 for false, 1 for true
-	 * 				count and rate computation: 0 for no, 1 for yes
-	 * 				scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
-	 * 				HP frequency 
-	 * 				LP frequency 
-	 * 				last second : 10784
-	 * 				path : src/input/ or ../../input/
-	 * 				extension : .txt or .dat
-	 * 				input file names in xway;dir-xway;dir-xway;dir format				
+	 * 
+	 * @param args: SCHEDULING
+	 * 0			split queries: 0 for false, 1 for true
+	 * 1			scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
+	 * 2			HP frequency 
+	 * 3			LP frequency
+	 *
+	 * 				OPTIMIZATION
+	 * 4			fully optimized: 1 for yes, 0 for no
+	 * 5			event derivation omission: 1 for yes, 0 for no
+	 * 6			early mandatory projections: 1 for yes, 0 for no
+	 * 7			early condensed filtering: 1 for yes, 0 for no
+	 * 8			reduced stream history traversal: 1 for yes, 0 for no
+	 *
+	 *				STATISTICS
+	 * 9			count and rate computation: 0 for no, 1 for yes
+	 * 
+	 *  			INPUT
+	 * 10			last second : 10784
+	 * 11			path : src/input/ or ../../input/
+	 * 12			extension : .txt or .dat
+	 * 13			input file names in xway;dir-xway;dir-xway;dir format				
 	 */
 	public static void main (String[] args) { 
 		
-		/*** Validate the input parameter ***/
-		if (args.length < 9) {
-			System.out.println("At least 8 input parameters are expected.");
+		/*** Validate the number of input parameters ***/
+		if (args.length < 14) {
+			System.out.println("At least 14 input parameters are expected.");
 			return;
 		}	
-		boolean splitQueries = args[0].equals("1");		
-		boolean count_and_rate = args[1].equals("1");
 		
-		// Scheduling determined parameters
-		int scheduling_strategy = Integer.parseInt(args[2]);
+		/*** SCHEDULING ***/
+		boolean splitQueries = args[0].equals("1");
+		
+		int scheduling_strategy = Integer.parseInt(args[1]);
 		if (scheduling_strategy<1 || scheduling_strategy>4) {
-			System.out.println("First input parameter is a scheduling strategy which is an integer from 1 to 4.");
+			System.out.println("Second input parameter is a scheduling strategy which is an integer from 1 to 4.");
 			return;
 		}
-		int HP_frequency = Integer.parseInt(args[3]);	
-		int LP_frequency = Integer.parseInt(args[4]);		
+		int HP_frequency = Integer.parseInt(args[2]);	
+		int LP_frequency = Integer.parseInt(args[3]);
 		
-		// Input file determined parameters
-		int lastSec = Integer.parseInt(args[5]);
-		String path = args[6];
-		String extension = args[7];
+		/*** OPTIMIZATION ***/
+		boolean fully_optimized = args[4].equals("1");
+		boolean event_derivation_omission = args[5].equals("1");
+		boolean early_mandatory_projections = args[6].equals("1");
+		boolean early_condensed_filtering = args[7].equals("1");
+		boolean reduced_stream_history_traversal = args[8].equals("1");		
+		
+		/*** STATISTICS ***/
+		boolean count_and_rate = args[9].equals("1");
+		
+		/*** INPUT ***/
+		int lastSec = Integer.parseInt(args[10]);
+		String path = args[11];
+		String extension = args[12];
 		
 		//int numberOfInputFiles = args.length - 6;
 		//int numberOfHelperThreads = numberOfInputFiles * 2;
@@ -53,7 +76,7 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		for (int i=8; i<args.length; i++) {
+		for (int i=13; i<args.length; i++) {
 			
 			/*** Input file ***/	
 			String filename = path + args[i] + extension;
@@ -83,7 +106,7 @@ public class Main {
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
 			ppThread.start();			
-		}						
+		}	
 		try {
 			/*** Wait till all input events are processed and terminate the executor ***/
 			for (CountDownLatch done : dones) {
