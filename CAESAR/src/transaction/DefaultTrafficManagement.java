@@ -132,25 +132,36 @@ public class DefaultTrafficManagement extends Transaction {
 				
 			// Update vehCounts
 			// Update existingVehicle: time
-			vehicle.sec = event.sec;    		
-			if (event.min > vehicle.min) {
-						
-				vehicle.min = event.min;
-				
-				double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
-				vehCounts.put(next_min, new_count);			
+			RunID runid9 = new RunID(event.xway,event.dir,event.seg); // RL
+			Run run9 = runs.get(runid9);
+			
+			Vehicle vehicle = run.vehicles.get(event.vid);
+			
+			vehicle.sec = event.sec; // TU
+			
+			RunID runid10 = new RunID(event.xway,event.dir,event.seg); // RL
+			Run run10 = runs.get(runid10);
+			if (event.min > vehicle.min) { // FI						
+				vehicle.min = event.min; // TU
+			}	
+			
+			RunID runid11 = new RunID(event.xway,event.dir,event.seg); // RL
+			Run run11 = runs.get(runid11);
+			if (event.min > vehicle.min) { // FI
+				double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
+				run.vehCounts.put(next_min, new_count);	// HU
 			}
 			// Update existingVehicle: spd, spds
-			vehicle.spd = event.spd;
+			vehicle.spd = event.spd; // HU
 			if (vehicle.spds.containsKey(event.min)) {    
 
-				vehicle.spds.get(event.min).add(event.spd);    			
+				vehicle.spds.get(event.min).add(event.spd); // HU		
 					
 			} else {             					
 			
 				Vector<Double> new_speeds_per_min = new Vector<Double>();
 				new_speeds_per_min.add(event.spd);
-				vehicle.spds.put(event.min, new_speeds_per_min);			
+				vehicle.spds.put(event.min, new_speeds_per_min); // HU		
 			}		
 		} 			
 	}
