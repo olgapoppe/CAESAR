@@ -5,12 +5,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import run.Run;
-import run.RunID;
-import run.Vehicle;
-import event.PositionReport;
-import event.TollNotification;
+import run.*;
+import event.*;
 
 public class DefaultTrafficManagement extends Transaction {	
 	
@@ -43,54 +39,96 @@ public class DefaultTrafficManagement extends Transaction {
 		// Set auxiliary variables
 		double next_min = event.min+1;
 		   
-		// History update: avgSpd
+		// HU: avgSpd
 		RunID runid = new RunID(event.xway,event.dir,event.seg); // RL
 		Run run = runs.get(runid);		
 		if (run.time.min < event.min) // FI 
 			run.avgSpd = default_getAvgSpdFor5Min(event,event.min); // HU		
 		
-		// History update: min
+		// HU: min
 		RunID runid1 = new RunID(event.xway,event.dir,event.seg); // RL
 		Run run1 = runs.get(runid1);	
-		if (run1.time.min < event.min) // FI 
-			run1.time.min = event.min; // TU
+		if (run.time.min < event.min) // FI 
+			run.time.min = event.min; // TU
 		
-		// History update: sec
+		// HU: sec
 		RunID runid2 = new RunID(event.xway,event.dir,event.seg); // RL
 		Run run2 = runs.get(runid2);		
-		run2.time.sec = event.sec; // TU
+		run.time.sec = event.sec; // TU
 						
-		// Get previous info about the vehicle
-		Vehicle vehicle = vehicles.get(event.vid);
-				
 		/************************************************* If the vehicle is new in the segment *************************************************/
-		if (vehicle.appearance_sec == event.sec) {
-					
-			// Update vehicle speeds and vehCounts
-			Vector<Double> new_speeds_per_min = new Vector<Double>();
-			new_speeds_per_min.add(event.spd);
-			vehicle.spds.put(event.min,new_speeds_per_min);			    	   
-
-			double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
-			vehCounts.put(next_min, new_count);
-					    
-			// Derive complex events
-			if (event.lane < 4) {    
-						
-				TollNotification tollNotification;
-						
-				if 	(!isAccident && congested(event.min)) { 
+		// New car detection
+		RunID runid3 = new RunID(event.xway,event.dir,event.seg); // RL
+		Run run3 = runs.get(runid2);
 		
-					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 
+		if (run.vehicles.get(event.vid) == null) { // FI
+			
+			NewCar newCar = new NewCar(event); // ED
+					
+			// HU: vehicles
+			RunID runid4 = new RunID(event.xway,event.dir,event.seg); // RL
+			Run run4 = runs.get(runid4);
+			
+			Vehicle newVehicle = new Vehicle (event);
+			Vector<Double> new_speeds_per_min = new Vector<Double>();
+			new_speeds_per_min.add(event.spd); 
+			
+			newVehicle.spds.put(event.min,new_speeds_per_min);
+			run.vehicles.put(event.vid,newVehicle); // HU  	   
+
+			// HU: vehCounts
+			RunID runid5 = new RunID(event.xway,event.dir,event.seg); // RL
+			Run run5 = runs.get(runid5);
+			
+			double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
+			run.vehCounts.put(next_min, new_count); // HU
+					    
+			// New traveling car detection
+			if (event.lane < 4) { // FI  
+				
+				NewCar newTravelingCar = new NewTravelingCar(event); // ED
+				
+				// Accident ahead detection
+				double segWithAccAhead;
+				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) {
+					
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event);
+					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
+					run.time.minOfLastUpdateOfAccidentAhead = event.min;
+				} else {
+					segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1;
+				}	
+				
+				// Toll notification derivation
+				boolean isAccident = segWithAccAhead != -1;
+				TollNotification tollNotification;
+				
+				RunID runid6 = new RunID(event.xway,event.dir,event.seg); // RL
+				Run run6 = runs.get(runid6);
+				
+				RunID runid7 = new RunID(event.xway,event.dir,event.seg); // RL
+				Run run7 = runs.get(runid7);
+						
+				if 	(!isAccident && run.congested(event.min)) { // FI
+		
+					double vehCount = run.lookUpVehCount(event.min);
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); // ED
 							
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED			
 				}
-				output.tollNotifications.add(tollNotification);
+				run.output.tollNotifications.add(tollNotification);
 			}
 		/*********************************************** If the vehicle was in the segment before ***********************************************/
-		} else {			
+		} else {	
+			
+			// Old car detection
+			RunID runid8 = new RunID(event.xway,event.dir,event.seg); // RL
+			Run run8 = runs.get(runid8);
+			
+			if (run.vehicles.get(event.vid) != null) { // FI
+				OldCar oldCar = new OldCar(event); // ED
+			}						
 				
 			// Update vehCounts
 			// Update existingVehicle: time
@@ -114,8 +152,7 @@ public class DefaultTrafficManagement extends Transaction {
 				new_speeds_per_min.add(event.spd);
 				vehicle.spds.put(event.min, new_speeds_per_min);			
 			}		
-		} 	
-		//event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;		
+		} 			
 	}
 	
 	/**
@@ -176,7 +213,7 @@ public class DefaultTrafficManagement extends Transaction {
 		if (min > run.time.min) { // FI
 			for (Double vid : vids) {				
 				Vehicle vehicle = run.vehicles.get(vid);
-				double spd = vehicle.getAvgSpd(min);
+				double spd = vehicle.default_getAvgSpd(min);
 				if (spd>-1) {
 					sum += spd;	
 					count++;

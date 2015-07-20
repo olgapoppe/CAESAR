@@ -28,7 +28,9 @@ public class Vehicle {
 	// Number of times this position was reported
 	public double count;	
 	// Mapping of minutes to speeds
-	public HashMap<Double,Vector<Double>> spds;		
+	public HashMap<Double,Vector<Double>> spds;
+	// Mapping of minutes to average speeds
+	public HashMap<Double,Double> avgSpds;
 					
 	public Vehicle (PositionReport e) {
 		
@@ -47,6 +49,7 @@ public class Vehicle {
 		
 		count = 1;		
 		spds = new HashMap<Double,Vector<Double>>();		
+		avgSpds = new HashMap<Double,Double>();
 	}
 	
 	/**
@@ -62,6 +65,26 @@ public class Vehicle {
 				sum += spd;
 			}
 			return sum/new Double(spdsPerMin.size());			
+		} else {
+			return -1;
+		}	
+	}	
+	
+	/**
+	 * Compute the average speed of this vehicle during the given minute 
+	 * @param min	minute
+	 * @return 		average speed 
+	 */	
+	public double default_getAvgSpd (double min) {
+		if (spds.containsKey(min)) {			
+			double sum = 0;
+			Vector<Double> spdsPerMin = spds.get(min);	
+			for (double spd : spdsPerMin) {
+				sum += spd;
+			}
+			double result = sum/new Double(spdsPerMin.size());
+			avgSpds.put(min, result); // HU
+			return result;			
 		} else {
 			return -1;
 		}	
