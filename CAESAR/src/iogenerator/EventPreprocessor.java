@@ -9,36 +9,54 @@ import run.*;
 import scheduler.*;
 import distributor.*;
 
-public class EventPreprocessor implements Runnable {
+public class EventPreprocessor implements Runnable {	
 	
-	String filename;
-	boolean splitQueries;
-	boolean count_and_rate;
+	boolean splitQueries;	
 	int scheduling_strategy; 
-	HashMap<RunID,Run> runs;
-	ExecutorService executor;
-	
-	CountDownLatch done;
-	ArrayList<XwayDirPair> xways_and_dirs;
-	int lastSec;
 	int HP_frequency;
 	int LP_frequency;
 	
-	EventPreprocessor(String f, boolean sq, boolean cr, int ss, HashMap<RunID,Run> rs, ExecutorService e, 
-		CountDownLatch d, ArrayList<XwayDirPair> xds, int lS, int HP_freq, int LP_freq) {
+	boolean event_derivation_omission;
+	boolean early_mandatory_projections;
+	boolean early_condensed_filtering;
+	boolean reduced_stream_history_traversal;
+	
+	String filename;
+	ArrayList<XwayDirPair> xways_and_dirs;
+	int lastSec;
+	
+	boolean count_and_rate;
+	
+	HashMap<RunID,Run> runs;
+	ExecutorService executor;
+	CountDownLatch done;
+	
+	EventPreprocessor(boolean sq,  
+			int ss, int HP_freq, int LP_freq,
+			boolean ed, boolean pr, boolean fi, boolean sh,
+			String f, ArrayList<XwayDirPair> xds, int lS,
+			boolean cr,
+			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d) {
+		
+		splitQueries = sq;
+		scheduling_strategy = ss;
+		HP_frequency = HP_freq;
+		LP_frequency = LP_freq;	
+		
+		event_derivation_omission = ed;
+		early_mandatory_projections = pr;
+		early_condensed_filtering = fi;
+		reduced_stream_history_traversal = sh;
 		
 		filename = f;
-		splitQueries = sq;
-		count_and_rate = cr;
-		scheduling_strategy = ss; 
-		runs = rs;
-		executor = e;
-		
-		done = d;
 		xways_and_dirs = xds;
 		lastSec = lS;
-		HP_frequency = HP_freq;
-		LP_frequency = LP_freq;		
+		
+		count_and_rate = cr;
+		 
+		runs = rs;
+		executor = e;		
+		done = d;		
 	}
 	
 	public void run () {
@@ -70,7 +88,8 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
 			scheduler = new TimeDrivenScheduler(splitQueries, distributorProgress, distributorProgressPerSec, runs, runqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation);
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 			} else {			
 			
 				System.out.println("RUN DRIVEN SCHEDULER.");

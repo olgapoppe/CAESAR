@@ -19,26 +19,25 @@ public class Main {
 	 * 3			LP frequency
 	 *
 	 * 				OPTIMIZATION
-	 * 4			fully optimized: 1 for yes, 0 for no
-	 * 5			event derivation omission: 1 for yes, 0 for no
-	 * 6			early mandatory projections: 1 for yes, 0 for no
-	 * 7			early condensed filtering: 1 for yes, 0 for no
-	 * 8			reduced stream history traversal: 1 for yes, 0 for no
+	 * 4			event derivation omission: 1 for yes, 0 for no
+	 * 5			early mandatory projections: 1 for yes, 0 for no
+	 * 6			early condensed filtering: 1 for yes, 0 for no
+	 * 7			reduced stream history traversal: 1 for yes, 0 for no
 	 *
 	 *				STATISTICS
-	 * 9			count and rate computation: 0 for no, 1 for yes
+	 * 8			count and rate computation: 0 for no, 1 for yes
 	 * 
 	 *  			INPUT
-	 * 10			last second : 10784
-	 * 11			path : src/input/ or ../../input/
-	 * 12			extension : .txt or .dat
-	 * 13			input file names in xway;dir-xway;dir-xway;dir format				
+	 * 9			last second : 10784
+	 * 10			path : src/input/ or ../../input/
+	 * 11			extension : .txt or .dat
+	 * 12			input file names in xway;dir-xway;dir-xway;dir format				
 	 */
 	public static void main (String[] args) { 
 		
 		/*** Validate the number of input parameters ***/
-		if (args.length < 14) {
-			System.out.println("At least 14 input parameters are expected.");
+		if (args.length < 13) {
+			System.out.println("At least 13 input parameters are expected.");
 			return;
 		}	
 		
@@ -54,19 +53,18 @@ public class Main {
 		int LP_frequency = Integer.parseInt(args[3]);
 		
 		/*** OPTIMIZATION ***/
-		boolean fully_optimized = args[4].equals("1");
-		boolean event_derivation_omission = args[5].equals("1");
-		boolean early_mandatory_projections = args[6].equals("1");
-		boolean early_condensed_filtering = args[7].equals("1");
-		boolean reduced_stream_history_traversal = args[8].equals("1");		
+		boolean ed = args[4].equals("1");
+		boolean pr = args[5].equals("1");
+		boolean fi = args[6].equals("1");
+		boolean sh = args[7].equals("1");		
 		
 		/*** STATISTICS ***/
-		boolean count_and_rate = args[9].equals("1");
+		boolean count_and_rate = args[8].equals("1");
 		
 		/*** INPUT ***/
-		int lastSec = Integer.parseInt(args[10]);
-		String path = args[11];
-		String extension = args[12];
+		int lastSec = Integer.parseInt(args[9]);
+		String path = args[10];
+		String extension = args[11];
 		
 		//int numberOfInputFiles = args.length - 6;
 		//int numberOfHelperThreads = numberOfInputFiles * 2;
@@ -76,7 +74,7 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		for (int i=13; i<args.length; i++) {
+		for (int i=12; i<args.length; i++) {
 			
 			/*** Input file ***/	
 			String filename = path + args[i] + extension;
@@ -101,8 +99,12 @@ public class Main {
 			dones.add(done);
 			
 			/*** Start driver, distributer and scheduler ***/
-			EventPreprocessor preprocessor = new EventPreprocessor (filename, splitQueries, count_and_rate, scheduling_strategy, runs, executor, 
-					done, xways_and_dirs, lastSec, HP_frequency, LP_frequency);
+			EventPreprocessor preprocessor = new EventPreprocessor (
+					splitQueries,  scheduling_strategy, HP_frequency, LP_frequency,
+					ed, pr, fi, sh,
+					filename, xways_and_dirs, lastSec, 
+					count_and_rate,
+					runs, executor, done);
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
 			ppThread.start();			

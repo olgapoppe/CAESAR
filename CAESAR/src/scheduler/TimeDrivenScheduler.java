@@ -18,12 +18,25 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	
 	int sec;
 	boolean splitQueries;
+	
+	boolean event_derivation_omission;
+	boolean early_mandatory_projections;
+	boolean early_condensed_filtering;
+	boolean reduced_stream_history_traversal;
 			
 	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {		
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start,
+			boolean ed, boolean pr, boolean fi, boolean sh) {	
+		
 		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);
+		
 		sec = 0;
 		splitQueries = sq;
+		
+		event_derivation_omission = ed;
+		early_mandatory_projections = pr;
+		early_condensed_filtering = fi;
+		reduced_stream_history_traversal = sh;		
 	}
 	
 	/**
@@ -38,7 +51,8 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) {  
 			try {	
 				// Schedule the current second
-				all_queries_all_runs (splitQueries, curr_sec, false, false);
+				all_queries_all_runs (splitQueries, curr_sec, false, false, 
+						event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing
 				
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/					

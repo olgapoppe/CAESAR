@@ -52,7 +52,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					
 					//System.out.println("All queries process " + hp_sec);
 					
-					all_queries_all_runs(true, hp_sec, false, true);
+					all_queries_all_runs(true, hp_sec, false, true, false, false, false, false);
 					hp_sec++;
 					lp_sec = hp_sec;
 					hp_count++;
