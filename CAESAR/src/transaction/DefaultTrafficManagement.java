@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import accident.AccidentLocation;
 import run.*;
 import event.*;
 
@@ -151,20 +153,21 @@ public class DefaultTrafficManagement extends Transaction {
 				OldCar oldCar = new OldCar(event); // ED
 			}	
 			
-			Vehicle vehicle = run.vehicles.get(event.vid);
+			// Get previous info about the vehicle
+			Vehicle existingVehicle = run.vehicles.get(event.vid);
 				
 			// Update of existingVehicle: time
 			runLookUp(event); // RL 18		
-			vehicle.sec = event.sec; // TU
+			existingVehicle.sec = event.sec; // TU
 			
 			runLookUp(event); // RL 17
-			if (event.min > vehicle.min) { // FI				
-				vehicle.min = event.min; // TU
+			if (event.min > existingVehicle.min) { // FI				
+				existingVehicle.min = event.min; // TU
 			}
 			
 			// Update of vehCounts
 			runLookUp(event); // RL 11
-			if (event.min > vehicle.min) { // FI
+			if (event.min > existingVehicle.min) { // FI
 				
 				double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
 				run.vehCounts.put(next_min, new_count);	// HU
@@ -173,18 +176,84 @@ public class DefaultTrafficManagement extends Transaction {
 			// Update of existingVehicle: spd, spds
 			runLookUp(event); // RL 10
 			
-			vehicle.spd = event.spd; // HU
-			if (vehicle.spds.containsKey(event.min)) {    
+			existingVehicle.spd = event.spd; // HU
+			if (existingVehicle.spds.containsKey(event.min)) {    
 
-				vehicle.spds.get(event.min).add(event.spd); // HU		
+				existingVehicle.spds.get(event.min).add(event.spd); // HU		
 					
 			} else {             					
 			
 				Vector<Double> new_speeds_per_min = new Vector<Double>();
 				new_speeds_per_min.add(event.spd);
-				vehicle.spds.put(event.min, new_speeds_per_min); // HU		
-			}		
-		} 			
+				existingVehicle.spds.put(event.min, new_speeds_per_min); // HU		
+			}	
+			
+			// Accident detection and clearance	
+			// Update stoppedVehicles
+			// Update existingVehicle: count, lane, pos
+			if (existingVehicle.pos == event.pos && existingVehicle.lane == event.lane) { // Same position is reported, FI    
+				
+				// Same position derivation
+				runLookUp(event); // RL 19
+				SamePos samePos = new SamePos(event); // ED
+
+				// Update count of the existing vehicle
+				runLookUp(event); // RL 21
+				existingVehicle.count++; // HU
+				
+				// Update stopped vehicles
+				runLookUp(event); // RL 22
+
+				// Add new stopped vehicle
+				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
+				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
+
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+
+					if (run.stoppedVehicles.containsKey(accidentLocation)) {
+				
+						Vector<StoppedVehicle> stopped_vehicles = run.stoppedVehicles.get(accidentLocation);
+						if (stopped_vehicles.size() < 2) { 
+							stopped_vehicles.add(stopped_vehicle); // HU
+							
+							// Accident detection
+							runLookUp(event); // RL 23
+							run.toAccident(event, startOfSimulation, false); // FI, HU
+						}    					
+					} else {
+						Vector<StoppedVehicle> stopped_vehicles = new Vector<StoppedVehicle>();
+						stopped_vehicles.add(stopped_vehicle);
+						run.stoppedVehicles.put(accidentLocation,stopped_vehicles); // HU
+				}}
+				// Update second of previously detected stopped vehicle
+				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
+
+					runLookUp(event); // RL 24
+					StoppedVehicle stopped_vehicle = run.getStoppedVehicle(event.lane, event.pos, event.vid);
+					if (stopped_vehicle != null) stopped_vehicle.sec = event.sec; // HU
+				}
+			} else { // Other position is reported
+				
+				// Other position derivation
+				runLookUp(event); // RL 20
+				if (existingVehicle.pos != event.pos && existingVehicle.lane != event.lane) { // FI
+					OtherPos samePos = new OtherPos(event); // ED
+				}
+				      					
+				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) { // FI    	
+					
+					runLookUp(event); // RL 25
+					run.setRemovalTime(event.vid, event.sec); // HU	
+					
+					// Accident clearance detection
+					runLookUp(event); // RL 27
+					run.fromAccident(event, startOfSimulation, false); // FI, HU
+				}  
+				runLookUp(event); // RL 26
+				existingVehicle.count = 1; // HU   			
+				existingVehicle.lane = event.lane;
+				existingVehicle.pos = event.pos;
+		}} 			
 	}
 	
 	/**
