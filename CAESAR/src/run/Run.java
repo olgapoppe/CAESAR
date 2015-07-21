@@ -41,6 +41,7 @@ public class Run {
 	public Output output;	
 	
 	boolean count_and_rate;
+	public String context;
 	
 	public Run (RunID id, double s, double m, AtomicInteger f, boolean cr) {
 		
@@ -64,6 +65,7 @@ public class Run {
 		output = new Output();	
 		
 		count_and_rate = cr;
+		context = "clear";
 	}
 	
 	/************************************************* Vehicle count *************************************************/
