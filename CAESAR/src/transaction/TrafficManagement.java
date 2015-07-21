@@ -6,6 +6,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.PositionReport;
 
+/** 
+ * A traffic managing transaction processes all events in the event sequence by their respective run
+ * using a fully optimized query plan containing all queries.  
+ * @author Olga Poppe
+ */
 public class TrafficManagement extends Transaction {
 	
 	Run run;

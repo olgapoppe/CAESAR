@@ -8,8 +8,8 @@ import run.*;
 import event.*;
 
 /** 
- * A transaction has a time stamp, a run and a sequence of events 
- * that are executed by the run. 
+ * A transaction has a sequence of events with the same time stamp and belonging to the same run,
+ * a set of all runs, start of simulation and distributor progress per second. 
  * @author Olga Poppe
  */
 public abstract class Transaction implements Runnable {

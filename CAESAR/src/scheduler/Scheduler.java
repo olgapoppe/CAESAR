@@ -370,7 +370,7 @@ public abstract class Scheduler implements Runnable {
 						if (ed & pr & fi & sh) {
 							return new TrafficManagement (run, event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
 						} else {
-							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
+							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec, ed, pr, fi, sh);
 						}
 				}}
 				

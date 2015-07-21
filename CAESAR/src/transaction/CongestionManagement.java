@@ -7,6 +7,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.PositionReport;
 
+/** 
+ * A congestion managing transaction processes all events in the event sequence by their respective run
+ * using a fully optimized query plan containing queries related to congestion.  
+ * @author Olga Poppe
+ */
 public class CongestionManagement extends Transaction {
 	
 	Run run;

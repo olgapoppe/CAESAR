@@ -7,6 +7,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.PositionReport;
 
+/** 
+ * A accident managing transaction processes all events in the event sequence by their respective run
+ * using a fully optimized query plan containing queries related to accident.  
+ * @author Olga Poppe
+ */
 public class AccidentManagement extends Transaction {
 	
 	Run run;
