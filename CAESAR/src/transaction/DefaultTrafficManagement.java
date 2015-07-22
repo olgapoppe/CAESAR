@@ -81,11 +81,11 @@ public class DefaultTrafficManagement extends Transaction {
 			runLookUp(event); // RL 1	
 			if (run.time.min < event.min) { // FI 
 				run.time.min = event.min; // TU
-		}} else {
-			if (run.time.min < event.min) {  
-
-				run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min);   		
-				run.time.min = event.min;
+			}
+		} else {
+			if (run.time.min < event.min) { // FI 
+				run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU		
+				run.time.min = event.min; // TU
 			} 
 		}
 		// Update of sec
@@ -129,14 +129,25 @@ public class DefaultTrafficManagement extends Transaction {
 				if (!early_condensed_filtering) runLookUp(event); // RL 13
 				
 				double segWithAccAhead;
-				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) {
+				if (!reduced_stream_history_traversal) {
 					
-					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // FI
-					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
-					run.time.minOfLastUpdateOfAccidentAhead = event.min;
+					if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
+						
+						segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL, FI
+						if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
+						run.time.minOfLastUpdateOfAccidentAhead = event.min;
+					} else {
+						segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
+					}					
 				} else {
-					segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1;
-				}	
+					if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
+					
+						segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL, FI
+						if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
+						run.time.minOfLastUpdateOfAccidentAhead = event.min;
+					} else {
+						segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
+				}}	
 				
 				// Context update
 				if (!early_condensed_filtering) runLookUp(event); // RL 14
@@ -213,21 +224,18 @@ public class DefaultTrafficManagement extends Transaction {
 				
 				runLookUp(event); // RL 11
 			
-				if (event.min > existingVehicle.min) { // FI 
-				
+				if (event.min > existingVehicle.min) { // FI 				
 					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
 					run.vehCounts.put(next_min, new_count);	// HU
 				}
 				runLookUp(event); // RL 17
 				
-				if (event.min > existingVehicle.min) { // FI	
-					
+				if (event.min > existingVehicle.min) { // FI					
 					existingVehicle.min = event.min; // TU
 				}
 			} else {
 				
-				if (event.min > existingVehicle.min) { // FI
-					
+				if (event.min > existingVehicle.min) { // FI					
 					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
 					run.vehCounts.put(next_min, new_count);	// HU
 					
@@ -303,6 +311,7 @@ public class DefaultTrafficManagement extends Transaction {
 					runLookUp(event); // RL 20
 				
 					if (existingVehicle.pos != event.pos && existingVehicle.lane != event.lane) { // FI 
+						
 						if (!event_derivation_omission) {
 							OtherPos samePos = new OtherPos(event); // ED
 						}

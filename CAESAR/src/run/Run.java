@@ -1,5 +1,6 @@
 package run;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
@@ -405,7 +406,7 @@ public class Run {
 	}	
 	
 	/**
-	 * Return segment with accident ahead or -1 if there is no accident ahead.
+	 * Return segment with accident ahead or -1 if there is no accident ahead. Optimized run look-up. 
 	 * @param runs	hash saving all runs
 	 * @param event	incoming position report
 	 * @return segment with accident ahead or -1
@@ -421,16 +422,42 @@ public class Run {
 			if (segAhead>=0 && segAhead<=99 && runs.containsKey(runid)) {				 
 					
 				Run runAhead = runs.get(runid);		
-				// if there is an accident ahead, segment with accident ahead is returned
-				
+								
 				/*if (event == null) System.out.println("NULL EVENT!!!");
-				if (runAhead == null) System.out.println("NULL RUN!!!");		*/		
+				if (runAhead == null) System.out.println("NULL RUN!!!");*/		
 				
 				if (runAhead.readAccidents(event)) return segAhead;
 		}}		
 		return -1;
 	}	
 	
+	/**
+	 * Return segment with accident ahead or -1 if there is no accident ahead. Non-optimized run look-up.
+	 * @param runs	hash saving all runs
+	 * @param event	incoming position report
+	 * @return segment with accident ahead or -1
+	 */
+	public double default_getSegWithAccidentAhead (HashMap<RunID,Run> runs, PositionReport event) {
+		
+		/*** Get 4 runs ahead and read their accidents ***/
+		
+		// find all road segments with accidents and remember their ids
+		ArrayList<RunID> runs_with_accidents = new ArrayList<RunID>();
+		Set<RunID> runids = runs.keySet();
+		
+		for (RunID runid : runids) {
+			
+			Run run = runs.get(runid);									
+			if (run.readAccidents(event)) runs_with_accidents.add(runid);
+		}	
+		// check whether at least one of them is at most 4 segments ahead
+		for (RunID runid : runs_with_accidents) {
+			if ((runid.dir==0 && event.seg >= runid.seg-4 && event.seg <= runid.seg) || 
+				((runid.dir==1 && event.seg >= runid.seg && event.seg <= runid.seg+4))) 
+				return runid.seg;
+		}		
+		return -1;
+	}
 	/************************************************* Garbage collection *************************************************/
 	/**
 	 * Vehicle counts for the current minute are kept.
