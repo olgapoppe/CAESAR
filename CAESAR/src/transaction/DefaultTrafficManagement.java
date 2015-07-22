@@ -211,27 +211,27 @@ public class DefaultTrafficManagement extends Transaction {
 			// Update of vehCounts
 			if (!early_condensed_filtering) {
 				
-				runLookUp(event); // RL 17
-				
-				if (event.min > existingVehicle.min) { // FI	
-					
-					existingVehicle.min = event.min; // TU
-				}
-				
 				runLookUp(event); // RL 11
 			
 				if (event.min > existingVehicle.min) { // FI 
 				
 					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
 					run.vehCounts.put(next_min, new_count);	// HU
-			}} else {
+				}
+				runLookUp(event); // RL 17
+				
+				if (event.min > existingVehicle.min) { // FI	
+					
+					existingVehicle.min = event.min; // TU
+				}
+			} else {
 				
 				if (event.min > existingVehicle.min) { // FI
 					
-					existingVehicle.min = event.min; // TU
-					
 					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
-					run.vehCounts.put(next_min, new_count);	// HU				
+					run.vehCounts.put(next_min, new_count);	// HU
+					
+					existingVehicle.min = event.min; // TU
 			}}
 			
 			// Update of existingVehicle: spd, spds
