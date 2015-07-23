@@ -452,8 +452,9 @@ public class Run {
 		}	
 		// check whether at least one of them is at most 4 segments ahead
 		for (RunID runid : runs_with_accidents) {
-			if ((runid.dir==0 && event.seg >= runid.seg-4 && event.seg <= runid.seg) || 
-				((runid.dir==1 && event.seg >= runid.seg && event.seg <= runid.seg+4))) 
+			if 	( 	event.xway==runid.xway && event.dir==runid.dir && 
+					((event.dir==0 && event.seg >= runid.seg-4 && event.seg <= runid.seg) || 
+					(event.dir==1 && event.seg >= runid.seg && event.seg <= runid.seg+4)) ) 
 				return runid.seg;
 		}		
 		return -1;
