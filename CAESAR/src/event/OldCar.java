@@ -2,7 +2,7 @@ package event;
 
 public class OldCar extends PositionReport {
 	
-	public OldCar (PositionReport e) {
-		super(e.type, e.sec, e.min, e.vid, e.spd, e.xway, e.lane, e.dir, e.seg, e.pos);
+	public OldCar (double type, double sec, double min, double vid, double spd, double xway, double lane, double dir, double seg, double pos) {
+		super(type, sec, min, vid, spd, xway, lane, dir, seg, pos);
 	}
 }

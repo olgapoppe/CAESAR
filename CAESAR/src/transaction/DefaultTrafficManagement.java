@@ -98,9 +98,7 @@ public class DefaultTrafficManagement extends Transaction {
 		
 		if (run.vehicles.get(event.vid) == null) { // FI
 			
-			if (!event_derivation_omission) {
-				NewCar newCar = new NewCar(event); // ED
-			}
+			adjacent_projection_and_event_derivation("NewCar", event); // PR, ED
 					
 			// Update of vehicles
 			if (!early_condensed_filtering) runLookUp(event); // RL 4
@@ -121,9 +119,7 @@ public class DefaultTrafficManagement extends Transaction {
 			// New traveling car detection
 			if (event.lane < 4) { // FI  
 				
-				if (!event_derivation_omission) {
-					NewCar newTravelingCar = new NewTravelingCar(event); // ED
-				}
+				adjacent_projection_and_event_derivation("NewTravelingCar", event); // PR, ED
 				
 				// Accident ahead detection
 				if (!early_condensed_filtering) runLookUp(event); // RL 13
@@ -204,12 +200,10 @@ public class DefaultTrafficManagement extends Transaction {
 				runLookUp(event); // RL 9
 				
 				if (run.vehicles.get(event.vid) != null) { // FI 
-					if (!event_derivation_omission) {						
-						OldCar oldCar = new OldCar(event); // ED
-			}}} else {
-				if (!event_derivation_omission) {						
-					OldCar oldCar = new OldCar(event); // ED
+					adjacent_projection_and_event_derivation("OldCar", event); // PR, ED
 				}
+			} else {
+				adjacent_projection_and_event_derivation("OldCar", event); // PR, ED
 			}
 			
 			// Get previous info about the vehicle
@@ -264,9 +258,7 @@ public class DefaultTrafficManagement extends Transaction {
 				
 				// Same position derivation
 				if (!early_condensed_filtering) runLookUp(event); // RL 19
-				if (!event_derivation_omission) {
-					SamePos samePos = new SamePos(event); // ED
-				}
+				adjacent_projection_and_event_derivation("SamePos", event); // PR, ED
 
 				// Update count of the existing vehicle
 				if (!early_condensed_filtering) runLookUp(event); // RL 21
@@ -312,13 +304,10 @@ public class DefaultTrafficManagement extends Transaction {
 				
 					if (existingVehicle.pos != event.pos && existingVehicle.lane != event.lane) { // FI 
 						
-						if (!event_derivation_omission) {
-							OtherPos samePos = new OtherPos(event); // ED
-						}
-				}} else {
-					if (!event_derivation_omission) {
-						OtherPos samePos = new OtherPos(event); // ED
+						adjacent_projection_and_event_derivation("OtherPos", event); // PR, ED
 					}
+				} else {
+					adjacent_projection_and_event_derivation("OtherPos", event); // PR, ED
 				}
 				      					
 				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) { // FI    	
@@ -415,6 +404,52 @@ public class DefaultTrafficManagement extends Transaction {
 					count++;
 		}}}
 		return (sum==0 && count==0) ? -1 : sum/count;		
+	}
+	
+	public void adjacent_projection_and_event_derivation (String derived_event_type, PositionReport event) {
+		
+		if (!event_derivation_omission) {
+			
+			double type = event.type; // PR
+			double sec = event.sec;
+			double min = event.min;
+			double vid = event.vid;
+			double spd = event.spd;
+			double xway = event.xway;
+			double lane = event.lane;
+			double dir = event.dir;
+			double seg = event.seg;
+			double pos = event.pos;	
+			
+			switch (derived_event_type) { // ED
+			
+				case "NewCar" : NewCar newCar = new NewCar(type, sec, min, vid, spd, xway, lane, dir, seg, pos);
+								break;
+				case "NewTravelingCar" : NewTravelingCar newTravelingCar = new NewTravelingCar(type, sec, min, vid, spd, xway, lane, dir, seg, pos);
+								break;
+				case "OldCar" : OldCar oldCar = new OldCar(type, sec, min, vid, spd, xway, lane, dir, seg, pos);
+								break;
+				case "SamePos" : SamePos samePos = new SamePos(type, sec, min, vid, spd, xway, lane, dir, seg, pos);
+								break;
+				case "OtherPos" : OtherPos otherPos = new OtherPos(type, sec, min, vid, spd, xway, lane, dir, seg, pos);
+								break;
+				default : System.err.println("No valid derived event type!");
+								break;
+			}
+		} else {				
+			if (!early_mandatory_projections) {
+			
+				double type = event.type; // PR
+				double sec = event.sec;
+				double min = event.min;
+				double vid = event.vid;
+				double spd = event.spd;
+				double xway = event.xway;
+				double lane = event.lane;
+				double dir = event.dir;
+				double seg = event.seg;
+				double pos = event.pos;					
+		}}
 	}
 
 	/**
