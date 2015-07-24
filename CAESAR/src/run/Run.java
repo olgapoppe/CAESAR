@@ -33,7 +33,7 @@ public class Run {
 	public HashMap<AccidentLocation,Vector<StoppedVehicle>> stoppedVehicles;		
 	boolean accident;
 	public AccidentLocation currentAccidentLocation;
-	LinkedBlockingQueue<Accident> accidents;
+	public LinkedBlockingQueue<Accident> accidents;
 	
 	// Mapping of minutes to segments ahead with accidents
 	public HashMap<Double,Double> accidentsAhead;
