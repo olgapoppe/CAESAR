@@ -427,9 +427,11 @@ public class DefaultTrafficManagement extends Transaction {
 		// Update of avgSpd
 		Run run = runLookUp(event); // RL 0			
 		if (run.time.min < event.min) { // FI 
+			
+			
 			run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU	
 		}	
-		// Update minute
+		// Update of minute
 		runLookUp(event); // RL 1	
 		if (run.time.min < event.min) { // replicated FI 
 			run.time.min = event.min; // TU
@@ -924,15 +926,8 @@ public class DefaultTrafficManagement extends Transaction {
 		runLookUp(event); // RL
 		
 		double result = 0;
-		
-		if (!early_condensed_filtering) {
-			if (run.time.min < event.min) { // FI 
-				if (run.avgSpds.containsKey(min)) {
-					result = run.avgSpds.get(min); // PR
-				} else {
-					result = default_getAvgSpd(run, event, min);
-					run.avgSpds.put(min,result); // HU
-		}}} else {
+				
+		if (run.time.min < event.min) { // FI 
 			if (run.avgSpds.containsKey(min)) {
 				result = run.avgSpds.get(min); // PR
 			} else {
@@ -955,15 +950,7 @@ public class DefaultTrafficManagement extends Transaction {
 		double count = 0;		
 		Set<Double> vids = run.vehicles.keySet();	
 		
-		if (!early_condensed_filtering) {
-			if (run.time.min < event.min) { // FI
-				for (Double vid : vids) {				
-					Vehicle vehicle = run.vehicles.get(vid);
-					double spd = vehicle.default_getAvgSpd(min);
-					if (spd>-1) {
-						sum += spd;	
-						count++;
-		}}}} else {
+		if (run.time.min < event.min) { // FI
 			for (Double vid : vids) {				
 				Vehicle vehicle = run.vehicles.get(vid);
 				double spd = vehicle.default_getAvgSpd(min);
