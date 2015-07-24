@@ -50,8 +50,19 @@ public class DefaultTrafficManagement extends Transaction {
 		for (PositionReport event : events) {
 			
 			// WRITE: Update the respective run and remove old data
-			long distrProgr = distributorProgressPerSec.get(event.sec);			
-			defaultTrafficManagement(event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr); // includes garbage collection							
+			long distrProgr = distributorProgressPerSec.get(event.sec);	
+			
+			if (event_derivation_omission && early_mandatory_projections && early_condensed_filtering) {
+				EDO_EMP_ECF (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr); // includes garbage collection
+			} else {
+			if (event_derivation_omission && early_mandatory_projections) {
+				EDO_EMP (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr); // includes garbage collection
+			} else {
+			if (event_derivation_omission) {
+				EDO (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr); // includes garbage collection
+			} else {
+				
+			}}}
 		}		
 		// Count down the number of transactions
 		transaction_number.countDown();
@@ -60,9 +71,8 @@ public class DefaultTrafficManagement extends Transaction {
 	/************************************************* Traffic management *************************************************/
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal 
-	 * ***/
-	public void EDO_EMP_ECF (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
+	 ***/
+	public void EDO_EMP_ECF (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -94,6 +104,7 @@ public class DefaultTrafficManagement extends Transaction {
 			if (event.lane < 4) {  
 				
 				////////////////////////////////////////////////////////////////////////// Stream history traversal is not reduced
+				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 					
 					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL, FI
@@ -194,7 +205,7 @@ public class DefaultTrafficManagement extends Transaction {
 	
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal and early condensed filtering
-	 * ***/
+	 ***/
 	public void EDO_EMP (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
 		
 		// Set auxiliary variables
@@ -300,6 +311,10 @@ public class DefaultTrafficManagement extends Transaction {
 		/*********************************************** If the vehicle was in the segment before ***********************************************/
 		} else {	
 			
+			// Old car detection
+			runLookUp(event); // RL 9
+			if (run.vehicles.get(event.vid) != null) {} // FI 
+			
 			// Get previous info about the vehicle
 			Vehicle existingVehicle = run.vehicles.get(event.vid);
 				
@@ -340,6 +355,9 @@ public class DefaultTrafficManagement extends Transaction {
 			// Update existingVehicle: count, lane, pos
 			if (existingVehicle.pos == event.pos && existingVehicle.lane == event.lane) { // Same position is reported, FI    
 				
+				// Same position derivation
+				runLookUp(event); // RL 19
+				
 				// Update count of the existing vehicle
 				runLookUp(event); // RL 21
 				existingVehicle.count++; // HU
@@ -377,6 +395,10 @@ public class DefaultTrafficManagement extends Transaction {
 				}
 			} else { // Other position is reported
 				
+				// Other position derivation
+				runLookUp(event); // RL 20				
+				if (existingVehicle.pos != event.pos && existingVehicle.lane != event.lane) {} // FI
+				
 				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) { // FI    	
 					
 					runLookUp(event); // RL 25
@@ -394,134 +416,76 @@ public class DefaultTrafficManagement extends Transaction {
 		run.collectGarbage(event.min);
 	}
 	
-	
-	public void defaultTrafficManagement (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
+	/*** 
+	 * This method is same as run.trafficManagement but without reduced stream history traversal, early condensed filtering and early mandatory projections
+	 ***/
+	public void EDO (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
 		   
-		// Update of avgSpd and min
-		Run run = runLookUp(event); // RL 0	
-		
-		if (!early_condensed_filtering) {
-			if (run.time.min < event.min) { // FI 
-				run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU	
-			}			
-			runLookUp(event); // RL 1	
-			if (run.time.min < event.min) { // FI 
-				if (!early_mandatory_projections) {
-					
-				}
-				run.time.min = event.min; // TU
-			}
-		} else {
-			if (run.time.min < event.min) { // FI 
-				run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU		
-				if (!early_mandatory_projections) {
-					
-				}
-				run.time.min = event.min; // TU
-			} 
-		}
-		// Update of sec
-		if (!early_condensed_filtering) runLookUp(event); // RL 2	
-		if (!early_mandatory_projections) {
-			double rsec = run.time.sec; // PR
-			double esec = event.sec;
-		}
+		// Update of avgSpd
+		Run run = runLookUp(event); // RL 0			
+		if (run.time.min < event.min) { // FI 
+			run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU	
+		}	
+		// Update minute
+		runLookUp(event); // RL 1	
+		if (run.time.min < event.min) { // replicated FI 
+			run.time.min = event.min; // TU
+		}		 
+		// Update of second
+		runLookUp(event); // RL 2			
 		run.time.sec = event.sec; // TU
 						
 		/************************************************* If the vehicle is new in the segment *************************************************/
 		// New car detection
-		if (!early_condensed_filtering) runLookUp(event); // RL 3
+		runLookUp(event); // RL 3
 		
 		if (run.vehicles.get(event.vid) == null) { // FI
 			
-			adjacent_projection_and_event_derivation("NewCar", event); // PR, ED
-					
 			// Update of vehicles
-			if (!early_condensed_filtering) runLookUp(event); // RL 4
+			runLookUp(event); // RL 4
 			
 			Vehicle newVehicle = new Vehicle (event);
 			Vector<Double> new_speeds_per_min = new Vector<Double>();
-			new_speeds_per_min.add(event.spd); 
-			
-			if (!early_mandatory_projections) {
-				ConcurrentHashMap<Double,Vehicle> vehicles = run.vehicles; // PR
-				double vid = event.vid;
-				double sec = event.sec;
-				double min = event.min;
-				double xway = event.xway;
-				double dir = event.dir;
-				double seg = event.seg;
-				double spd = event.spd;
-				double lane = event.lane;
-				double pos = event.pos;
-				double count = 1;
-			}
+			new_speeds_per_min.add(event.spd); 			
 			
 			newVehicle.spds.put(event.min,new_speeds_per_min);
 			run.vehicles.put(event.vid,newVehicle); // HU  	   
 
 			// Update of vehCounts
-			if (!early_condensed_filtering) runLookUp(event); // RL 5
+			runLookUp(event); // RL 5
 			
 			double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
 			run.vehCounts.put(next_min, new_count); // HU
 					    
-			// New traveling car detection
 			if (event.lane < 4) { // FI  
 				
-				adjacent_projection_and_event_derivation("NewTravelingCar", event); // PR, ED
-				
 				// Accident ahead detection
-				if (!early_condensed_filtering) runLookUp(event); // RL 13
+				runLookUp(event); // RL 13
 				
 				double segWithAccAhead;
-				if (!reduced_stream_history_traversal) {
-					
-					if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
+				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 						
-						segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL, FI
-						if (!early_mandatory_projections) { 
-							HashMap<Double,Double> accAhead = run.accidentsAhead; // PR
-							double min = event.min;
-							double seg = segWithAccAhead;
-						} 
-						if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
-						run.time.minOfLastUpdateOfAccidentAhead = event.min;
-					} else {
-						segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
-					}					
+					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL, FI
+					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
+					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
-					if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
-					
-						segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL, FI
-						if (!early_mandatory_projections) { 
-							HashMap<Double,Double> accAhead = run.accidentsAhead; // PR
-							double min = event.min;
-							double seg = segWithAccAhead;
-						} 
-						if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
-						run.time.minOfLastUpdateOfAccidentAhead = event.min;
-					} else {
-						segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
-				}}	
+					segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
+				}					
 				
 				// Context update
-				if (!early_condensed_filtering) runLookUp(event); // RL 14
+				runLookUp(event); // RL 14
 				boolean accident = segWithAccAhead != -1; // FI
-				if (!early_mandatory_projections) { String context = run.context; } // PR 
 				run.context = "accident";
 				
-				if (!early_condensed_filtering) runLookUp(event); // RL 15
+				runLookUp(event); // RL 15
 				boolean congestion = !accident && run.congested(event.min);
-				if (!early_mandatory_projections) { String context = run.context; } // PR
 				run.context = "congestion";
 				
-				if (!early_condensed_filtering) runLookUp(event); // RL 16
+				runLookUp(event); // RL 16
 				boolean clear = !accident && !run.congested(event.min);
-				if (!early_mandatory_projections) { String context = run.context; } // PR
 				run.context = "clear";
 				
 				// Toll notification derivation
@@ -529,7 +493,7 @@ public class DefaultTrafficManagement extends Transaction {
 						
 				if 	(congestion) { // CW
 					
-					if (!early_condensed_filtering) runLookUp(event); // RL 12		
+					runLookUp(event); // RL 12		
 					double vehCount = run.lookUpVehCount(event.min);
 					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); // ED	
 					run.output.tollNotifications.add(tollNotification);
@@ -537,14 +501,14 @@ public class DefaultTrafficManagement extends Transaction {
 				
 				if (clear) { // CW
 					
-					if (!early_condensed_filtering) runLookUp(event); // RL 6					
+					runLookUp(event); // RL 6					
 					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED
 					run.output.tollNotifications.add(tollNotification);
 				}
 				
 				if (accident) { // CW
 					
-					if (!early_condensed_filtering) runLookUp(event); // RL 7				
+					runLookUp(event); // RL 7				
 					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED	
 					run.output.tollNotifications.add(tollNotification);
 				}		
@@ -552,7 +516,7 @@ public class DefaultTrafficManagement extends Transaction {
 				// Accident warning derivation
 				if (accident) { // CW
 					
-					if (!early_condensed_filtering) runLookUp(event); // RL 8					
+					runLookUp(event); // RL 8					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr); // ED
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
@@ -561,49 +525,31 @@ public class DefaultTrafficManagement extends Transaction {
 		} else {	
 			
 			// Old car detection
-			if (!early_condensed_filtering) {
-				
-				runLookUp(event); // RL 9
-				
-				if (run.vehicles.get(event.vid) != null) { // FI 
-					adjacent_projection_and_event_derivation("OldCar", event); // PR, ED
-				}
-			} else {
-				adjacent_projection_and_event_derivation("OldCar", event); // PR, ED
-			}
+			runLookUp(event); // RL 9
+			if (run.vehicles.get(event.vid) != null) {} // FI 
 			
 			// Get previous info about the vehicle
 			Vehicle existingVehicle = run.vehicles.get(event.vid);
 				
 			// Update of existingVehicle: time
-			if (!early_condensed_filtering) runLookUp(event); // RL 18		
+			runLookUp(event); // RL 18		
 			existingVehicle.sec = event.sec; // TU
 			
 			// Update of vehCounts
-			if (!early_condensed_filtering) {
-				
-				runLookUp(event); // RL 11
+			runLookUp(event); // RL 11
 			
-				if (event.min > existingVehicle.min) { // FI 				
-					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
-					run.vehCounts.put(next_min, new_count);	// HU
-				}
-				runLookUp(event); // RL 17
+			if (event.min > existingVehicle.min) { // FI 				
+				double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
+				run.vehCounts.put(next_min, new_count);	// HU
+			}
+			runLookUp(event); // RL 17
 				
-				if (event.min > existingVehicle.min) { // FI					
-					existingVehicle.min = event.min; // TU
-				}
-			} else {
-				
-				if (event.min > existingVehicle.min) { // FI					
-					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
-					run.vehCounts.put(next_min, new_count);	// HU
+			if (event.min > existingVehicle.min) { // FI					
+				existingVehicle.min = event.min; // TU
+			}
 					
-					existingVehicle.min = event.min; // TU
-			}}
-			
 			// Update of existingVehicle: spd, spds
-			if (!early_condensed_filtering) runLookUp(event); // RL 10
+			runLookUp(event); // RL 10
 			
 			existingVehicle.spd = event.spd; // HU
 			if (existingVehicle.spds.containsKey(event.min)) {    
@@ -623,15 +569,14 @@ public class DefaultTrafficManagement extends Transaction {
 			if (existingVehicle.pos == event.pos && existingVehicle.lane == event.lane) { // Same position is reported, FI    
 				
 				// Same position derivation
-				if (!early_condensed_filtering) runLookUp(event); // RL 19
-				adjacent_projection_and_event_derivation("SamePos", event); // PR, ED
-
+				runLookUp(event); // RL 19
+				
 				// Update count of the existing vehicle
-				if (!early_condensed_filtering) runLookUp(event); // RL 21
+				runLookUp(event); // RL 21
 				existingVehicle.count++; // HU
 				
 				// Update stopped vehicles
-				if (!early_condensed_filtering) runLookUp(event); // RL 22
+				runLookUp(event); // RL 22
 
 				// Add new stopped vehicle
 				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
@@ -646,7 +591,7 @@ public class DefaultTrafficManagement extends Transaction {
 							stopped_vehicles.add(stopped_vehicle); // HU
 							
 							// Accident detection
-							if (!early_condensed_filtering) runLookUp(event); // RL 23
+							runLookUp(event); // RL 23
 							run.toAccident(event, startOfSimulation, false); // FI, HU
 						}    					
 					} else {
@@ -657,35 +602,292 @@ public class DefaultTrafficManagement extends Transaction {
 				// Update second of previously detected stopped vehicle
 				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
 
-					if (!early_condensed_filtering) runLookUp(event); // RL 24
+					runLookUp(event); // RL 24
 					StoppedVehicle stopped_vehicle = run.getStoppedVehicle(event.lane, event.pos, event.vid);
 					if (stopped_vehicle != null) stopped_vehicle.sec = event.sec; // HU
 				}
 			} else { // Other position is reported
 				
 				// Other position derivation
-				if (!early_condensed_filtering) { 
+				runLookUp(event); // RL 20				
+				if (existingVehicle.pos != event.pos && existingVehicle.lane != event.lane) {} // FI
+				
+				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) { // FI    	
 					
+					runLookUp(event); // RL 25
+					run.setRemovalTime(event.vid, event.sec); // HU	
+					
+					// Accident clearance detection
+					runLookUp(event); // RL 27
+					run.fromAccident(event, startOfSimulation, false); // FI, HU
+				}  
+				runLookUp(event); // RL 26
+				existingVehicle.count = 1; // HU   			
+				existingVehicle.lane = event.lane;
+				existingVehicle.pos = event.pos;
+		}}
+		run.collectGarbage(event.min);
+	}
+	
+	public void defaultTrafficManagement (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
+		
+		// Set auxiliary variables
+		double next_min = event.min+1;
+		   
+		// Update of avgSpd and min
+		Run run = runLookUp(event); // RL 0	
+		
+		if (!early_condensed_filtering) {
+			if (run.time.min < event.min) { // FI 
+				run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU	
+			}			
+			runLookUp(event); // RL 1	
+			if (run.time.min < event.min) { // FI 
+				
+				// PR
+					
+				run.time.min = event.min; // TU
+			}
+		} else {
+			if (run.time.min < event.min) { // FI 
+				run.avgSpd = default_getAvgSpdFor5Min(run, event, event.min); // HU		
+				
+				// PR
+				
+				run.time.min = event.min; // TU
+			} 
+		}
+		// Update of sec
+		runLookUp(event); // RL 2	
+		
+		double rsec = run.time.sec; // PR
+		double esec = event.sec;
+		
+		run.time.sec = event.sec; // TU
+						
+		/************************************************* If the vehicle is new in the segment *************************************************/
+		// New car detection
+		runLookUp(event); // RL 3
+		
+		if (run.vehicles.get(event.vid) == null) { // FI
+			
+			adjacent_projection_and_event_derivation("NewCar", event); // PR, ED
+					
+			// Update of vehicles
+			runLookUp(event); // RL 4
+			
+			Vehicle newVehicle = new Vehicle (event);
+			Vector<Double> new_speeds_per_min = new Vector<Double>();
+			new_speeds_per_min.add(event.spd); 
+			
+				ConcurrentHashMap<Double,Vehicle> vehicles = run.vehicles; // PR
+				double vid = event.vid;
+				double sec = event.sec;
+				double min = event.min;
+				double xway = event.xway;
+				double dir = event.dir;
+				double seg = event.seg;
+				double spd = event.spd;
+				double lane = event.lane;
+				double pos = event.pos;
+				double count = 1;
+					
+			newVehicle.spds.put(event.min,new_speeds_per_min);
+			run.vehicles.put(event.vid,newVehicle); // HU  	   
+
+			// Update of vehCounts
+			runLookUp(event); // RL 5
+			
+			double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
+			run.vehCounts.put(next_min, new_count); // HU
+					    
+			// New traveling car detection
+			if (event.lane < 4) { // FI  
+				
+				adjacent_projection_and_event_derivation("NewTravelingCar", event); // PR, ED
+				
+				// Accident ahead detection
+				runLookUp(event); // RL 13
+				
+				double segWithAccAhead;
+				
+					
+					if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
+						
+						segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL, FI
+						
+ 
+							HashMap<Double,Double> accAhead = run.accidentsAhead; // PR
+							double min1 = event.min;
+							double seg1 = segWithAccAhead;
+						 
+						if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
+						run.time.minOfLastUpdateOfAccidentAhead = event.min;
+					} else {
+						segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
+					}					
+						
+				// Context update
+				runLookUp(event); // RL 14
+				boolean accident = segWithAccAhead != -1; // FI
+				String context = run.context; // PR 
+				run.context = "accident";
+				
+				runLookUp(event); // RL 15
+				boolean congestion = !accident && run.congested(event.min);
+				String context1 = run.context; // PR
+				run.context = "congestion";
+				
+				runLookUp(event); // RL 16
+				boolean clear = !accident && !run.congested(event.min);
+				String context2 = run.context; // PR
+				run.context = "clear";
+				
+				// Toll notification derivation
+				TollNotification tollNotification;			
+						
+				if 	(congestion) { // CW
+					
+					runLookUp(event); // RL 12		
+					double vehCount = run.lookUpVehCount(event.min);
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); // ED	
+					run.output.tollNotifications.add(tollNotification);
+				} 
+				
+				if (clear) { // CW
+					
+					runLookUp(event); // RL 6					
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED
+					run.output.tollNotifications.add(tollNotification);
+				}
+				
+				if (accident) { // CW
+					
+					runLookUp(event); // RL 7				
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED	
+					run.output.tollNotifications.add(tollNotification);
+				}		
+				
+				// Accident warning derivation
+				if (accident) { // CW
+					
+					runLookUp(event); // RL 8					
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr); // ED
+					run.output.accidentWarnings.add(accidentWarning);				
+				}			
+			}
+		/*********************************************** If the vehicle was in the segment before ***********************************************/
+		} else {	
+			
+			// Old car detection
+				runLookUp(event); // RL 9
+				
+				if (run.vehicles.get(event.vid) != null) { // FI 
+					adjacent_projection_and_event_derivation("OldCar", event); // PR, ED
+				}
+			
+			
+			// Get previous info about the vehicle
+			Vehicle existingVehicle = run.vehicles.get(event.vid);
+				
+			// Update of existingVehicle: time
+			runLookUp(event); // RL 18		
+			existingVehicle.sec = event.sec; // TU
+			
+			// Update of vehCounts
+							
+				runLookUp(event); // RL 11
+			
+				if (event.min > existingVehicle.min) { // FI 				
+					double new_count = run.vehCounts.containsKey(next_min) ? run.vehCounts.get(next_min)+1 : 1;
+					run.vehCounts.put(next_min, new_count);	// HU
+				}
+				runLookUp(event); // RL 17
+				
+				if (event.min > existingVehicle.min) { // FI					
+					existingVehicle.min = event.min; // TU
+				}
+			
+			
+			// Update of existingVehicle: spd, spds
+			runLookUp(event); // RL 10
+			
+			existingVehicle.spd = event.spd; // HU
+			if (existingVehicle.spds.containsKey(event.min)) {    
+
+				existingVehicle.spds.get(event.min).add(event.spd); // HU		
+					
+			} else {             					
+			
+				Vector<Double> new_speeds_per_min = new Vector<Double>();
+				new_speeds_per_min.add(event.spd);
+				existingVehicle.spds.put(event.min, new_speeds_per_min); // HU		
+			}	
+			
+			// Accident detection and clearance	
+			// Update stoppedVehicles
+			// Update existingVehicle: count, lane, pos
+			if (existingVehicle.pos == event.pos && existingVehicle.lane == event.lane) { // Same position is reported, FI    
+				
+				// Same position derivation
+				runLookUp(event); // RL 19
+				adjacent_projection_and_event_derivation("SamePos", event); // PR, ED
+
+				// Update count of the existing vehicle
+				runLookUp(event); // RL 21
+				existingVehicle.count++; // HU
+				
+				// Update stopped vehicles
+				runLookUp(event); // RL 22
+
+				// Add new stopped vehicle
+				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
+				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
+
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+
+					if (run.stoppedVehicles.containsKey(accidentLocation)) {
+				
+						Vector<StoppedVehicle> stopped_vehicles = run.stoppedVehicles.get(accidentLocation);
+						if (stopped_vehicles.size() < 2) { 
+							stopped_vehicles.add(stopped_vehicle); // HU
+							
+							// Accident detection
+							runLookUp(event); // RL 23
+							run.toAccident(event, startOfSimulation, false); // FI, HU
+						}    					
+					} else {
+						Vector<StoppedVehicle> stopped_vehicles = new Vector<StoppedVehicle>();
+						stopped_vehicles.add(stopped_vehicle);
+						run.stoppedVehicles.put(accidentLocation,stopped_vehicles); // HU
+				}}
+				// Update second of previously detected stopped vehicle
+				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
+
+					runLookUp(event); // RL 24
+					StoppedVehicle stopped_vehicle = run.getStoppedVehicle(event.lane, event.pos, event.vid);
+					if (stopped_vehicle != null) stopped_vehicle.sec = event.sec; // HU
+				}
+			} else { // Other position is reported
+				
+				// Other position derivation
 					runLookUp(event); // RL 20
 				
 					if (existingVehicle.pos != event.pos && existingVehicle.lane != event.lane) { // FI 
 						
 						adjacent_projection_and_event_derivation("OtherPos", event); // PR, ED
 					}
-				} else {
-					adjacent_projection_and_event_derivation("OtherPos", event); // PR, ED
-				}
-				      					
+								      					
 				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) { // FI    	
 					
-					if (!early_condensed_filtering) runLookUp(event); // RL 25
+					runLookUp(event); // RL 25
 					run.setRemovalTime(event.vid, event.sec); // HU	
 					
 					// Accident clearance detection
-					if (!early_condensed_filtering) runLookUp(event); // RL 27
+					runLookUp(event); // RL 27
 					run.fromAccident(event, startOfSimulation, false); // FI, HU
 				}  
-				if (!early_condensed_filtering) runLookUp(event); // RL 26
+				runLookUp(event); // RL 26
 				existingVehicle.count = 1; // HU   			
 				existingVehicle.lane = event.lane;
 				existingVehicle.pos = event.pos;
