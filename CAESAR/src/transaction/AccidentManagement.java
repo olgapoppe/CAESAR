@@ -3,6 +3,7 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import run.*;
 import event.PositionReport;
@@ -15,14 +16,15 @@ import event.PositionReport;
 public class AccidentManagement extends Transaction {
 	
 	Run run;
-	boolean run_priorization;
-	AtomicBoolean accidentWarningsFailed;
+	boolean run_priorization;	
+	AtomicBoolean accidentWarningsFailed;	
 	
-	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, AtomicBoolean awf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec);
+	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, 
+			AtomicBoolean awf, AtomicInteger max_late, HashMap<Double,Long> distrProgrPerSec) {
+		super(eventList,rs,start,distrProgrPerSec, max_late);
 		run = r;
-		run_priorization = rp;
-		accidentWarningsFailed = awf;
+		run_priorization = rp;		
+		accidentWarningsFailed = awf;		
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public class AccidentManagement extends Transaction {
 			// WRITE: Update this run	
 			//System.out.println(event.sec + " " + distrTimeStamp);	
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed, distrProgr); 									
+			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed, max_latency, distrProgr); 									
 		}		
 		// Count down the number of transactions
 		transaction_number.countDown();

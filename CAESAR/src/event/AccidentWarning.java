@@ -1,6 +1,7 @@
 package event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * In addition to type, time stamp and vehicle identifier, 
@@ -11,14 +12,14 @@ public class AccidentWarning extends Event {
 	
 	double emit;
 	double seg;
-		
-	public AccidentWarning (PositionReport p, double s, long startOfSimulation, AtomicBoolean awf, long distrProgr) {
+			
+	public AccidentWarning (PositionReport p, double s, long startOfSimulation, AtomicBoolean awf, AtomicInteger max_latency, long distrProgr) {
 		
 		super(1,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
 		seg = s;
 				
-		printError (p, emit, awf, "ACCIDENT WARNINGS", distrProgr);			
+		printError (p, emit, awf, max_latency, "ACCIDENT WARNINGS", distrProgr);			
 	}	
 
 	/** 

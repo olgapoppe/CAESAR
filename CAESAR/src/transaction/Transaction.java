@@ -3,6 +3,7 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import run.*;
 import event.*;
@@ -17,15 +18,16 @@ public abstract class Transaction implements Runnable {
 	ArrayList<PositionReport> events;		
 	HashMap<RunID,Run> runs;
 	long startOfSimulation;
-	HashMap<Double,Long> distributorProgressPerSec;
-	
+	HashMap<Double,Long> distributorProgressPerSec;	
 	public CountDownLatch transaction_number;
+	AtomicInteger max_latency;
 			
-	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Long> distrProgrPerSec) {
+	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Long> distrProgrPerSec, AtomicInteger max_late) {
 		
 		events = eventList;		
 		runs = rs;
 		startOfSimulation = start;		
 		distributorProgressPerSec = distrProgrPerSec;
+		max_latency = max_late;
 	}	
 }

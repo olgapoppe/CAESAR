@@ -3,6 +3,8 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import run.*;
 import event.PositionReport;
 
@@ -18,11 +20,11 @@ public class TrafficManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 		
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
-			AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec);
+			AtomicBoolean awf, AtomicBoolean tnf, AtomicInteger max_late, HashMap<Double,Long> distrProgrPerSec) {
+		super(eventList,rs,start,distrProgrPerSec, max_late);
 		run = r;
 		accidentWarningsFailed = awf;
-		tollNotificationsFailed = tnf;
+		tollNotificationsFailed = tnf;		
 	}
 		
 	/**
@@ -53,7 +55,7 @@ public class TrafficManagement extends Transaction {
 			}
 			// WRITE: Update this run and remove old data
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.trafficManagement(event, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 	
+			run.trafficManagement(event, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, max_latency, distrProgr); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

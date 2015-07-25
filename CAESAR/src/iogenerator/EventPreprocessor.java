@@ -30,13 +30,14 @@ public class EventPreprocessor implements Runnable {
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
 	CountDownLatch done;
+	AtomicInteger max_latency;
 	
 	EventPreprocessor(boolean sq,  
 			int ss, int HP_freq, int LP_freq,
 			boolean ed, boolean pr, boolean fi, boolean sh,
 			String f, ArrayList<XwayDirPair> xds, int lS,
 			boolean cr,
-			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d) {
+			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, AtomicInteger max_late) {
 		
 		splitQueries = sq;
 		scheduling_strategy = ss;
@@ -56,7 +57,8 @@ public class EventPreprocessor implements Runnable {
 		 
 		runs = rs;
 		executor = e;		
-		done = d;		
+		done = d;	
+		max_latency = max_late;
 	}
 	
 	public void run () {
@@ -88,13 +90,13 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
 			scheduler = new TimeDrivenScheduler(splitQueries, distributorProgress, distributorProgressPerSec, runs, runqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation, max_latency,
 												event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 			} else {			
 			
 				System.out.println("RUN DRIVEN SCHEDULER.");
 				scheduler = new RunDrivenScheduler(	distributorProgress, distributorProgressPerSec, runs, runqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation, 
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation, max_latency,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
 			}
 		} else {
@@ -106,13 +108,13 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("QUERY DRIVEN SCHEDULER.");
 				scheduler = new QueryDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation, max_latency,
 												HP_frequency, LP_frequency);
 			} else {
 			
 				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
 				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, runqueues, HPrunqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation, max_latency,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
 		}}
 		Thread prodThread = new Thread(distributor);

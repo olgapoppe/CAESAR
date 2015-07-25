@@ -36,9 +36,10 @@ public abstract class Scheduler implements Runnable {
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
+	AtomicInteger max_latency;
 	
 	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicInteger max_late) {
 		
 		distributorProgress = dp;
 		distributorProgressPerSec = distrProgrPerSec;
@@ -56,6 +57,7 @@ public abstract class Scheduler implements Runnable {
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);
+		max_latency = max_late;
 	}	
 	
 	public int all_queries_all_runs (boolean splitQueries, double sec, boolean run_priorization, boolean catchup,
@@ -368,9 +370,9 @@ public abstract class Scheduler implements Runnable {
 						
 						Run run = runs.get(runid);
 						if (ed & pr & fi & sh) {
-							return new TrafficManagement (run, event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
+							return new TrafficManagement (run, event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, max_latency, distributorProgressPerSec);
 						} else {
-							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec, ed, pr, fi, sh);
+							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, max_latency, distributorProgressPerSec, ed, pr, fi, sh);
 						}
 				}}
 				
@@ -403,7 +405,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);											
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, max_latency, distributorProgressPerSec);											
 				}}
 				
 				/*** Congestion management ***/
@@ -429,7 +431,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);					
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, max_latency, distributorProgressPerSec);					
 				}}
 		}}
 		return null;

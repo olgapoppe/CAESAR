@@ -25,8 +25,8 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int LPquery_frequency;
 
 	public QueryDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, int hpqf, int lpqf) {		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicInteger max_late, int hpqf, int lpqf) {		
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start,max_late);
 		HPrunqueues = hprq;
 		HPquery_frequency = hpqf;
 		LPquery_frequency = lpqf;
@@ -116,7 +116,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);						
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, max_latency, distributorProgressPerSec);						
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
@@ -139,7 +139,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);						
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, max_latency, distributorProgressPerSec);						
 		}}}}
 		return null;
 	}
