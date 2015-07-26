@@ -70,7 +70,7 @@ public class Main {
 		//int numberOfInputFiles = args.length - 6;
 		//int numberOfHelperThreads = numberOfInputFiles * 2;
 		//int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
-		ExecutorService executor = Executors.newFixedThreadPool(4); //numberOfExeThreads);	
+		ExecutorService executor = Executors.newFixedThreadPool(2); //numberOfExeThreads);	
 		
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();

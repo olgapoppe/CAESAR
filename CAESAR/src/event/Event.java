@@ -33,6 +33,7 @@ public abstract class Event {
 		
 		// Print an error message and update the accident warning failed variable
 		int diff = new Double(emit).intValue() - new Double(p.sec).intValue();
+		
 		if (!failed.get() && diff > 5) {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
@@ -42,11 +43,10 @@ public abstract class Event {
 			failed.compareAndSet(false, true);
 		}
 		// Update maximal latency
-		//double diff2 = emit - p.sec;
+		double diff2 = emit - p.sec;
 		
-		//System.out.println("Diff: " + diff2);
-		
-		if (diff > max_latency.get()) {			
+		if (diff2 > max_latency.get()) {	
+			System.out.println("Diff: " + diff2);
 			max_latency.set(diff);		
 		}
 	}
