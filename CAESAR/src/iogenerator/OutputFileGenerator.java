@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import run.Run;
-import run.RunID;
+import run.*;
 
 /**
  * Output file generator generates files for validation of the output and performance charts.

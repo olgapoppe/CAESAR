@@ -46,7 +46,7 @@ public abstract class Event {
 		double diff2 = emit - p.sec;
 		
 		if (diff2 > max_latency.get()) {	
-			System.out.println("Diff: " + diff2);
+			//System.out.println("Diff: " + diff2);
 			max_latency.set(diff2);		
 		}
 	}
