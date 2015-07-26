@@ -46,7 +46,7 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 0;
 		
-		System.out.println("Emit: " + emit);
+		//System.out.println("Emit: " + emit);
 		
 		printError (p, emit, tnf, max_latency, "TOLL NOTIFICATIONS", distrProgr);			
 	}

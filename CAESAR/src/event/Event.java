@@ -42,12 +42,12 @@ public abstract class Event {
 			failed.compareAndSet(false, true);
 		}
 		// Update maximal latency
-		double diff2 = emit - p.sec;
+		//double diff2 = emit - p.sec;
 		
 		//System.out.println("Diff: " + diff2);
 		
-		if (diff2 > max_latency.get()) {			
-			//max_latency.set(new Long(diff2));		
+		if (diff > max_latency.get()) {			
+			max_latency.set(diff);		
 		}
 	}
 	
