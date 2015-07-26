@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import iogenerator.*;
 import event.*;
 import run.*;
@@ -37,10 +36,10 @@ public abstract class Scheduler implements Runnable {
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
-	AtomicLong max_latency;
+	AtomicInteger max_latency;
 	
 	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicLong max_late) {
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicInteger max_late) {
 		
 		distributorProgress = dp;
 		distributorProgressPerSec = distrProgrPerSec;

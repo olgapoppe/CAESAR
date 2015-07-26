@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import accident.*;
 import event.*;
 
@@ -547,7 +546,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void trafficManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, AtomicLong max_latency, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, AtomicInteger max_latency, long distrProgr) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -689,7 +688,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
-			AtomicBoolean accidentWarningsFailed, AtomicLong max_latency, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, AtomicInteger max_latency, long distrProgr) {
 		
 		//System.out.println(event.timesToString());
 		
@@ -769,7 +768,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean tollNotificationsFailed, AtomicLong max_latency, long distrProgr) { 
+			AtomicBoolean tollNotificationsFailed, AtomicInteger max_latency, long distrProgr) { 
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
