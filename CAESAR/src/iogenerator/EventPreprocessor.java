@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import run.*;
 import scheduler.*;
 import distributor.*;
@@ -30,14 +31,14 @@ public class EventPreprocessor implements Runnable {
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
 	CountDownLatch done;
-	AtomicInteger max_latency;
+	AtomicLong max_latency;
 	
 	EventPreprocessor(boolean sq,  
 			int ss, int HP_freq, int LP_freq,
 			boolean ed, boolean pr, boolean fi, boolean sh,
 			String f, ArrayList<XwayDirPair> xds, int lS,
 			boolean cr,
-			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, AtomicInteger max_late) {
+			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, AtomicLong max_late) {
 		
 		splitQueries = sq;
 		scheduling_strategy = ss;

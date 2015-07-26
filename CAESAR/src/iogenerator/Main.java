@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import run.*;
  
@@ -76,7 +77,7 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		AtomicInteger max_latency = new AtomicInteger(0);
+		AtomicLong max_latency = new AtomicLong(0);
 		
 		for (int i=12; i<args.length; i++) {
 			
@@ -119,7 +120,7 @@ public class Main {
 				done.await();		
 			}
 			// Print maximal latency
-			System.out.println("Maximal latency: " + max_latency);
+			System.out.println("Maximal latency: " + max_latency.get());
 			
 			executor.shutdown();	
 			System.out.println("Executor is done.");

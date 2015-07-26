@@ -3,8 +3,7 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.concurrent.atomic.AtomicLong;
 import run.*;
 import event.PositionReport;
 
@@ -20,7 +19,7 @@ public class TrafficManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 		
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
-			AtomicBoolean awf, AtomicBoolean tnf, AtomicInteger max_late, HashMap<Double,Long> distrProgrPerSec) {
+			AtomicBoolean awf, AtomicBoolean tnf, AtomicLong max_late, HashMap<Double,Long> distrProgrPerSec) {
 		super(eventList,rs,start,distrProgrPerSec, max_late);
 		run = r;
 		accidentWarningsFailed = awf;

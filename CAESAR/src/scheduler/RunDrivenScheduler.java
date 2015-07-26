@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import distributor.*;
-import event.*;
 import run.*;
 import iogenerator.*;
 
@@ -25,7 +24,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 	int LPrun_frequency;
 	
 	public RunDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-						CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicInteger max_late, 
+						CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicLong max_late, 
 						AtomicInteger x0, AtomicInteger x1, int hprf, int lprf) {		
 		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start,max_late);
 		xway0dir0HPrunsFromSeg = x0;

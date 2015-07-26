@@ -1,7 +1,7 @@
 package event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * In addition to type, time stamp and vehicle identifier, 
@@ -22,7 +22,7 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, AtomicInteger max_latency, long distrProgr) {
+	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, AtomicLong max_latency, long distrProgr) {
 		
 		super(0,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
@@ -39,12 +39,14 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf, AtomicInteger max_latency, long distrProgr) {
+	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf, AtomicLong max_latency, long distrProgr) {
 		
 		super(0,p.sec,p.vid);
-		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
+		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
 		toll = 0;
+		
+		System.out.println("Emit: " + emit);
 		
 		printError (p, emit, tnf, max_latency, "TOLL NOTIFICATIONS", distrProgr);			
 	}
