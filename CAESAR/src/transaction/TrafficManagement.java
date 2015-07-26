@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
-import event.PositionReport;
+import event.*;
+import iogenerator.*;
 
 /** 
  * A traffic managing transaction processes all events in the event sequence by their respective run
@@ -19,7 +20,7 @@ public class TrafficManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 		
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
-			AtomicBoolean awf, AtomicBoolean tnf, AtomicInteger max_late, HashMap<Double,Long> distrProgrPerSec) {
+			AtomicBoolean awf, AtomicBoolean tnf, AtomicDouble max_late, HashMap<Double,Long> distrProgrPerSec) {
 		super(eventList,rs,start,distrProgrPerSec, max_late);
 		run = r;
 		accidentWarningsFailed = awf;

@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import accident.*;
 import event.*;
+import iogenerator.*;
 
 /**
  * A run captures the processing of a unidirectional road segment.
@@ -546,7 +547,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void trafficManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, AtomicInteger max_latency, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, AtomicDouble max_latency, long distrProgr) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -688,7 +689,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
-			AtomicBoolean accidentWarningsFailed, AtomicInteger max_latency, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, AtomicDouble max_latency, long distrProgr) {
 		
 		//System.out.println(event.timesToString());
 		
@@ -768,7 +769,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean tollNotificationsFailed, AtomicInteger max_latency, long distrProgr) { 
+			AtomicBoolean tollNotificationsFailed, AtomicDouble max_latency, long distrProgr) { 
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;

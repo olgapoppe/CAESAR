@@ -6,11 +6,11 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.LinkedBlockingQueue;
 import accident.*;
 import run.*;
 import event.*;
+import iogenerator.*;
 
 /** 
  * A traffic managing transaction processes all events in the event sequence by their respective run
@@ -29,7 +29,7 @@ public class DefaultTrafficManagement extends Transaction {
 	boolean reduced_stream_history_traversal;
 		
 	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
-			AtomicBoolean awf, AtomicBoolean tnf, AtomicInteger max_late, HashMap<Double,Long> distrProgrPerSec,
+			AtomicBoolean awf, AtomicBoolean tnf, AtomicDouble max_late, HashMap<Double,Long> distrProgrPerSec,
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
 		super(eventList,rs,start,distrProgrPerSec, max_late);	

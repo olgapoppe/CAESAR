@@ -3,9 +3,9 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
-import event.PositionReport;
+import event.*;
+import iogenerator.*;
 
 /** 
  * A congestion managing transaction processes all events in the event sequence by their respective run
@@ -18,7 +18,7 @@ public class CongestionManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 		
 	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
-			AtomicBoolean tnf, AtomicInteger max_late, HashMap<Double,Long> distrProgrPerSec) {
+			AtomicBoolean tnf, AtomicDouble max_late, HashMap<Double,Long> distrProgrPerSec) {
 		super(eventList,rs,start,distrProgrPerSec, max_late);
 		run = r;		
 		tollNotificationsFailed = tnf;		

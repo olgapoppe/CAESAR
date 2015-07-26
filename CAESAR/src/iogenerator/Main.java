@@ -75,7 +75,7 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		AtomicInteger max_latency = new AtomicInteger(0);
+		AtomicDouble max_latency = new AtomicDouble(0);
 		
 		for (int i=12; i<args.length; i++) {
 			

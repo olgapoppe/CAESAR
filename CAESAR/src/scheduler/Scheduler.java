@@ -36,10 +36,10 @@ public abstract class Scheduler implements Runnable {
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
-	AtomicInteger max_latency;
+	AtomicDouble max_latency;
 	
 	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicInteger max_late) {
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicDouble max_late) {
 		
 		distributorProgress = dp;
 		distributorProgressPerSec = distrProgrPerSec;

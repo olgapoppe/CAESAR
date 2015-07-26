@@ -30,14 +30,14 @@ public class EventPreprocessor implements Runnable {
 	HashMap<RunID,Run> runs;
 	ExecutorService executor;
 	CountDownLatch done;
-	AtomicInteger max_latency;
+	AtomicDouble max_latency;
 	
 	EventPreprocessor(boolean sq,  
 			int ss, int HP_freq, int LP_freq,
 			boolean ed, boolean pr, boolean fi, boolean sh,
 			String f, ArrayList<XwayDirPair> xds, int lS,
 			boolean cr,
-			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, AtomicInteger max_late) {
+			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d, AtomicDouble max_late) {
 		
 		splitQueries = sq;
 		scheduling_strategy = ss;
