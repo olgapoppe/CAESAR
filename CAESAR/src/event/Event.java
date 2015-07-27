@@ -31,7 +31,7 @@ public abstract class Event {
 	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, long distrProgr) {
 		
 		// Print an error message and update the accident warning failed variable
-		int diff = new Double(emit).intValue() - new Double(p.sec).intValue();
+		double diff = emit - p.sec;
 		
 		if (!failed.get() && diff > 5) {
 			
@@ -40,14 +40,7 @@ public abstract class Event {
 								"triggered " + this.toString() +
 								"Distributer progress in " + p.sec + " is " + distrProgr);
 			failed.compareAndSet(false, true);
-		}
-		// Update maximal latency
-		/*double diff2 = emit - p.sec;
-		
-		if (diff2 > max_latency.get()) {	
-			//System.out.println("Diff: " + diff2);
-			max_latency.set(diff2);		
-		}*/
+		}	
 	}
 	
 	public abstract String toString();

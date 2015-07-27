@@ -24,7 +24,7 @@ public class TollNotification extends Event {
 	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, long distrProgr) {
 		
 		super(0,p.sec,p.vid);		
-		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
+		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
