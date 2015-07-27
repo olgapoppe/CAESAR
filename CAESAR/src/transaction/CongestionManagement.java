@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.*;
-import iogenerator.*;
 
 /** 
  * A congestion managing transaction processes all events in the event sequence by their respective run
@@ -18,8 +17,8 @@ public class CongestionManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 		
 	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
-			AtomicBoolean tnf, AtomicDouble max_late, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec, max_late);
+			AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
+		super(eventList,rs,start,distrProgrPerSec);
 		run = r;		
 		tollNotificationsFailed = tnf;		
 	}
@@ -45,7 +44,7 @@ public class CongestionManagement extends Transaction {
 			}
 			// WRITE: Update this run and remove old data
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.congestionManagement(event, startOfSimulation, segWithAccAhead, tollNotificationsFailed, max_latency, distrProgr); 	
+			run.congestionManagement(event, startOfSimulation, segWithAccAhead, tollNotificationsFailed, distrProgr); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

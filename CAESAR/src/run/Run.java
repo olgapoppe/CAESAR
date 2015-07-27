@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import accident.*;
 import event.*;
-import iogenerator.*;
 
 /**
  * A run captures the processing of a unidirectional road segment.
@@ -547,7 +546,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void trafficManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, AtomicDouble max_latency, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -590,13 +589,13 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, max_latency, distrProgr); 	
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 	
 					if (count_and_rate) {
 						output.real_toll_count++;
 						output.update_real_tollnotification_rates(runID, event.min);
 					}
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, max_latency, distrProgr);	
+					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	
 					if (count_and_rate) { 
 						output.zero_toll_count++;
 						output.update_zero_tollnotification_rates(runID, event.min);
@@ -606,7 +605,7 @@ public class Run {
 				
 				if (isAccident) {		
 					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, max_latency, distrProgr);
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
 					if (count_and_rate) output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
@@ -689,7 +688,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
-			AtomicBoolean accidentWarningsFailed, AtomicDouble max_latency, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, long distrProgr) {
 		
 		//System.out.println(event.timesToString());
 		
@@ -706,7 +705,7 @@ public class Run {
 			// Derive accident warnings
 			if (event.lane < 4 && isAccident) {		
 					
-				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, max_latency, distrProgr);
+				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
 				output.accidentWarnings.add(accidentWarning);				
 			}
 		/********************************************** If the vehicle was in the segment before ***********************************************/
@@ -769,7 +768,7 @@ public class Run {
 	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean tollNotificationsFailed, AtomicDouble max_latency, long distrProgr) { 
+			AtomicBoolean tollNotificationsFailed, long distrProgr) { 
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -813,10 +812,10 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, max_latency, distrProgr); 
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 
 					
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, max_latency, distrProgr);				
+					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
 				}
 				output.tollNotifications.add(tollNotification);
 			}

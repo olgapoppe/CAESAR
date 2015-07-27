@@ -83,6 +83,8 @@ public class OutputFileGenerator {
 			BufferedWriter times_output = new BufferedWriter(new FileWriter(times_file));*/
 			
 			// Events processed and stored by runs
+			double max_latency = 0;
+			
 			for (HashMap<RunID,Run> runs : runtables) {
 				
 				Set<RunID> runids = runs.keySet();
@@ -97,8 +99,8 @@ public class OutputFileGenerator {
 						if (runid.xway == 0 && runid.dir == 0) run.output.writeEventCounts2File(seg, pr_counts_output, max_num_stored_events_output, rtn_counts_output, ztn_counts_output, aw_counts_output);	
 						if (runid.xway == 0 && runid.dir == 1 && runid.seg == 85) run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastMin);
 					}
-					run.output.writeTollNotifications2File(tollalerts_output);
-					run.output.writeAccidentWarnings2File(accidentalerts_output);
+					max_latency = run.output.writeTollNotifications2File(tollalerts_output, max_latency);
+					max_latency = run.output.writeAccidentWarnings2File(accidentalerts_output, max_latency);					
 	     		
 					/*run.write2FileEventStorage(eventstorage_output);
 	     			run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -106,7 +108,9 @@ public class OutputFileGenerator {
 	     		
 	     			total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     			total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
-	     	}}		     	
+	     	}}	
+			System.out.println("Max latency: " + max_latency);
+			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 
 	        				total_time + " " + total_garbageCollectionTime + " " + total_priorityMaintenanceTime + " " +

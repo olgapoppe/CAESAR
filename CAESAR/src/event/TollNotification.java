@@ -1,7 +1,6 @@
 package event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import iogenerator.*;
 
 /**
  * In addition to type, time stamp and vehicle identifier, 
@@ -10,7 +9,7 @@ import iogenerator.*;
  */
 public class TollNotification extends Event {
 	
-	double emit;
+	public double emit;
 	double avgSpd;
 	double toll;
 		
@@ -22,14 +21,14 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, AtomicDouble max_latency, long distrProgr) {
+	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, long distrProgr) {
 		
 		super(0,p.sec,p.vid);		
 		emit = (System.currentTimeMillis() - startOfSimulation)/1000;
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
-		printError (p, emit, tnf, max_latency, "TOLL NOTIFICATIONS", distrProgr);		 	
+		printError (p, emit, tnf, "TOLL NOTIFICATIONS", distrProgr);		 	
 	}
 	
 	/**
@@ -39,7 +38,7 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf, AtomicDouble max_latency, long distrProgr) {
+	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf, long distrProgr) {
 		
 		super(0,p.sec,p.vid);
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
@@ -48,7 +47,7 @@ public class TollNotification extends Event {
 		
 		//System.out.println("Emit: " + emit);
 		
-		printError (p, emit, tnf, max_latency, "TOLL NOTIFICATIONS", distrProgr);			
+		printError (p, emit, tnf, "TOLL NOTIFICATIONS", distrProgr);			
 	}
 	
 	/** 
@@ -58,7 +57,7 @@ public class TollNotification extends Event {
 		return new Double(type).intValue() + ","
 				+ new Double(vid).intValue() + ","
 				+ new Double(sec).intValue() + ","
-				+ new Double(emit).intValue() + "," 
+				+ emit + "," 
 				+ new Double(avgSpd).intValue() + ","
 				+ new Double(toll).intValue() + "\n";			
 	}

@@ -25,10 +25,10 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	boolean reduced_stream_history_traversal;
 			
 	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, AtomicDouble max_latency,
+			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start,
 			boolean ed, boolean pr, boolean fi, boolean sh) {	
 		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start,max_latency);
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);
 		
 		sec = 0;
 		splitQueries = sq;

@@ -154,19 +154,29 @@ public class Output {
 	 * Write the toll notifications to the given file.  
 	 * @param file
 	 */
-	public void writeTollNotifications2File (BufferedWriter file) {
+	public double writeTollNotifications2File (BufferedWriter file, double max_latency) {
 		for (TollNotification t : tollNotifications) {
-			try { file.write(t.toString()); } catch (IOException e) { e.printStackTrace(); }
+			try { 
+				double diff = t.emit - t.sec;
+				if (max_latency < diff) max_latency = diff;
+				file.write(t.toString()); 
+			} catch (IOException e) { e.printStackTrace(); }
 		}  
+		return max_latency;
 	}
 	
 	/**
 	 * Write the accident warnings to the given file. 
 	 * @param file
 	 */
-	public void writeAccidentWarnings2File (BufferedWriter file) {
+	public double writeAccidentWarnings2File (BufferedWriter file, double max_latency) {
 		for (AccidentWarning a : accidentWarnings) {			
-			try { file.write(a.toString()); } catch (IOException e) { e.printStackTrace(); }
-		}  
+			try { 
+				double diff = a.emit - a.sec;
+				if (max_latency < diff) max_latency = diff;
+				file.write(a.toString()); 
+			} catch (IOException e) { e.printStackTrace(); }
+		}
+		return max_latency;
 	}
 }

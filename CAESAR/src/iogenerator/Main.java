@@ -74,8 +74,6 @@ public class Main {
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		AtomicDouble max_latency = new AtomicDouble(0);
-		
 		for (int i=12; i<args.length; i++) {
 			
 			/*** Input file ***/	
@@ -106,7 +104,7 @@ public class Main {
 					ed, pr, fi, sh,
 					filename, xways_and_dirs, lastSec, 
 					count_and_rate,
-					runs, executor, done, max_latency);
+					runs, executor, done);
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
 			ppThread.start();			
@@ -116,9 +114,6 @@ public class Main {
 			for (CountDownLatch done : dones) {
 				done.await();		
 			}
-			// Print maximal latency
-			System.out.println("Maximal latency: " + max_latency.get());
-			
 			executor.shutdown();	
 			System.out.println("Executor is done.");
 									

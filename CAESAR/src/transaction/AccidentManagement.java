@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.*;
-import iogenerator.*;
 
 /** 
  * A accident managing transaction processes all events in the event sequence by their respective run
@@ -19,8 +18,8 @@ public class AccidentManagement extends Transaction {
 	AtomicBoolean accidentWarningsFailed;	
 	
 	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, 
-			AtomicBoolean awf, AtomicDouble max_late, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec, max_late);
+			AtomicBoolean awf, HashMap<Double,Long> distrProgrPerSec) {
+		super(eventList,rs,start,distrProgrPerSec);
 		run = r;
 		run_priorization = rp;		
 		accidentWarningsFailed = awf;		
@@ -55,7 +54,7 @@ public class AccidentManagement extends Transaction {
 			// WRITE: Update this run	
 			//System.out.println(event.sec + " " + distrTimeStamp);	
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed, max_latency, distrProgr); 									
+			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed, distrProgr); 									
 		}		
 		// Count down the number of transactions
 		transaction_number.countDown();

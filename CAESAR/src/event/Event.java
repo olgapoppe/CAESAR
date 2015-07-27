@@ -1,7 +1,6 @@
 package event;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import iogenerator.*;
 
 /**
  * An event has a type, time stamp and carries a vehicle identifier. 
@@ -29,7 +28,7 @@ public abstract class Event {
 	 * @param s				type of complex event
 	 * @param distrProgr 	distributor progress in application time of input event
 	 */
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, AtomicDouble max_latency, String s, long distrProgr) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, long distrProgr) {
 		
 		// Print an error message and update the accident warning failed variable
 		int diff = new Double(emit).intValue() - new Double(p.sec).intValue();
@@ -43,12 +42,12 @@ public abstract class Event {
 			failed.compareAndSet(false, true);
 		}
 		// Update maximal latency
-		double diff2 = emit - p.sec;
+		/*double diff2 = emit - p.sec;
 		
 		if (diff2 > max_latency.get()) {	
 			//System.out.println("Diff: " + diff2);
 			max_latency.set(diff2);		
-		}
+		}*/
 	}
 	
 	public abstract String toString();
