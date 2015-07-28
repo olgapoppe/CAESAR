@@ -7,13 +7,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import run.RunID;
 import event.PositionReport;
 
-public class RunQueues {
+public class EventQueues {
 	
 	public HashMap<RunID,LinkedBlockingQueue<PositionReport>> contents;
 	AtomicInteger distributorProgress;
 	int sec;
 		
-	public RunQueues (AtomicInteger dp) {
+	public EventQueues (AtomicInteger dp) {
 		
 		contents = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
 		distributorProgress = dp;

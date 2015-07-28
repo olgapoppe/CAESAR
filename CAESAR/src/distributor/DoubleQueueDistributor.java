@@ -11,9 +11,9 @@ import event.PositionReport;
 
 public class DoubleQueueDistributor extends EventDistributor {
 	
-	final RunQueues HPrunqueues;
+	final EventQueues HPrunqueues;
 	
-	public DoubleQueueDistributor (AtomicInteger dp,  HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, RunQueues rq, RunQueues hprq,
+	public DoubleQueueDistributor (AtomicInteger dp,  HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, EventQueues rq, EventQueues hprq,
 								   AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
 		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start, cr);
 		HPrunqueues = hprq;
@@ -83,7 +83,7 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 			}
 		 		}
 		 		// Update distributer progress
-		 		runqueues.setDistributorProgress(curr_app_sec);		 					 				
+		 		eventqueues.setDistributorProgress(curr_app_sec);		 					 				
 		 						 				
 		 		// Sleep if curr_sec is smaller than curr_app_sec
 		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;

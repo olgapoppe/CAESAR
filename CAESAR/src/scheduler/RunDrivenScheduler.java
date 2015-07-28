@@ -22,7 +22,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 	int HPrun_frequency;
 	int LPrun_frequency;
 	
-	public RunDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
+	public RunDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
 						CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, 
 						AtomicInteger x0, AtomicInteger x1, int hprf, int lprf) {		
 		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);

@@ -25,7 +25,7 @@ public abstract class Scheduler implements Runnable {
 	HashMap<Double,Long> distributorProgressPerSec;
 	
 	HashMap<RunID,Run> runs;
-	public final RunQueues runqueues;		
+	public final EventQueues runqueues;		
 	ExecutorService executor;
 	
 	CountDownLatch transaction_number;
@@ -37,7 +37,7 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
-	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, RunQueues rq, ExecutorService e, 
+	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
 			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {
 		
 		distributorProgress = dp;
