@@ -74,7 +74,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		/*** Set distributor progress per second ***/
 		 		if (prev_sec < event.sec) {
 		 				
-		 			eventqueues.setDistributorProgress(prev_sec);					
+		 			if (prev_sec > 10) eventqueues.setDistributorProgress(prev_sec);					
 					
 					//System.out.println("Distributor progress for " + prev_sec + " is " + now);
 					distributorProgressPerSec.put(prev_sec,now);
