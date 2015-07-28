@@ -31,7 +31,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			// Time
 			double prev_sec = -1;
 			long now = 0;
-			int next_min_2_sleep = 10;
+			int next_min_2_sleep = 1;
 			
 			// First event
 			String line = scanner.nextLine();
@@ -76,19 +76,21 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				
 		 			if (prev_sec > 10) eventqueues.setDistributorProgress(prev_sec);					
 					
-					//System.out.println("Distributor progress for " + prev_sec + " is " + now);
+					System.out.println("Distributor progress for " + prev_sec + " is " + now);
 					distributorProgressPerSec.put(prev_sec,now);
 						
 					prev_sec = event.sec;
 				}	
 		 		
 		 		/*** Sleep for 5 minutes if event distribution is more than 10 minutes ahead of application time ***/
-		 		if (event.min == next_min_2_sleep && (prev_sec-1) - now > 10) {
+		 		if (event.min == next_min_2_sleep && (prev_sec-1)/60 - now/60 > 3) {
 		 			
-		 			System.out.println("Distribution is done till " + (prev_sec-1) + ". Distributor sleeps 5 min.");		 			
-					Thread.sleep(300000);
+		 			System.out.println(
+		 					"Application minute is: " + (now/60) + 
+		 					"Distribution is done till " + ((prev_sec-1)/60) + ". Distributor sleeps 1 min.");		 			
+					Thread.sleep(60000);
 		 			
-		 			next_min_2_sleep += 10;
+		 			next_min_2_sleep++;
 		 		}
 		 			
 		 		/*** Reset event ***/
@@ -103,7 +105,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 	eventqueues.setDistributorProgress(prev_sec);
 		 	
 		 	now = (System.currentTimeMillis() - startOfSimulation)/1000;
-			//System.out.println("Distributor progress for " + prev_sec + " is " + now);
+			System.out.println("Distributor progress for " + prev_sec + " is " + now);
 			distributorProgressPerSec.put(prev_sec,now); 			
 		 				
 			/*** Clean-up ***/		
