@@ -38,7 +38,7 @@ public class SingleQueueDistributor extends EventDistributor {
 	 		PositionReport event = PositionReport.parse(line);	
 	 								
 			/*** Put events within the current batch into the run queue ***/ 		
-		 	while (event != null) { 
+		 	while (true) { 
 		 			
 		 		if (event.correctPositionReport()) {
 		 				
@@ -76,18 +76,17 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				
 		 			if (prev_sec > 10) eventqueues.setDistributorProgress(prev_sec);					
 					
-					System.out.println("Distributor progress for " + prev_sec + " is " + now);
+					//System.out.println("Distributor progress for " + prev_sec + " is " + now);
 					distributorProgressPerSec.put(prev_sec,now);
 						
 					prev_sec = event.sec;
 				}	
 		 		
-		 		/*** Sleep for 5 minutes if event distribution is more than 10 minutes ahead of application time ***/
+		 		/*** Every minute, if the distributor is more than 3 minutes ahead of time, it sleeps for 1 minute ***/
 		 		if (event.min == next_min_2_sleep && (prev_sec-1-now)/60 > 3) {
 		 			
-		 			System.out.println(
-		 					"Application minute is: " + (now/60) + 
-		 					". Distribution is done till " + ((prev_sec-1)/60) + ". Distributor sleeps 1 min.");		 			
+		 			System.out.println(	"Application minute is: " + (now/60) + 
+		 								". Distribution is done till " + ((prev_sec-1)/60) + ". Distributor sleeps 1 min.");		 			
 					Thread.sleep(60000);
 		 			
 		 			next_min_2_sleep++;
@@ -98,14 +97,14 @@ public class SingleQueueDistributor extends EventDistributor {
 					line = scanner.nextLine();   
 					event = PositionReport.parse(line);		 				
 				} else {
-					event = null;		 				
+					break;		 				
 				}	 			
 			}	
 		 	/*** Set distributor progress for the last second ***/
 		 	eventqueues.setDistributorProgress(prev_sec);
 		 	
 		 	now = (System.currentTimeMillis() - startOfSimulation)/1000;
-			System.out.println("Distributor progress for " + prev_sec + " is " + now);
+			//System.out.println("Distributor progress for " + prev_sec + " is " + now);
 			distributorProgressPerSec.put(prev_sec,now); 			
 		 				
 			/*** Clean-up ***/		
