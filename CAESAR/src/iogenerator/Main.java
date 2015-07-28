@@ -12,69 +12,72 @@ public class Main {
 	/**
 	 * Create and call the chain: Input files -> Drivers/Distributors -> Schedulers -> Executor pool -> Output files
 	 * 
-	 * @param args: SCHEDULING
-	 * 0			split queries: 0 for false, 1 for true
-	 * 1			scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
-	 * 2			HP frequency 
-	 * 3			LP frequency
+	 * @param args: EXECUTORS
+	 * 0			number of executors
+	 *  
+	 * 				SCHEDULING
+	 * 1			split queries: 0 for false, 1 for true
+	 * 2			scheduling strategy: 1 for TDS, 2 for RDS, 3 for QDS and 4 for RQDS
+	 * 3			HP frequency 
+	 * 4			LP frequency
 	 *
 	 * 				OPTIMIZATION
-	 * 4			event derivation omission: 1 for yes, 0 for no
-	 * 5			early mandatory projections: 1 for yes, 0 for no
-	 * 6			early condensed filtering: 1 for yes, 0 for no
-	 * 7			reduced stream history traversal: 1 for yes, 0 for no
+	 * 5			event derivation omission: 1 for yes, 0 for no
+	 * 6			early mandatory projections: 1 for yes, 0 for no
+	 * 7			early condensed filtering: 1 for yes, 0 for no
+	 * 8			reduced stream history traversal: 1 for yes, 0 for no
 	 *
 	 *				STATISTICS
-	 * 8			count and rate computation: 0 for no, 1 for yes
+	 * 9			count and rate computation: 0 for no, 1 for yes
 	 * 
 	 *  			INPUT
-	 * 9			last second : 10784
-	 * 10			path : src/input/ or ../../input/
-	 * 11			extension : .txt or .dat
-	 * 12			input file names in xway;dir-xway;dir-xway;dir format				
+	 * 10			last second : 10784
+	 * 11			path : src/input/ or ../../input/
+	 * 12			extension : .txt or .dat
+	 * 13			input file names in xway;dir-xway;dir-xway;dir format				
 	 */
 	public static void main (String[] args) { 
 		
 		/*** Validate the number of input parameters ***/
-		if (args.length < 13) {
-			System.out.println("At least 13 input parameters are expected.");
+		if (args.length < 14) {
+			System.out.println("At least 14 input parameters are expected.");
 			return;
 		}	
 		
-		/*** SCHEDULING ***/
-		boolean splitQueries = args[0].equals("1");
+		/*** EXECUTORS ***/
+		int number_of_executors = Integer.parseInt(args[0]);
+		System.out.println("Number of executors: " + number_of_executors);
+		ExecutorService executor = Executors.newFixedThreadPool(number_of_executors);
 		
-		int scheduling_strategy = Integer.parseInt(args[1]);
+		/*** SCHEDULING ***/
+		boolean splitQueries = args[1].equals("1");
+		
+		int scheduling_strategy = Integer.parseInt(args[2]);
 		if (scheduling_strategy<1 || scheduling_strategy>4) {
 			System.out.println("Second input parameter is a scheduling strategy which is an integer from 1 to 4.");
 			return;
 		}
-		int HP_frequency = Integer.parseInt(args[2]);	
-		int LP_frequency = Integer.parseInt(args[3]);
+		int HP_frequency = Integer.parseInt(args[3]);	
+		int LP_frequency = Integer.parseInt(args[4]);
 		
 		/*** OPTIMIZATION ***/
-		boolean ed = args[4].equals("1");
-		boolean pr = args[5].equals("1");
-		boolean fi = args[6].equals("1");
-		boolean sh = args[7].equals("1");		
+		boolean ed = args[5].equals("1");
+		boolean pr = args[6].equals("1");
+		boolean fi = args[7].equals("1");
+		boolean sh = args[8].equals("1");		
 		
 		/*** STATISTICS ***/
-		boolean count_and_rate = args[8].equals("1");
+		boolean count_and_rate = args[9].equals("1");
 		
 		/*** INPUT ***/
-		int lastSec = Integer.parseInt(args[9]);
-		String path = args[10];
-		String extension = args[11];
-		
-		//int numberOfInputFiles = args.length - 6;
-		//int numberOfHelperThreads = numberOfInputFiles * 2;
-		//int numberOfExeThreads = Runtime.getRuntime().availableProcessors() - numberOfHelperThreads;
-		ExecutorService executor = Executors.newFixedThreadPool(14); //numberOfExeThreads);	
+		int lastSec = Integer.parseInt(args[10]);
+		String path = args[11];
+		String extension = args[12];	 	
 		
 		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
 		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
 		
-		for (int i=12; i<args.length; i++) {
+		for (int i=13; i<args.length; i++) {
 			
 			/*** Input file ***/	
 			String filename = path + args[i] + extension;

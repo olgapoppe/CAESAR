@@ -86,7 +86,8 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		if (event.min == next_min_2_sleep && (prev_sec-1-now)/60 > 3) {
 		 			
 		 			System.out.println(	"Application minute is: " + (now/60) + 
-		 								". Distribution is done till " + ((prev_sec-1)/60) + ". Distributor sleeps 1 min.");		 			
+		 								". Distribution is done till " + ((prev_sec-1)/60) + 
+		 								". Distributor sleeps 1 min.");		 			
 					Thread.sleep(60000);
 		 			
 		 			next_min_2_sleep++;
