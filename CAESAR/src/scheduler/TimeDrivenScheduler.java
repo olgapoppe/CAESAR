@@ -55,7 +55,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		
 		double batch_limit = random.nextInt(max - min + 1) + min;
 		if (batch_limit > lastSec) batch_limit = lastSec;	
-		//System.out.println("Scheduler's batch limit: " + batch_limit);
+		System.out.println("Scheduler's batch limit: " + batch_limit);
 		
 		try {
 		
@@ -83,23 +83,23 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					/*** Get current application time ***/
 					now = System.currentTimeMillis() - startOfSimulation;
 					
-					//System.out.println("Application time: " + now);
+					System.out.println("Application time: " + now);
  					
 					/*** Sleep if the current batch was read ahead of application time ***/
 					if (now < batch_limit*1000) {
 		 			
 						int sleep_time = new Double(batch_limit*1000 - now).intValue();		 			
-						//System.out.println("Scheduler sleeps " + sleep_time + " ms");		 			
+						System.out.println("Scheduler sleeps " + sleep_time + " ms");		 			
 						Thread.sleep(sleep_time);
 					}
 					
-					//System.out.println("Application time: " + (System.currentTimeMillis() - startOfSimulation));
-					//System.out.println("-----------------------------------------");
+					System.out.println("Application time: " + (System.currentTimeMillis() - startOfSimulation));
+					System.out.println("-----------------------------------------");
  					
 					/*** Rest batch limit ***/
 					batch_limit += random.nextInt(max - min + 1) + min;		 			
 					if (batch_limit > lastSec) batch_limit = lastSec;
-					//System.out.println("Scheduler's batch limit: " + batch_limit);						
+					System.out.println("Scheduler's batch limit: " + batch_limit);						
 				}												
 			}			
 		} catch (final InterruptedException e) { e.printStackTrace(); }
