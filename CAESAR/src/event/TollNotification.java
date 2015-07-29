@@ -23,7 +23,10 @@ public class TollNotification extends Event {
 	 */
 	public TollNotification (PositionReport p, double a, double vehCount, long startOfSimulation, AtomicBoolean tnf, long distrProgr, double scheduler_wakeup_time) {
 		
-		super(0,p.sec,p.vid);		
+		super(0,p.sec,p.vid);	
+		
+		if (scheduler_wakeup_time > 1) System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time);
+		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000) - scheduler_wakeup_time;
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
@@ -41,6 +44,9 @@ public class TollNotification extends Event {
 	public TollNotification (PositionReport p, double a, long startOfSimulation, AtomicBoolean tnf, long distrProgr, double scheduler_wakeup_time) {
 		
 		super(0,p.sec,p.vid);
+		
+		if (scheduler_wakeup_time > 1) System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time);
+		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000) - scheduler_wakeup_time;
 		avgSpd = a;
 		toll = 0;

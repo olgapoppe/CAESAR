@@ -14,7 +14,10 @@ public class AccidentWarning extends Event {
 			
 	public AccidentWarning (PositionReport p, double s, long startOfSimulation, AtomicBoolean awf, long distrProgr, double scheduler_wakeup_time) {
 		
-		super(1,p.sec,p.vid);		
+		super(1,p.sec,p.vid);	
+		
+		if (scheduler_wakeup_time > 1) System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time);
+		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000) - scheduler_wakeup_time;
 		seg = s;
 				
