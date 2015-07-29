@@ -48,14 +48,15 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		// Local variables
 		double curr_sec = -1;
 		long now = 0;
+		double scheduler_wakeup_time = 0;
 		
 		Random random = new Random();
 		int min = 6;
 		int max = 14;
 		
-		double batch_limit = random.nextInt(max - min + 1) + min;
+		int batch_limit = random.nextInt(max - min + 1) + min;
 		if (batch_limit > lastSec) batch_limit = lastSec;	
-		System.out.println("Scheduler's batch limit: " + batch_limit);
+		//System.out.println("Scheduler's batch limit: " + batch_limit);
 		
 		try {
 		
@@ -67,7 +68,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					//System.out.println("Scheduler schedules second: " + curr_sec);
 			
 					// Schedule the current second
-					all_queries_all_runs (splitQueries, curr_sec, false, false, 
+					all_queries_all_runs (splitQueries, curr_sec, scheduler_wakeup_time, false, false, 
 						event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 					//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing				
 					
@@ -83,23 +84,30 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					/*** Get current application time ***/
 					now = System.currentTimeMillis() - startOfSimulation;
 					
-					System.out.println("Application time: " + now);
+					//System.out.println("Application time: " + now);
  					
 					/*** Sleep if the current batch was read ahead of application time ***/
 					if (now < batch_limit*1000) {
 		 			
 						int sleep_time = new Double(batch_limit*1000 - now).intValue();		 			
-						System.out.println("Scheduler sleeps " + sleep_time + " ms");		 			
+						//System.out.println("Scheduler sleeps " + sleep_time + " ms");		 			
 						Thread.sleep(sleep_time);
+						
+						scheduler_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch_limit;
+						if (scheduler_wakeup_time > 1) {
+							System.out.println("Scheduler slept " + scheduler_wakeup_time + " seconds too long.");
+						} else {
+							scheduler_wakeup_time = 0;
+						}
 					}
 					
-					System.out.println("Application time: " + (System.currentTimeMillis() - startOfSimulation));
-					System.out.println("-----------------------------------------");
+					//System.out.println("Application time: " + (System.currentTimeMillis() - startOfSimulation));
+					//System.out.println("-----------------------------------------");
  					
 					/*** Rest batch limit ***/
 					batch_limit += random.nextInt(max - min + 1) + min;		 			
 					if (batch_limit > lastSec) batch_limit = lastSec;
-					System.out.println("Scheduler's batch limit: " + batch_limit);						
+					//System.out.println("Scheduler's batch limit: " + batch_limit);						
 				}												
 			}			
 		} catch (final InterruptedException e) { e.printStackTrace(); }

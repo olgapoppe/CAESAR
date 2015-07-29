@@ -14,12 +14,13 @@ import event.*;
 public class TrafficManagement extends Transaction {
 	
 	Run run;
+	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
-	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, 
+	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, double swut,
 			AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec);
+		super(eventList,rs,start,swut,distrProgrPerSec);
 		run = r;
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;		
@@ -53,7 +54,7 @@ public class TrafficManagement extends Transaction {
 			}
 			// WRITE: Update this run and remove old data
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.trafficManagement(event, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 	
+			run.trafficManagement(event, startOfSimulation, scheduler_wakeup_time, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

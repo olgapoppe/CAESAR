@@ -58,7 +58,7 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (boolean splitQueries, double sec, boolean run_priorization, boolean catchup,
+	public int all_queries_all_runs (boolean splitQueries, double sec, double scheduler_wakeup_time, boolean run_priorization, boolean catchup,
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
 		int number = 0;
@@ -67,7 +67,7 @@ public abstract class Scheduler implements Runnable {
 			if (!splitQueries) {
 				
 				// Schedule all queries
-				ArrayList<Transaction> transactions = one_query_all_runs(sec, 0, run_priorization, catchup, ed, pr, fi, sh);
+				ArrayList<Transaction> transactions = one_query_all_runs(sec, scheduler_wakeup_time, 0, run_priorization, catchup, ed, pr, fi, sh);
 				number = transactions.size();
 			
 				//long startOfFirstWaiting = System.currentTimeMillis();					
@@ -81,7 +81,7 @@ public abstract class Scheduler implements Runnable {
 				}				
 			} else {
 				// Schedule HP query of all runs							
-				ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup, ed, pr, fi, sh);
+				ArrayList<Transaction> transactions1 = one_query_all_runs(sec, scheduler_wakeup_time, 1, run_priorization, catchup, ed, pr, fi, sh);
 				number = transactions1.size();
 			
 				//long startOfFirstWaiting = System.currentTimeMillis();					
@@ -94,7 +94,7 @@ public abstract class Scheduler implements Runnable {
 					executor.execute(t); 
 				}			
 				// Schedule LP query of all runs
-				ArrayList<Transaction> transactions2 = one_query_all_runs(sec, 2, run_priorization, catchup, ed, pr, fi, sh);
+				ArrayList<Transaction> transactions2 = one_query_all_runs(sec, scheduler_wakeup_time, 2, run_priorization, catchup, ed, pr, fi, sh);
 				number = transactions2.size();
 			
 				//long startOfSecondWaiting = System.currentTimeMillis();			
@@ -114,13 +114,13 @@ public abstract class Scheduler implements Runnable {
 		return number;
 	}
 	
-	public int all_queries_all_runs (double hp_run_sec, double lp_run_sec, boolean run_priorization, int x0, int x1, boolean catchup) {
+	public int all_queries_all_runs (double scheduler_wakeup_time, double hp_run_sec, double lp_run_sec, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		int number = 0;
 		
 		try {		
 			// Schedule HP query of HP runs
-			ArrayList<Transaction> transactions1 = one_query_HPruns(hp_run_sec, 1, run_priorization, x0, x1, catchup);
+			ArrayList<Transaction> transactions1 = one_query_HPruns(scheduler_wakeup_time, hp_run_sec, 1, run_priorization, x0, x1, catchup);
 			transaction_number.await();
 			transaction_number = new CountDownLatch(transactions1.size());
 			for (Transaction t : transactions1) { 
@@ -128,8 +128,8 @@ public abstract class Scheduler implements Runnable {
 				executor.execute(t); 
 			}			
 			// Schedule LP query of HP runs and HP query of LP runs
-			ArrayList<Transaction> transactions2 = one_query_HPruns(hp_run_sec, 2, run_priorization, x0, x1, catchup);
-			transactions2.addAll(one_query_LPruns(lp_run_sec, 1, run_priorization, x0, x1, catchup));
+			ArrayList<Transaction> transactions2 = one_query_HPruns(scheduler_wakeup_time, hp_run_sec, 2, run_priorization, x0, x1, catchup);
+			transactions2.addAll(one_query_LPruns(scheduler_wakeup_time, lp_run_sec, 1, run_priorization, x0, x1, catchup));
 			transaction_number.await();
 			transaction_number = new CountDownLatch(transactions2.size());
 			for (Transaction t : transactions2) { 
@@ -137,7 +137,7 @@ public abstract class Scheduler implements Runnable {
 				executor.execute(t); 
 			}				
 			// Schedule LP query of LP runs
-			ArrayList<Transaction> transactions3 = one_query_LPruns(lp_run_sec, 2, run_priorization, x0, x1, catchup);
+			ArrayList<Transaction> transactions3 = one_query_LPruns(scheduler_wakeup_time, lp_run_sec, 2, run_priorization, x0, x1, catchup);
 			transaction_number.await();
 			number = transactions3.size();
 			transaction_number = new CountDownLatch(number);
@@ -164,13 +164,13 @@ public abstract class Scheduler implements Runnable {
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 	}*/
 	
-	public int all_queries_HP_runs (double sec, boolean run_priorization, int x0, int x1, boolean catchup) {
+	public int all_queries_HP_runs (double sec, double scheduler_wakeup_time, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		int number = 0;
 		
 		try {	
 			// Schedule HP query of HP runs
-			ArrayList<Transaction> transactions1 = one_query_HPruns(sec, 1, run_priorization, x0, x1, catchup);
+			ArrayList<Transaction> transactions1 = one_query_HPruns(sec, scheduler_wakeup_time, 1, run_priorization, x0, x1, catchup);
 			transaction_number.await();
 			transaction_number = new CountDownLatch(transactions1.size());	
 			for (Transaction t : transactions1) { 			
@@ -178,7 +178,7 @@ public abstract class Scheduler implements Runnable {
 				executor.execute(t); 
 			}		
 			// Schedule LP query of HP runs
-			ArrayList<Transaction> transactions2 = one_query_HPruns(sec, 2, run_priorization, x0, x1, catchup);
+			ArrayList<Transaction> transactions2 = one_query_HPruns(sec, scheduler_wakeup_time, 2, run_priorization, x0, x1, catchup);
 			transaction_number.await();
 			number = transactions2.size();
 			transaction_number = new CountDownLatch(number);		
@@ -190,13 +190,13 @@ public abstract class Scheduler implements Runnable {
 		return number;
 	}
 	
-	public int all_queries_LP_runs (double sec, boolean run_priorization, int x0, int x1, boolean catchup) {
+	public int all_queries_LP_runs (double sec, double scheduler_wakeup_time, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		int number = 0;
 		
 		try {	
 			// Schedule HP query of LP runs
-			ArrayList<Transaction> transactions1 = one_query_LPruns(sec, 1, run_priorization, x0, x1, catchup);
+			ArrayList<Transaction> transactions1 = one_query_LPruns(sec, scheduler_wakeup_time, 1, run_priorization, x0, x1, catchup);
 			transaction_number.await();
 			transaction_number = new CountDownLatch(transactions1.size());
 			for (Transaction t : transactions1) { 		
@@ -204,7 +204,7 @@ public abstract class Scheduler implements Runnable {
 				executor.execute(t); 
 			}	
 			// Schedule LP query of LP runs
-			ArrayList<Transaction> transactions2 = one_query_LPruns(sec, 2, run_priorization, x0, x1, catchup);
+			ArrayList<Transaction> transactions2 = one_query_LPruns(sec, scheduler_wakeup_time, 2, run_priorization, x0, x1, catchup);
 			transaction_number.await();
 			number = transactions2.size();
 			transaction_number = new CountDownLatch(number);
@@ -216,12 +216,12 @@ public abstract class Scheduler implements Runnable {
 		return number;
 	}
 	
-	public int one_query_all_runs_wrapper (double sec, int query, boolean run_priorization, boolean catchup) {
+	public int one_query_all_runs_wrapper (double sec, double scheduler_wakeup_time, int query, boolean run_priorization, boolean catchup) {
 		
 		int number = 0;
 		
 		try {
-			ArrayList<Transaction> transactions = one_query_all_runs (sec, query, run_priorization, catchup, false, false, false, false);
+			ArrayList<Transaction> transactions = one_query_all_runs (sec, scheduler_wakeup_time, query, run_priorization, catchup, false, false, false, false);
 			transaction_number.await();
 			number = transactions.size();
 			transaction_number = new CountDownLatch(number);			
@@ -240,7 +240,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param run_priorization	whether run priority is maintained
 	 * @return int 				number of transactions submitted for execution
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec, int query, boolean run_priorization, boolean catchup, 
+	public ArrayList<Transaction> one_query_all_runs (double sec, double scheduler_wakeup_time, int query, boolean run_priorization, boolean catchup, 
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
@@ -252,13 +252,13 @@ public abstract class Scheduler implements Runnable {
 				if (pair.dir == 0 || pair.dir == 2 ) {
 			
 					RunID runid0 = new RunID(pair.xway,0,seg);
-					Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, ed, pr, fi, sh);
+					Transaction t0 = one_query_one_run(sec, scheduler_wakeup_time, runid0, query, run_priorization, catchup, ed, pr, fi, sh);
 					if (t0!=null) transactions.add(t0);	
 				}				
 				if (pair.dir == 1 || pair.dir == 2 ) { 
 					
 					RunID runid1 = new RunID(pair.xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup, ed, pr, fi, sh);
+					Transaction t1 = one_query_one_run(sec, scheduler_wakeup_time, runid1, query, run_priorization, catchup, ed, pr, fi, sh);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -273,7 +273,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param x1				first high-priority run on road 0, direction 1
 	 * @return int 				number of transactions submitted for execution
 	 */
-	public ArrayList<Transaction> one_query_HPruns (double sec, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
+	public ArrayList<Transaction> one_query_HPruns (double sec, double scheduler_wakeup_time, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 		
@@ -282,7 +282,7 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=99; seg>=x0; seg--) {
 			
 				RunID runid0 = new RunID(0,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, false, false, false, false);
+				Transaction t0 = one_query_one_run(sec, scheduler_wakeup_time, runid0, query, run_priorization, catchup, false, false, false, false);
 				if (t0!=null) transactions.add(t0);							
 		}}
 		// Direction is 1, segments are executed from 0 to x1
@@ -290,7 +290,7 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=0; seg<=x1; seg++) {
 			
 				RunID runid1 = new RunID(0,1,seg);
-				Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup, false, false, false, false);
+				Transaction t1 = one_query_one_run(sec, scheduler_wakeup_time, runid1, query, run_priorization, catchup, false, false, false, false);
 				if (t1!=null) transactions.add(t1);							
 		}}		
 		return transactions;
@@ -305,7 +305,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param x1				first high-priority run on road 0, direction 1
 	 * @return int 				number of transactions submitted for execution
 	 */
-	public ArrayList<Transaction> one_query_LPruns (double sec, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
+	public ArrayList<Transaction> one_query_LPruns (double sec, double scheduler_wakeup_time, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 		
@@ -315,7 +315,7 @@ public abstract class Scheduler implements Runnable {
 		for (double seg=from0; seg>=0; seg--) {
 				
 			RunID runid0 = new RunID(0,0,seg);							
-			Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, false, false, false, false);
+			Transaction t0 = one_query_one_run(sec, scheduler_wakeup_time, runid0, query, run_priorization, catchup, false, false, false, false);
 			if (t0!=null) transactions.add(t0);	
 		}
 		// Direction is 1, segments are executed from x1+1 or 0 to 99
@@ -324,7 +324,7 @@ public abstract class Scheduler implements Runnable {
 		for (double seg=from1; seg<=99; seg++) {					
 								
 			RunID runid1 = new RunID(0,1,seg);
-			Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup, false, false, false, false);
+			Transaction t1 = one_query_one_run(sec, scheduler_wakeup_time, runid1, query, run_priorization, catchup, false, false, false, false);
 			if (t1!=null) transactions.add(t1);	
 		}		
 		return transactions;
@@ -339,7 +339,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param run_priorization	whether run priority is maintained
 	 * @return boolean 			indicating whether this transaction was submitted for execution
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid, int query, boolean run_priorization, boolean catchup,
+	public Transaction one_query_one_run (double sec, double scheduler_wakeup_time, RunID runid, int query, boolean run_priorization, boolean catchup,
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
 		if (0<query && query<2) System.err.println("Non-existing query is called by scheduler.");
@@ -368,9 +368,9 @@ public abstract class Scheduler implements Runnable {
 						
 						Run run = runs.get(runid);
 						if (ed & pr & fi & sh) {
-							return new TrafficManagement (run, event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
+							return new TrafficManagement (run, event_list, runs, startOfSimulation, scheduler_wakeup_time, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
 						} else {
-							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec, ed, pr, fi, sh);
+							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, scheduler_wakeup_time, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec, ed, pr, fi, sh);
 						}
 				}}
 				
@@ -403,7 +403,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);											
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, scheduler_wakeup_time, run_priorization, accidentWarningsFailed, distributorProgressPerSec);											
 				}}
 				
 				/*** Congestion management ***/
@@ -429,7 +429,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);					
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, scheduler_wakeup_time, tollNotificationsFailed, distributorProgressPerSec);					
 				}}
 		}}
 		return null;

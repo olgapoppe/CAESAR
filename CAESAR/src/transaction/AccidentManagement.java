@@ -17,9 +17,9 @@ public class AccidentManagement extends Transaction {
 	boolean run_priorization;	
 	AtomicBoolean accidentWarningsFailed;	
 	
-	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, 
+	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, double swut, boolean rp, 
 			AtomicBoolean awf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec);
+		super(eventList,rs,start,swut,distrProgrPerSec);
 		run = r;
 		run_priorization = rp;		
 		accidentWarningsFailed = awf;		
@@ -54,7 +54,7 @@ public class AccidentManagement extends Transaction {
 			// WRITE: Update this run	
 			//System.out.println(event.sec + " " + distrTimeStamp);	
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.accidentManagement(event, startOfSimulation, segWithAccAhead, run_priorization, accidentWarningsFailed, distrProgr); 									
+			run.accidentManagement(event, startOfSimulation, scheduler_wakeup_time, segWithAccAhead, run_priorization, accidentWarningsFailed, distrProgr); 									
 		}		
 		// Count down the number of transactions
 		transaction_number.countDown();
