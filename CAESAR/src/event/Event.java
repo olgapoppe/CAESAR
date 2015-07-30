@@ -38,8 +38,7 @@ public abstract class Event {
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
 								"triggered " + this.toString() +
-								"Distributer progress in " + p.sec + " is " + distrProgr +
-								"Scheduler wake up time is " + scheduler_wakeup_time);
+								"Distributer progress in " + p.sec + " is " + distrProgr);
 			failed.compareAndSet(false, true);
 		}	
 	}
