@@ -52,7 +52,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		
 		Random random = new Random();
 		int min = 6;
-		int max = 14;
+		int max = 12;
 		
 		int batch_limit = random.nextInt(max - min + 1) + min;
 		if (batch_limit > lastSec) batch_limit = lastSec;	
@@ -68,7 +68,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					//System.out.println("Scheduler schedules second: " + curr_sec);
 			
 					// Schedule the current second
-					all_queries_all_runs (splitQueries, curr_sec, scheduler_wakeup_time, false, false, 
+					all_queries_all_runs (splitQueries, curr_sec, false, false, 
 						event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 					//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing				
 					
@@ -93,19 +93,14 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 						//System.out.println("Scheduler sleeps " + sleep_time + " ms");		 			
 						Thread.sleep(sleep_time);
 						
-						scheduler_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch_limit;
-						if (scheduler_wakeup_time > 1) {
-							System.out.println("Scheduler slept " + scheduler_wakeup_time + " seconds too long.");
-						} else {
-							scheduler_wakeup_time = 0;
-						}
+						scheduler_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch_limit;						
 					}
 					
 					//System.out.println("Application time: " + (System.currentTimeMillis() - startOfSimulation));
 					//System.out.println("-----------------------------------------");
  					
 					/*** Rest batch limit ***/
-					batch_limit += random.nextInt(max - min + 1) + min;		 			
+					batch_limit += random.nextInt(max - min + 1) + min + scheduler_wakeup_time;		 			
 					if (batch_limit > lastSec) batch_limit = lastSec;
 					//System.out.println("Scheduler's batch limit: " + batch_limit);						
 				}												

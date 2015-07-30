@@ -21,12 +21,11 @@ public abstract class Transaction implements Runnable {
 	HashMap<Double,Long> distributorProgressPerSec;	
 	public CountDownLatch transaction_number;
 				
-	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, double swut, HashMap<Double,Long> distrProgrPerSec) {
+	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Long> distrProgrPerSec) {
 		
 		events = eventList;		
 		runs = rs;
-		startOfSimulation = start;	
-		scheduler_wakeup_time = swut;
+		startOfSimulation = start;
 		distributorProgressPerSec = distrProgrPerSec;
 	}	
 }

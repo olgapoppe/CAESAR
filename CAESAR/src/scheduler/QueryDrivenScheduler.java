@@ -53,7 +53,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					
 					//System.out.println("All queries process " + hp_sec);
 					
-					all_queries_all_runs(true, hp_sec, scheduler_wakeup_time, false, true, false, false, false, false);
+					all_queries_all_runs(true, hp_sec, false, true, false, false, false, false);
 					hp_sec++;
 					lp_sec = hp_sec;
 					hp_count++;
@@ -64,7 +64,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 						
 						//System.out.println("HP queries process " + hp_sec);
 						
-						one_query_all_runs_wrapper(hp_sec, scheduler_wakeup_time, 1, false, false);
+						one_query_all_runs_wrapper(hp_sec, 1, false, false);
 						hp_sec++;
 						hp_count++;						 
 					}
@@ -91,7 +91,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		System.out.println("Scheduler is done.");
 	}	
 	
-	public Transaction one_query_one_run (double sec, double scheduler_wakeup_time, RunID runid, int query, boolean run_priorization, boolean catchup) {
+	public Transaction one_query_one_run (double sec, RunID runid, int query, boolean run_priorization, boolean catchup) {
 		
 		if (query!=1 && query!=2) System.err.println("Non-existing query is called by scheduler.");
 		
@@ -117,7 +117,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, scheduler_wakeup_time, run_priorization, accidentWarningsFailed, distributorProgressPerSec);						
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);						
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
@@ -140,7 +140,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, scheduler_wakeup_time, tollNotificationsFailed, distributorProgressPerSec);						
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);						
 		}}}}
 		return null;
 	}

@@ -28,11 +28,11 @@ public class DefaultTrafficManagement extends Transaction {
 	boolean early_condensed_filtering;
 	boolean reduced_stream_history_traversal;
 		
-	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, double swut,
+	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
 			AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec,
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
-		super(eventList,rs,start,swut,distrProgrPerSec);	
+		super(eventList,rs,start,distrProgrPerSec);	
 		
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;

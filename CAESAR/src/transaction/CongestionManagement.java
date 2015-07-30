@@ -16,9 +16,9 @@ public class CongestionManagement extends Transaction {
 	Run run;	
 	AtomicBoolean tollNotificationsFailed;
 		
-	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, double swut,
+	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
 			AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,swut,distrProgrPerSec);
+		super(eventList,rs,start,distrProgrPerSec);
 		run = r;		
 		tollNotificationsFailed = tnf;		
 	}
