@@ -25,13 +25,11 @@ public class TollNotification extends Event {
 		
 		super(0,p.sec,p.vid);	
 		
-		if (scheduler_wakeup_time > 1) System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time);
-		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000) - scheduler_wakeup_time;
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
-		printError (p, emit, tnf, "TOLL NOTIFICATIONS", distrProgr);		 	
+		printError (p, emit, scheduler_wakeup_time, tnf, "TOLL NOTIFICATIONS", distrProgr);		 	
 	}
 	
 	/**
@@ -45,15 +43,11 @@ public class TollNotification extends Event {
 		
 		super(0,p.sec,p.vid);
 		
-		if (scheduler_wakeup_time > 1) System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time);
-		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000) - scheduler_wakeup_time;
 		avgSpd = a;
 		toll = 0;
 		
-		//System.out.println("Emit: " + emit);
-		
-		printError (p, emit, tnf, "TOLL NOTIFICATIONS", distrProgr);			
+		printError (p, emit, scheduler_wakeup_time, tnf, "TOLL NOTIFICATIONS", distrProgr);			
 	}
 	
 	/** 

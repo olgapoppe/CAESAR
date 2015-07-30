@@ -16,12 +16,10 @@ public class AccidentWarning extends Event {
 		
 		super(1,p.sec,p.vid);	
 		
-		if (scheduler_wakeup_time > 1) System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time);
-		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000) - scheduler_wakeup_time;
 		seg = s;
 				
-		printError (p, emit, awf, "ACCIDENT WARNINGS", distrProgr);			
+		printError (p, emit, scheduler_wakeup_time, awf, "ACCIDENT WARNINGS", distrProgr);			
 	}	
 
 	/** 

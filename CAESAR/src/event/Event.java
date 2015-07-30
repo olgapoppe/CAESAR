@@ -28,7 +28,7 @@ public abstract class Event {
 	 * @param s				type of complex event
 	 * @param distrProgr 	distributor progress in application time of input event
 	 */
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, long distrProgr) {
+	public void printError (PositionReport p, double emit, double scheduler_wakeup_time, AtomicBoolean failed, String s, long distrProgr) {
 		
 		// Print an error message and update the accident warning failed variable
 		double diff = emit - p.sec;
@@ -38,7 +38,8 @@ public abstract class Event {
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
 								"triggered " + this.toString() +
-								"Distributer progress in " + p.sec + " is " + distrProgr);
+								"Distributer progress in " + p.sec + " is " + distrProgr +
+								"Scheduler wake up time is " + scheduler_wakeup_time);
 			failed.compareAndSet(false, true);
 		}	
 	}
