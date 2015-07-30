@@ -10,7 +10,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import accident.*;
 import run.*;
 import event.*;
-import iogenerator.*;
 
 /** 
  * A traffic managing transaction processes all events in the event sequence by their respective run
@@ -109,7 +108,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 					
-					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
@@ -258,7 +257,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 						
-					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
@@ -487,7 +486,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 						
-					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
@@ -752,7 +751,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 								
-					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
