@@ -1,6 +1,5 @@
 package iogenerator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -22,7 +21,8 @@ public class EventPreprocessor implements Runnable {
 	boolean reduced_stream_history_traversal;
 	
 	String filename;
-	ArrayList<XwayDirPair> xways_and_dirs;
+	int max_xway;
+	boolean both_dirs;
 	int lastSec;
 	
 	boolean count_and_rate;
@@ -34,7 +34,7 @@ public class EventPreprocessor implements Runnable {
 	EventPreprocessor(boolean sq,  
 			int ss, int HP_freq, int LP_freq,
 			boolean ed, boolean pr, boolean fi, boolean sh,
-			String f, ArrayList<XwayDirPair> xds, int lS,
+			String f, int mX, boolean bD, int lS,
 			boolean cr,
 			HashMap<RunID,Run> rs, ExecutorService e, CountDownLatch d) {
 		
@@ -49,7 +49,8 @@ public class EventPreprocessor implements Runnable {
 		reduced_stream_history_traversal = sh;
 		
 		filename = f;
-		xways_and_dirs = xds;
+		max_xway = mX;
+		both_dirs = bD;
 		lastSec = lS;
 		
 		count_and_rate = cr;
@@ -88,13 +89,13 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("TIME DRIVEN SCHEDULER.");
 			scheduler = new TimeDrivenScheduler(splitQueries, distributorProgress, distributorProgressPerSec, runs, eventqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation,
 												event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 			} else {			
 			
 				System.out.println("RUN DRIVEN SCHEDULER.");
 				scheduler = new RunDrivenScheduler(	distributorProgress, distributorProgressPerSec, runs, eventqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
 			}
 		} else {
@@ -106,13 +107,13 @@ public class EventPreprocessor implements Runnable {
 			
 				System.out.println("QUERY DRIVEN SCHEDULER.");
 				scheduler = new QueryDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, eventqueues, HPeventqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation,
 												HP_frequency, LP_frequency);
 			} else {
 			
 				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
 				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, eventqueues, HPeventqueues, executor, 
-												transaction_number, done, xways_and_dirs, lastSec, startOfSimulation,
+												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
 		}}
 		Thread prodThread = new Thread(distributor);

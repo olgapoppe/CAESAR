@@ -10,7 +10,6 @@ import run.*;
 import transaction.*;
 import event.*;
 import distributor.*;
-import iogenerator.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -25,8 +24,8 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int LPquery_frequency;
 
 	public QueryDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, EventQueues hprq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start, int hpqf, int lpqf) {		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);
+			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, int hpqf, int lpqf) {		
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start);
 		HPrunqueues = hprq;
 		HPquery_frequency = hpqf;
 		LPquery_frequency = lpqf;

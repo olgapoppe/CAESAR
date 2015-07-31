@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import iogenerator.*;
 import event.*;
 import run.*;
 import transaction.*;
@@ -30,7 +29,8 @@ public abstract class Scheduler implements Runnable {
 	
 	CountDownLatch transaction_number;
 	CountDownLatch done;
-	ArrayList<XwayDirPair> xways_and_dirs;
+	int max_xway;
+	boolean both_dirs;
 	int lastSec;
 	long startOfSimulation;
 	
@@ -38,7 +38,7 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean tollNotificationsFailed;
 		
 	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start) {
+			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start) {
 		
 		distributorProgress = dp;
 		distributorProgressPerSec = distrProgrPerSec;
@@ -50,7 +50,8 @@ public abstract class Scheduler implements Runnable {
 		
 		transaction_number = tn;
 		done = d;
-		xways_and_dirs = xds;
+		max_xway = maxX;
+		both_dirs = bothD;
 		lastSec = lastS;
 		startOfSimulation = start;
 		
@@ -245,19 +246,17 @@ public abstract class Scheduler implements Runnable {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
-		for (XwayDirPair pair : xways_and_dirs) {
+		for (int xway=0; xway<=max_xway; xway++) {
 			
 			for (double seg=0; seg<=99; seg++) {
 				
-				if (pair.dir == 0 || pair.dir == 2 ) {
-			
-					RunID runid0 = new RunID(pair.xway,0,seg);
-					Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, ed, pr, fi, sh);
-					if (t0!=null) transactions.add(t0);	
-				}				
-				if (pair.dir == 1 || pair.dir == 2 ) { 
+				RunID runid0 = new RunID(xway,0,seg);
+				Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, ed, pr, fi, sh);
+				if (t0!=null) transactions.add(t0);	
+								
+				if (xway == max_xway && both_dirs) { 
 					
-					RunID runid1 = new RunID(pair.xway,1,seg); 
+					RunID runid1 = new RunID(xway,1,seg); 
 					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup, ed, pr, fi, sh);
 					if (t1!=null) transactions.add(t1);
 		}}}

@@ -1,6 +1,5 @@
 package scheduler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -8,7 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import distributor.*;
-import iogenerator.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -26,10 +24,10 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	boolean reduced_stream_history_traversal;
 			
 	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, ArrayList<XwayDirPair> xds, int lastS, long start,
+			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start,
 			boolean ed, boolean pr, boolean fi, boolean sh) {	
 		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,xds,lastS,start);
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start);
 		
 		sec = 0;
 		splitQueries = sq;

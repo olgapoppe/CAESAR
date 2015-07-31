@@ -33,8 +33,9 @@ public class Main {
 	 *  			INPUT
 	 * 10			last second : 10784
 	 * 11			path : src/input/ or ../../input/
-	 * 12			extension : .txt or .dat
-	 * 13			input file names in xway;dir-xway;dir-xway;dir format				
+	 * 12			input file names in first_xway-last_xway;dir format				
+	 * 				for an event processor for each input file: xway:dir-xway:dir
+	 * 13			extension : .txt or .dat
 	 */
 	public static void main (String[] args) { 
 		
@@ -72,17 +73,48 @@ public class Main {
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[10]);
 		String path = args[11];
-		String extension = args[12];	 	
+		String file = args[12];
+		String extension = args[13];		
+		String filename = path + file + extension;
 		
-		ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
-		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();
-		
-		for (int i=13; i<args.length; i++) {
+		String[] last_xway_dir;
+		if (file.contains("-")) {
+			String[] bounds = file.split("-");
+			last_xway_dir = bounds[1].split(";");
 			
-			/*** Input file ***/	
+		} else {
+			last_xway_dir = file.split(";");
+		}
+		int max_xway = Integer.parseInt(last_xway_dir[0]);
+		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
+		System.out.println("Max xway: " + max_xway + ". Last xway is two-directional: " + both_dirs);
+		
+		//ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
+		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();			
+		
+		/*** Define shared objects ***/
+		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
+		runtables.add(runs);
+		CountDownLatch done = new CountDownLatch(1);
+		//dones.add(done);
+		
+		/*** Start driver, distributer and scheduler ***/
+		EventPreprocessor preprocessor = new EventPreprocessor (
+				splitQueries,  scheduling_strategy, HP_frequency, LP_frequency,
+				ed, pr, fi, sh,
+				filename, max_xway, both_dirs, lastSec, 
+				count_and_rate,
+				runs, executor, done);
+		Thread ppThread = new Thread(preprocessor);
+		ppThread.setPriority(10);
+		ppThread.start();	
+		
+		/*for (int i=13; i<args.length; i++) {
+			
+			*//*** Input file ***//*	
 			String filename = path + args[i] + extension;
 			
-			/*** Highways and directions ***/
+			*//*** Highways and directions ***//*
 			String[] inputs = args[i].split("-");
 			ArrayList<XwayDirPair> xways_and_dirs = new ArrayList<XwayDirPair> ();
 			
@@ -95,13 +127,13 @@ public class Main {
 				xways_and_dirs.add(xd);				
 				System.out.println(xd.toString());
 			}			
-			/*** Define shared objects ***/
+			*//*** Define shared objects ***//*
 			HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
 			runtables.add(runs);
 			CountDownLatch done = new CountDownLatch(1);
 			dones.add(done);
 			
-			/*** Start driver, distributer and scheduler ***/
+			*//*** Start driver, distributer and scheduler ***//*
 			EventPreprocessor preprocessor = new EventPreprocessor (
 					splitQueries,  scheduling_strategy, HP_frequency, LP_frequency,
 					ed, pr, fi, sh,
@@ -111,12 +143,12 @@ public class Main {
 			Thread ppThread = new Thread(preprocessor);
 			ppThread.setPriority(10);
 			ppThread.start();			
-		}	
+		}*/
 		try {			
 			/*** Wait till all input events are processed and terminate the executor ***/
-			for (CountDownLatch done : dones) {
+			//for (CountDownLatch d : dones) {
 				done.await();		
-			}
+			//}
 			executor.shutdown();	
 			System.out.println("Executor is done.");
 									
