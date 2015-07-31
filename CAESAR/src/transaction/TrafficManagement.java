@@ -54,7 +54,7 @@ public class TrafficManagement extends Transaction {
 			}
 			// WRITE: Update this run and remove old data
 			long distrProgr = distributorProgressPerSec.get(event.sec);
-			run.trafficManagement(event, startOfSimulation, scheduler_wakeup_time, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 	
+			run.trafficManagement(event, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

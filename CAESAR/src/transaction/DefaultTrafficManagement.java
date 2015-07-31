@@ -284,21 +284,21 @@ public class DefaultTrafficManagement extends Transaction {
 					
 					runLookUp(event); // RL 12		
 					double vehCount = run.lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time); // ED	
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); // ED	
 					run.output.tollNotifications.add(tollNotification);
 				} 
 				
 				if (clear) { // CW
 					
 					runLookUp(event); // RL 6					
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);	// ED
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED
 					run.output.tollNotifications.add(tollNotification);
 				}
 				
 				if (accident) { // CW
 					
 					runLookUp(event); // RL 7				
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);	// ED	
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED	
 					run.output.tollNotifications.add(tollNotification);
 				}		
 				
@@ -306,7 +306,7 @@ public class DefaultTrafficManagement extends Transaction {
 				if (accident) { // CW
 					
 					runLookUp(event); // RL 8					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr, scheduler_wakeup_time); // ED
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr); // ED
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
 			}
@@ -518,21 +518,21 @@ public class DefaultTrafficManagement extends Transaction {
 					
 					runLookUp(event); // RL 12		
 					double vehCount = run.lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time); // ED	
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); // ED	
 					run.output.tollNotifications.add(tollNotification);
 				} 
 				
 				if (clear) { // CW
 					
 					runLookUp(event); // RL 6					
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);	// ED
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED
 					run.output.tollNotifications.add(tollNotification);
 				}
 				
 				if (accident) { // CW
 					
 					runLookUp(event); // RL 7				
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);	// ED	
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED	
 					run.output.tollNotifications.add(tollNotification);
 				}		
 				
@@ -540,7 +540,7 @@ public class DefaultTrafficManagement extends Transaction {
 				if (accident) { // CW
 					
 					runLookUp(event); // RL 8					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr, scheduler_wakeup_time); // ED
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr); // ED
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
 			}
@@ -783,19 +783,19 @@ public class DefaultTrafficManagement extends Transaction {
 						
 					runLookUp(event); // RL 12		
 					double vehCount = run.lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time); // ED	
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); // ED	
 					run.output.tollNotifications.add(tollNotification);
 				} 
 				if (clear) { // CW
 							
 					runLookUp(event); // RL 6					
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);	// ED
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED
 					run.output.tollNotifications.add(tollNotification);
 				}
 				if (accident) { // CW
 							
 					runLookUp(event); // RL 7				
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);	// ED	
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	// ED	
 					run.output.tollNotifications.add(tollNotification);
 				}		
 						
@@ -803,7 +803,7 @@ public class DefaultTrafficManagement extends Transaction {
 				if (accident) { // CW
 							
 					runLookUp(event); // RL 8					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr, scheduler_wakeup_time); // ED
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr); // ED
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
 			}

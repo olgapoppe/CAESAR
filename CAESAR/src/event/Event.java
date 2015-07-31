@@ -28,7 +28,7 @@ public abstract class Event {
 	 * @param s				type of complex event
 	 * @param distrProgr 	distributor progress in application time of input event
 	 */
-	public void printError (PositionReport p, double emit, double scheduler_wakeup_time, AtomicBoolean failed, String s, long distrProgr) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, long distrProgr) {
 		
 		// Print an error message and update the accident warning failed variable
 		double diff = emit - p.sec;

@@ -17,7 +17,6 @@ public abstract class Transaction implements Runnable {
 	HashMap<RunID,Run> runs;
 	
 	long startOfSimulation;
-	double scheduler_wakeup_time;
 	HashMap<Double,Long> distributorProgressPerSec;	
 	public CountDownLatch transaction_number;
 				
