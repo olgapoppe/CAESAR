@@ -85,7 +85,7 @@ public class Main {
 		}
 		int max_xway = Integer.parseInt(last_xway_dir[0]);
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
-		System.out.println("Max xway: " + max_xway + ". Last xway is two-directional: " + both_dirs);
+		System.out.println("Max xway: " + max_xway + "\nLast xway is two-directional: " + both_dirs);
 		
 		/*** Define shared objects ***/
 		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
