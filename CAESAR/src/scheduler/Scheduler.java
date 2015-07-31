@@ -254,7 +254,7 @@ public abstract class Scheduler implements Runnable {
 				Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, ed, pr, fi, sh);
 				if (t0!=null) transactions.add(t0);	
 								
-				if (xway == max_xway && both_dirs) { 
+				if (xway != max_xway || !both_dirs) { 
 					
 					RunID runid1 = new RunID(xway,1,seg); 
 					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup, ed, pr, fi, sh);
