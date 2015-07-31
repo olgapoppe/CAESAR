@@ -1,6 +1,5 @@
 package iogenerator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -80,8 +79,7 @@ public class Main {
 		String[] last_xway_dir;
 		if (file.contains("-")) {
 			String[] bounds = file.split("-");
-			last_xway_dir = bounds[1].split(";");
-			
+			last_xway_dir = bounds[1].split(";");			
 		} else {
 			last_xway_dir = file.split(";");
 		}
@@ -89,15 +87,10 @@ public class Main {
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
 		System.out.println("Max xway: " + max_xway + ". Last xway is two-directional: " + both_dirs);
 		
-		//ArrayList<CountDownLatch> dones = new ArrayList<CountDownLatch>();
-		ArrayList<HashMap<RunID,Run>> runtables = new ArrayList<HashMap<RunID,Run>>();			
-		
 		/*** Define shared objects ***/
 		HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
-		runtables.add(runs);
 		CountDownLatch done = new CountDownLatch(1);
-		//dones.add(done);
-		
+				
 		/*** Start driver, distributer and scheduler ***/
 		EventPreprocessor preprocessor = new EventPreprocessor (
 				splitQueries,  scheduling_strategy, HP_frequency, LP_frequency,
@@ -109,51 +102,14 @@ public class Main {
 		ppThread.setPriority(10);
 		ppThread.start();	
 		
-		/*for (int i=13; i<args.length; i++) {
-			
-			*//*** Input file ***//*	
-			String filename = path + args[i] + extension;
-			
-			*//*** Highways and directions ***//*
-			String[] inputs = args[i].split("-");
-			ArrayList<XwayDirPair> xways_and_dirs = new ArrayList<XwayDirPair> ();
-			
-			for (String input : inputs) {
-				
-				String[] components = input.split(";");			
-				int xway = Integer.parseInt(components[0]);
-				int dir = Integer.parseInt(components[1]);
-				XwayDirPair xd = new XwayDirPair(xway,dir);
-				xways_and_dirs.add(xd);				
-				System.out.println(xd.toString());
-			}			
-			*//*** Define shared objects ***//*
-			HashMap<RunID,Run> runs = new HashMap<RunID,Run>();
-			runtables.add(runs);
-			CountDownLatch done = new CountDownLatch(1);
-			dones.add(done);
-			
-			*//*** Start driver, distributer and scheduler ***//*
-			EventPreprocessor preprocessor = new EventPreprocessor (
-					splitQueries,  scheduling_strategy, HP_frequency, LP_frequency,
-					ed, pr, fi, sh,
-					filename, xways_and_dirs, lastSec, 
-					count_and_rate,
-					runs, executor, done);
-			Thread ppThread = new Thread(preprocessor);
-			ppThread.setPriority(10);
-			ppThread.start();			
-		}*/
 		try {			
 			/*** Wait till all input events are processed and terminate the executor ***/
-			//for (CountDownLatch d : dones) {
-				done.await();		
-			//}
+			done.await();		
 			executor.shutdown();	
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runtables, HP_frequency, LP_frequency, lastSec, count_and_rate);  			
+			OutputFileGenerator.write2File (runs, HP_frequency, LP_frequency, lastSec, count_and_rate);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
