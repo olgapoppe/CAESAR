@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import run.*;
 import event.*;
+import iogenerator.*;
 
 /** 
  * A transaction has a sequence of events with the same time stamp and belonging to the same run,
@@ -17,14 +18,16 @@ public abstract class Transaction implements Runnable {
 	HashMap<RunID,Run> runs;
 	
 	long startOfSimulation;
+	AtomicDouble max_exe_time;
 	HashMap<Double,Long> distributorProgressPerSec;	
 	public CountDownLatch transaction_number;
 				
-	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, HashMap<Double,Long> distrProgrPerSec) {
+	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicDouble met, HashMap<Double,Long> distrProgrPerSec) {
 		
 		events = eventList;		
 		runs = rs;
 		startOfSimulation = start;
+		max_exe_time = met;
 		distributorProgressPerSec = distrProgrPerSec;
 	}	
 }

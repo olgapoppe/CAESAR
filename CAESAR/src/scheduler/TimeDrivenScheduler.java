@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import distributor.*;
+import iogenerator.*;
 
 /**
  * As soon as all events with the same time stamp become available,
@@ -24,10 +25,10 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	boolean reduced_stream_history_traversal;
 			
 	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start,
+			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met,
 			boolean ed, boolean pr, boolean fi, boolean sh) {	
 		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start);
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start,met);
 		
 		sec = 0;
 		splitQueries = sq;
@@ -66,7 +67,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					//System.out.println("Scheduler schedules second: " + curr_sec);
 			
 					// Schedule the current second
-					all_queries_all_runs (splitQueries, curr_sec, false, false, 
+					all_queries_all_runs (splitQueries, curr_sec, false, false,
 						event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 					//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing				
 					

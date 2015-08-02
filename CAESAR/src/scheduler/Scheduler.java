@@ -12,6 +12,7 @@ import event.*;
 import run.*;
 import transaction.*;
 import distributor.*;
+import iogenerator.*;
 
 /**
  * A scheduler iterates over run task queues, picks events from them and 
@@ -33,12 +34,13 @@ public abstract class Scheduler implements Runnable {
 	boolean both_dirs;
 	int lastSec;
 	long startOfSimulation;
+	AtomicDouble max_exe_time;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
 	Scheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start) {
+			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met) {
 		
 		distributorProgress = dp;
 		distributorProgressPerSec = distrProgrPerSec;
@@ -54,6 +56,7 @@ public abstract class Scheduler implements Runnable {
 		both_dirs = bothD;
 		lastSec = lastS;
 		startOfSimulation = start;
+		max_exe_time = met;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);
@@ -367,9 +370,9 @@ public abstract class Scheduler implements Runnable {
 						
 						Run run = runs.get(runid);
 						if (ed & pr & fi & sh) {
-							return new TrafficManagement (run, event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
+							return new TrafficManagement (run, event_list, runs, startOfSimulation, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec);
 						} else {
-							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec, ed, pr, fi, sh);
+							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, distributorProgressPerSec, ed, pr, fi, sh);
 						}
 				}}
 				
@@ -402,7 +405,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);											
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, max_exe_time, run_priorization, accidentWarningsFailed, distributorProgressPerSec);											
 				}}
 				
 				/*** Congestion management ***/
@@ -428,7 +431,7 @@ public abstract class Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);					
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, max_exe_time, tollNotificationsFailed, distributorProgressPerSec);					
 				}}
 		}}
 		return null;

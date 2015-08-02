@@ -1,5 +1,7 @@
 package scheduler;
 
+import iogenerator.AtomicDouble;
+
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,9 +23,9 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 	int LPrun_frequency;
 	
 	public RunDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-						CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, 
+						CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met,
 						AtomicInteger x0, AtomicInteger x1, int hprf, int lprf) {		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start);
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start,met);
 		xway0dir0HPrunsFromSeg = x0;
 		xway0dir1HPrunsFromSeg = x1;
 		HPrun_frequency = hprf;

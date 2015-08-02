@@ -1,5 +1,7 @@
 package transaction;
 
+import iogenerator.AtomicDouble;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -28,10 +30,10 @@ public class DefaultTrafficManagement extends Transaction {
 	boolean reduced_stream_history_traversal;
 		
 	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
-			AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec,
+			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec,
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
-		super(eventList,rs,start,distrProgrPerSec);	
+		super(eventList,rs,start,met,distrProgrPerSec);	
 		
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;
@@ -46,11 +48,14 @@ public class DefaultTrafficManagement extends Transaction {
 	 * Execute these events by their respective run.
 	 */	
 	public void run() {	
+		
+		double max_exe_time_in_this_transaction = 0;
 			
 		for (PositionReport event : events) {
 			
 			// WRITE: Update the respective run and remove old data
 			long distrProgr = distributorProgressPerSec.get(event.sec);	
+			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
 			// All methods called below include garbage collection
 			/*if (event_derivation_omission && early_mandatory_projections && early_condensed_filtering) {
@@ -64,7 +69,14 @@ public class DefaultTrafficManagement extends Transaction {
 			} else {
 				defaultTrafficManagement (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr);
 			}}
-		}		
+			
+			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
+			double exe_time = app_time_end - app_time_start;
+			if (max_exe_time_in_this_transaction < exe_time) max_exe_time_in_this_transaction = exe_time;
+		}	
+		// Increase maximal execution time
+		if (max_exe_time.get() < max_exe_time_in_this_transaction) max_exe_time.set(max_exe_time_in_this_transaction);
+				
 		// Count down the number of transactions
 		transaction_number.countDown();
 	}

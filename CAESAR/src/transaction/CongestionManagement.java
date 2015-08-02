@@ -1,5 +1,7 @@
 package transaction;
 
+import iogenerator.AtomicDouble;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,8 +19,8 @@ public class CongestionManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 		
 	public CongestionManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
-			AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec);
+			AtomicDouble met, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
+		super(eventList,rs,start,met,distrProgrPerSec);
 		run = r;		
 		tollNotificationsFailed = tnf;		
 	}

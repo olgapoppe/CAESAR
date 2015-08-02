@@ -1,5 +1,7 @@
 package transaction;
 
+import iogenerator.AtomicDouble;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,9 +19,9 @@ public class AccidentManagement extends Transaction {
 	boolean run_priorization;	
 	AtomicBoolean accidentWarningsFailed;	
 	
-	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, boolean rp, 
+	public AccidentManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicDouble met, boolean rp, 
 			AtomicBoolean awf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,distrProgrPerSec);
+		super(eventList,rs,start,met,distrProgrPerSec);
 		run = r;
 		run_priorization = rp;		
 		accidentWarningsFailed = awf;		

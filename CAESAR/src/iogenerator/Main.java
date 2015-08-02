@@ -68,6 +68,7 @@ public class Main {
 		
 		/*** STATISTICS ***/
 		boolean count_and_rate = args[9].equals("1");
+		AtomicDouble max_exe_time = new AtomicDouble(0);
 		
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[10]);
@@ -96,7 +97,7 @@ public class Main {
 				splitQueries,  scheduling_strategy, HP_frequency, LP_frequency,
 				ed, pr, fi, sh,
 				filename, max_xway, both_dirs, lastSec, 
-				count_and_rate,
+				count_and_rate, max_exe_time, 
 				runs, executor, done);
 		Thread ppThread = new Thread(preprocessor);
 		ppThread.setPriority(10);
@@ -109,7 +110,7 @@ public class Main {
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runs, HP_frequency, LP_frequency, lastSec, count_and_rate);  			
+			OutputFileGenerator.write2File (runs, HP_frequency, LP_frequency, lastSec, count_and_rate, max_exe_time);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }

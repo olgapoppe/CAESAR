@@ -1,5 +1,7 @@
 package scheduler;
 
+import iogenerator.AtomicDouble;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -24,8 +26,8 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	int LPquery_frequency;
 
 	public QueryDrivenScheduler (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, EventQueues hprq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, int hpqf, int lpqf) {		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start);
+			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met, int hpqf, int lpqf) {		
+		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start,met);
 		HPrunqueues = hprq;
 		HPquery_frequency = hpqf;
 		LPquery_frequency = lpqf;
@@ -116,7 +118,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 						
 						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, run_priorization, accidentWarningsFailed, distributorProgressPerSec);						
+						return new AccidentManagement (run, event_list, runs, startOfSimulation, max_exe_time, run_priorization, accidentWarningsFailed, distributorProgressPerSec);						
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
@@ -139,7 +141,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 					if (!event_list.isEmpty()) {
 					
 						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, tollNotificationsFailed, distributorProgressPerSec);						
+						return new CongestionManagement (run, event_list, runs, startOfSimulation, max_exe_time, tollNotificationsFailed, distributorProgressPerSec);						
 		}}}}
 		return null;
 	}
