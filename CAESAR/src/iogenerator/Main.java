@@ -79,9 +79,9 @@ public class Main {
 		
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[10]);
-		String path = args[11];
+		String path = args[11].replaceAll("dot", ".");
 		String file = args[12];
-		String extension = args[13];		
+		String extension = args[13].replaceAll("dot", ".");		
 		String filename = path + file + extension;
 		
 		String[] last_xway_dir;
