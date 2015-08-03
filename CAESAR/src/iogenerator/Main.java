@@ -45,12 +45,6 @@ public class Main {
 	    SimpleDateFormat ft = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
 	    System.out.println("Current Date: " + ft.format(dNow));
 		
-		/*** Validate the number of input parameters ***/
-		if (args.length < 14) {
-			System.out.println("At least 14 input parameters are expected.");
-			return;
-		}	
-		
 		/*** EXECUTORS ***/
 		int number_of_executors = Integer.parseInt(args[0]);
 		System.out.println("Number of executors: " + number_of_executors);
@@ -79,17 +73,30 @@ public class Main {
 		
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[10]);
-		String path = args[11].replaceAll("dot", ".").replaceAll("slash", "/");
-		String file = args[12];
-		String extension = args[13].replaceAll("dot", ".").replaceAll("slash", "/");
+		
+		/*** Validate the number of input parameters ***/
+		String path;
+		String file;
+		String extension;
+		if (args.length < 14) {
+			System.out.println("At least 14 input parameters are expected.");
+			path = "../../input/";
+			file = "0;2";
+			extension = ".dat";
+			//return;
+		} else {			
+			path = args[11];
+			file = args[12];
+			extension = args[13];
+		}			
 		String filename = path + file + extension;
 		
 		String[] last_xway_dir;
 		if (file.contains("-")) {
 			String[] bounds = file.split("-");
-			last_xway_dir = bounds[1].split("d");			
+			last_xway_dir = bounds[1].split(";");			
 		} else {
-			last_xway_dir = file.split("d");
+			last_xway_dir = file.split(";");
 		}
 		int max_xway = Integer.parseInt(last_xway_dir[0]);
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
