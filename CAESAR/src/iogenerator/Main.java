@@ -44,6 +44,12 @@ public class Main {
 		Date dNow = new Date( );
 	    SimpleDateFormat ft = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
 	    System.out.println("Current Date: " + ft.format(dNow));
+	    
+	    /*** Validate the number of input parameters ***/
+	    if (args.length < 14) {
+			System.out.println("At least 14 input parameters are expected.");
+			return;
+		} 
 		
 		/*** EXECUTORS ***/
 		int number_of_executors = Integer.parseInt(args[0]);
@@ -74,21 +80,9 @@ public class Main {
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[10]);
 		
-		/*** Validate the number of input parameters ***/
-		String path;
-		String file;
-		String extension;
-		if (args.length < 14) {
-			System.out.println("At least 14 input parameters are expected.");
-			path = "../../input/";
-			file = "0;2";
-			extension = ".dat";
-			//return;
-		} else {			
-			path = args[11];
-			file = args[12];
-			extension = args[13];
-		}			
+		String path = args[11];
+		String file = args[12];
+		String extension = args[13];			
 		String filename = path + file + extension;
 		
 		String[] last_xway_dir;
