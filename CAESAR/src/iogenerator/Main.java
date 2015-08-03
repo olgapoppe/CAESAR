@@ -1,5 +1,7 @@
 package iogenerator;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -37,6 +39,11 @@ public class Main {
 	 * 13			extension : .txt or .dat
 	 */
 	public static void main (String[] args) { 
+		
+		/*** Print current time to know when the experiment started ***/
+		Date dNow = new Date( );
+	    SimpleDateFormat ft = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
+	    System.out.println("Current Date: " + ft.format(dNow));
 		
 		/*** Validate the number of input parameters ***/
 		if (args.length < 14) {

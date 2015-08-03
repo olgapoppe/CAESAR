@@ -89,14 +89,14 @@ public class EventPreprocessor implements Runnable {
 			
 			if (scheduling_strategy == 1) {
 			
-				System.out.println("TIME DRIVEN SCHEDULER.");
+				System.out.println("Scheduler: Time-driven");
 			scheduler = new TimeDrivenScheduler(splitQueries, distributorProgress, distributorProgressPerSec, runs, eventqueues, executor, 
 												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation,
 												max_exe_time,
 												event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 			} else {			
 			
-				System.out.println("RUN DRIVEN SCHEDULER.");
+				System.out.println("Scheduler: Run-driven");
 				scheduler = new RunDrivenScheduler(	distributorProgress, distributorProgressPerSec, runs, eventqueues, executor, 
 												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation, max_exe_time,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
@@ -108,13 +108,13 @@ public class EventPreprocessor implements Runnable {
 			
 			if (scheduling_strategy == 3) {
 			
-				System.out.println("QUERY DRIVEN SCHEDULER.");
+				System.out.println("Scheduler: Query-driven");
 				scheduler = new QueryDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, eventqueues, HPeventqueues, executor, 
 												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation, max_exe_time,
 												HP_frequency, LP_frequency);
 			} else {
 			
-				System.out.println("RUN AND QUERY DRIVEN SCHEDULER.");
+				System.out.println("Scheduler: Run and query-driven");
 				scheduler = new RunAndQueryDrivenScheduler(distributorProgress, distributorProgressPerSec, runs, eventqueues, HPeventqueues, executor, 
 												transaction_number, done, max_xway, both_dirs, lastSec, startOfSimulation, max_exe_time,
 												xway0dir0firstHPseg, xway0dir1firstHPseg, HP_frequency, LP_frequency);
