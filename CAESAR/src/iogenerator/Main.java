@@ -34,7 +34,7 @@ public class Main {
 	 *  			INPUT
 	 * 10			last second : 10784
 	 * 11			path : src/input/ or ../../input/
-	 * 12			input file names in first_xway-last_xway;dir format				
+	 * 12			input file names in first_xway-last_xway(dir) format				
 	 * 				for an event processor for each input file: xway:dir-xway:dir
 	 * 13			extension : .txt or .dat
 	 */
@@ -87,9 +87,9 @@ public class Main {
 		String[] last_xway_dir;
 		if (file.contains("-")) {
 			String[] bounds = file.split("-");
-			last_xway_dir = bounds[1].split(";");			
+			last_xway_dir = bounds[1].split("d");			
 		} else {
-			last_xway_dir = file.split(";");
+			last_xway_dir = file.split("d");
 		}
 		int max_xway = Integer.parseInt(last_xway_dir[0]);
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
