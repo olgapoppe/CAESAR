@@ -58,9 +58,9 @@ public class DefaultTrafficManagement extends Transaction {
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
 			// All methods called below include garbage collection
-			/*if (event_derivation_omission && early_mandatory_projections && early_condensed_filtering) {
+			if (event_derivation_omission && early_mandatory_projections && early_condensed_filtering) {
 				EDO_EMP_ECF (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 
-			} else {*/
+			} else {				
 			if (event_derivation_omission && early_mandatory_projections) {
 				EDO_EMP (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 
 			} else {
@@ -68,7 +68,7 @@ public class DefaultTrafficManagement extends Transaction {
 				EDO (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr);
 			} else {
 				defaultTrafficManagement (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed, distrProgr);
-			}}
+			}}}
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
@@ -85,7 +85,7 @@ public class DefaultTrafficManagement extends Transaction {
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal 
 	 ***/
-	/*public void EDO_EMP_ECF (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
+	public void EDO_EMP_ECF (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -100,7 +100,7 @@ public class DefaultTrafficManagement extends Transaction {
 		}   
 		run.time.sec = event.sec;
 				
-		*//************************************************* If the vehicle is new in the segment *************************************************//*
+		/************************************************* If the vehicle is new in the segment *************************************************/
 		if (run.vehicles.get(event.vid) == null) {
 			
 			// Update vehicles, vehCounts
@@ -120,7 +120,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 					
-					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
@@ -133,19 +133,19 @@ public class DefaultTrafficManagement extends Transaction {
 				if 	(!accident && run.congested(event.min)) { 
 	
 					double vehCount = run.lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time); 	
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 	
 					
 				} else {
-					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr, scheduler_wakeup_time);					
+					tollNotification = new TollNotification(event, run.avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);					
 				}
 				run.output.tollNotifications.add(tollNotification);
 				
 				if (accident) {		
 					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr, scheduler_wakeup_time);					
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);					
 					run.output.accidentWarnings.add(accidentWarning);				
 			}}
-			*//************************************************* If the vehicle was in the segment before *************************************************//*
+			/************************************************* If the vehicle was in the segment before *************************************************/
 		} else {
 			// Get previous info about the vehicle
 			Vehicle existingVehicle = run.vehicles.get(event.vid);
@@ -214,7 +214,7 @@ public class DefaultTrafficManagement extends Transaction {
 				existingVehicle.pos = event.pos;
 		}}	
 		run.collectGarbage(event.min);
-	}*/
+	}
 	
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal and early condensed filtering
