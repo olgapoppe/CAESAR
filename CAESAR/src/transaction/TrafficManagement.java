@@ -34,6 +34,7 @@ public class TrafficManagement extends Transaction {
 			
 		double segWithAccAhead;
 		double max_exe_time_in_this_transaction = 0;
+		double sec = 0;
 		
 		for (PositionReport event : events) {
 				
@@ -64,11 +65,18 @@ public class TrafficManagement extends Transaction {
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
 			if (max_exe_time_in_this_transaction < exe_time) max_exe_time_in_this_transaction = exe_time;
+			
+			sec = event.sec;
 		}	
 		// Increase maximal execution time
 		if (max_exe_time.get() < max_exe_time_in_this_transaction) max_exe_time.set(max_exe_time_in_this_transaction);
 		
 		// Count down the number of transactions
 		transaction_number.countDown();
+		
+		if (transaction_number.getCount()==0) {
+			double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			System.out.println("Executor is done with sec: " + sec + " at: " + now);
+		}
 	}
 }

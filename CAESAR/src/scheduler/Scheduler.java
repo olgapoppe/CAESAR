@@ -74,9 +74,11 @@ public abstract class Scheduler implements Runnable {
 				ArrayList<Transaction> transactions = one_query_all_runs(sec, 0, run_priorization, catchup, ed, pr, fi, sh);
 				number = transactions.size();
 			
-				//long startOfFirstWaiting = System.currentTimeMillis();					
+				double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
 				transaction_number.await();			
-				//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
+				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+				double durationOfWaiting = endOfWaiting - startOfWaiting;
+				System.out.println("Duration of scheduler waiting for executor: " + durationOfWaiting);
 			
 				transaction_number = new CountDownLatch(number);			
 				for (Transaction t : transactions) { 

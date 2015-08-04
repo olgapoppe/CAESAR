@@ -106,7 +106,7 @@ public class OutputFileGenerator {
 	     		total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
-			System.out.println("Max latency: " + max_latency + "\nMax execution time: " + max_exe_time.get());
+			System.out.println("Max execution time: " + max_exe_time.get() + "\nMax latency: " + max_latency);
 			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 
