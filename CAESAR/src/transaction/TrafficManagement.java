@@ -72,7 +72,7 @@ public class TrafficManagement extends Transaction {
 		if (max_exe_time.get() < max_exe_time_in_this_transaction) max_exe_time.set(max_exe_time_in_this_transaction);
 		
 		// Count down the number of transactions
-		transaction_number.countDown();
+		transaction_number.countDown();		
 		
 		if (transaction_number.getCount()==0) {
 			double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
