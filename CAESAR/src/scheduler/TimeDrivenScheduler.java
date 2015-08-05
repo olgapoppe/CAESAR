@@ -93,8 +93,13 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					}				
  					
 					/*** Rest the batch limit ***/
+					int old_batch_limit = batch_limit;
 					batch_limit += random.nextInt(max - min + 1) + min + scheduler_wakeup_time;		 			
-					if (batch_limit > lastSec) batch_limit = lastSec;											
+					if (batch_limit > lastSec) batch_limit = lastSec;		
+					if (scheduler_wakeup_time>1) 
+						System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time + 
+											". Batch limit increases from " + old_batch_limit +
+											" to " + batch_limit + ".");
 				}												
 			}			
 		} catch (final InterruptedException e) { e.printStackTrace(); }
