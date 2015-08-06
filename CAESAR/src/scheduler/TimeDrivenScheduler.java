@@ -60,7 +60,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		try {
 		
 			// Get the permission to schedule current second
-			while (curr_sec <= lastSec && runqueues.getDistributorProgress(curr_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) {
+			while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) {
 						
 				if (curr_sec <= batch_limit) {
 					
@@ -96,10 +96,11 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 					int old_batch_limit = batch_limit;
 					batch_limit += random.nextInt(max - min + 1) + min + scheduler_wakeup_time;		 			
 					if (batch_limit > lastSec) batch_limit = lastSec;		
-					if (scheduler_wakeup_time>1) 
+					if (scheduler_wakeup_time>1) {
 						System.out.println("Scheduler wakeup time is " + scheduler_wakeup_time + 
 											". Batch limit increases from " + old_batch_limit +
 											" to " + batch_limit + ".");
+					}
 				}												
 			}			
 		} catch (final InterruptedException e) { e.printStackTrace(); }

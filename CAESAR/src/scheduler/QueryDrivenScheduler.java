@@ -47,7 +47,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		double scheduler_wakeup_time = 0;
 					
 		// Get the permission to schedule current second
-		while (hp_sec <= lastSec && runqueues.getDistributorProgress(hp_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) { 
+		while (hp_sec <= lastSec && eventqueues.getDistributorProgress(hp_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) { 
 			try {				 
 				/*** HP queries are always processed faster ***/
 				if (hp_count < HPquery_frequency && lp_count < LPquery_frequency && hp_sec > lp_sec) {
@@ -122,9 +122,9 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		}}}} else {				
 		/*** Congestion management ***/		 
 			
-			if (runqueues.contents.containsKey(runid)) {
+			if (eventqueues.contents.containsKey(runid)) {
 				
-				LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);	
+				LinkedBlockingQueue<PositionReport> runtaskqueue = eventqueues.contents.get(runid);	
 			
 				if (runtaskqueue!=null && !runtaskqueue.isEmpty()) {			
 				

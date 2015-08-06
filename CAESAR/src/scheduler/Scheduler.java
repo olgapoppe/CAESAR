@@ -25,7 +25,7 @@ public abstract class Scheduler implements Runnable {
 	HashMap<Double,Long> distributorProgressPerSec;
 	
 	HashMap<RunID,Run> runs;
-	public final EventQueues runqueues;		
+	public final EventQueues eventqueues;		
 	ExecutorService executor;
 	
 	CountDownLatch transaction_number;
@@ -46,7 +46,7 @@ public abstract class Scheduler implements Runnable {
 		distributorProgressPerSec = distrProgrPerSec;
 		
 		runs = rs;
-		runqueues = rq;			
+		eventqueues = rq;			
 		
 		executor = e;
 		
@@ -350,11 +350,11 @@ public abstract class Scheduler implements Runnable {
 		
 		if (0<query && query<2) System.err.println("Non-existing query is called by scheduler.");
 		
-		if (runqueues.contents.containsKey(runid)) {
+		if (eventqueues.contents.containsKey(runid)) {
 			
-			LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);	
+			LinkedBlockingQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);	
 			
-			if (runtaskqueue!=null && !runtaskqueue.isEmpty()) {			
+			if (eventqueue!=null && !eventqueue.isEmpty()) {			
 				
 				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();		
 				
@@ -362,12 +362,12 @@ public abstract class Scheduler implements Runnable {
 				if (query == 0) {
 					
 					// Put all events with the same time stamp as this transaction into the event list
-					PositionReport event = runtaskqueue.peek();					
+					PositionReport event = eventqueue.peek();					
 					while (event!=null && event.sec==sec) { 				
-						runtaskqueue.poll();
+						eventqueue.poll();
 						event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						event_list.add(event);				
-						event = runtaskqueue.peek();
+						event = eventqueue.peek();
 					}					
 					// If the event list is not empty, generate a transaction and submit it for execution
 					if (!event_list.isEmpty()) {
@@ -384,7 +384,7 @@ public abstract class Scheduler implements Runnable {
 				if (query == 1) {
 					
 					// Put all events with the same time stamp as this transaction into the event list
-					Iterator<PositionReport> iterator = runtaskqueue.iterator();
+					Iterator<PositionReport> iterator = eventqueue.iterator();
 					/*if (catchup) {
 						while(iterator.hasNext()) {							
 							PositionReport event = iterator.next();						
@@ -416,7 +416,7 @@ public abstract class Scheduler implements Runnable {
 				if (query == 2) { 
 					
 					// Put all events with the same time stamp as this transaction into the event list
-					PositionReport event = runtaskqueue.peek();
+					PositionReport event = eventqueue.peek();
 					/*if (catchup) {
 						while (event!=null && event.sec<=sec) { 							
 							runtaskqueue.poll();
@@ -425,10 +425,10 @@ public abstract class Scheduler implements Runnable {
 							event = runtaskqueue.peek();
 					}} else {*/
 						while (event!=null && event.sec==sec) { 				
-							runtaskqueue.poll();
+							eventqueue.poll();
 							event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 							event_list.add(event);				
-							event = runtaskqueue.peek();
+							event = eventqueue.peek();
 						}
 					//}
 					// If the event list is not empty, generate a transaction and submit it for execution
