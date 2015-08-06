@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import event.*;
@@ -59,9 +59,9 @@ public class SingleQueueDistributor extends EventDistributor {
 					/*** Put the event into the run queue ***/						
 					event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 						
-					LinkedBlockingQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);
+					ConcurrentLinkedQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);
 					if (eventqueue == null) {    
-						eventqueue = new LinkedBlockingQueue<PositionReport>();
+						eventqueue = new ConcurrentLinkedQueue<PositionReport>();
 						eventqueues.contents.put(runid, eventqueue);		 				
 					}
 					eventqueue.add(event);	

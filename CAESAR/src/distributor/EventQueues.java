@@ -1,7 +1,7 @@
 package distributor;
 
 import java.util.HashMap;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.RunID;
@@ -9,13 +9,13 @@ import event.PositionReport;
 
 public class EventQueues {
 	
-	public HashMap<RunID,LinkedBlockingQueue<PositionReport>> contents;
+	public HashMap<RunID,ConcurrentLinkedQueue<PositionReport>> contents;
 	AtomicInteger distributorProgress;
 	int sec;
 		
 	public EventQueues (AtomicInteger dp) {
 		
-		contents = new HashMap <RunID,LinkedBlockingQueue<PositionReport>>();
+		contents = new HashMap <RunID,ConcurrentLinkedQueue<PositionReport>>();
 		distributorProgress = dp;
 		sec = 0;
 	}

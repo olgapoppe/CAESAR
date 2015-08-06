@@ -280,8 +280,8 @@ public class Run {
 			// Update current accident location
 			currentAccidentLocation.reset(event.lane,event.pos);
 			
-			//System.out.println(	event.sec + ": Run " + runID + " changes its state to ACCIDENT in lane " + 
-			//					event.lane + " at position " + event.pos + " during minute " + event.min + ".");
+			System.out.println(	event.sec + ": Run " + runID + " changes its state to ACCIDENT in lane " + 
+								event.lane + " at position " + event.pos + " during minute " + event.min + ".");
 			
 			// Update first HP segment on this road in this direction
 			if (run_priorization) {
@@ -329,7 +329,7 @@ public class Run {
 			// Update current accident location
 			currentAccidentLocation.reset(-1,-1);	
 		
-			//System.out.println(event.sec + ": Run " + runID + " changes its state from ACCIDENT during minute " + clearAppMin + ".");
+			System.out.println(event.sec + ": Run " + runID + " changes its state from ACCIDENT during minute " + clearAppMin + ".");
 		
 			// Update first HP segment on this road in this direction
 			if (run_priorization) {

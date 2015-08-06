@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import transaction.*;
@@ -101,7 +101,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		
 			if (HPrunqueues.contents.containsKey(runid)) {
 			
-				LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);	
+				ConcurrentLinkedQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);	
 			
 				if (HPruntaskqueue!=null && !HPruntaskqueue.isEmpty()) {			
 				
@@ -124,7 +124,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 			
 			if (eventqueues.contents.containsKey(runid)) {
 				
-				LinkedBlockingQueue<PositionReport> runtaskqueue = eventqueues.contents.get(runid);	
+				ConcurrentLinkedQueue<PositionReport> runtaskqueue = eventqueues.contents.get(runid);	
 			
 				if (runtaskqueue!=null && !runtaskqueue.isEmpty()) {			
 				

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import event.*;
@@ -352,7 +352,7 @@ public abstract class Scheduler implements Runnable {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
-			LinkedBlockingQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);	
+			ConcurrentLinkedQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);	
 			
 			if (eventqueue!=null && !eventqueue.isEmpty()) {			
 				

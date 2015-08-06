@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import event.PositionReport;
@@ -67,9 +67,9 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 				}		 				
 		 				runtaskqueue.add(event);*/	
 		 				
-		 				LinkedBlockingQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);
+		 				ConcurrentLinkedQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);
 		 				if (HPruntaskqueue == null) {    
-		 					HPruntaskqueue = new LinkedBlockingQueue<PositionReport>();
+		 					HPruntaskqueue = new ConcurrentLinkedQueue<PositionReport>();
 		 					HPrunqueues.contents.put(runid, HPruntaskqueue);		 				
 		 				}
 		 				HPruntaskqueue.add(event);
