@@ -8,5 +8,9 @@ public class EventDerivation extends Operator {
 		super(c);
 		event_type = et;
 	}
+	
+	public boolean omittable (Operator neighbor) {
+		return event_type.equals("TollNotification") || event_type.equals("AccidentWarning");
+	}
 
 }

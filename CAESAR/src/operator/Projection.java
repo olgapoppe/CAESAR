@@ -1,9 +1,29 @@
 package operator;
 
+import java.util.ArrayList;
+
 public class Projection extends Operator {
 	
-	Projection (double c) {
-		super(c);
+	ArrayList<String> attributes;
+	
+	Projection (ArrayList<String> a) {
+		super(a.size());
+		attributes = a;
 	}
 
+	public boolean omittable (Operator neighbor) {
+		
+		// Neighbor is no projection
+		if (!(neighbor instanceof Projection)) 
+			return false;
+		
+		Projection other = (Projection) neighbor;
+		
+		// Neighbor has more attributes
+		if (other.attributes.size() > attributes.size()) 
+			return false;
+		
+		// Neighbor has all attributes of this projection
+		return attributes.containsAll(other.attributes);	
+	}
 }
