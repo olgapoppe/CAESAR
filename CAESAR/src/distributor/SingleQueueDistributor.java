@@ -89,9 +89,9 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				
 		 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 				distributorProgressPerSec.put(curr_sec,now);
-		 				if (curr_sec>50) {
+		 				if (curr_sec>10) {
 		 					eventqueues.setDistributorProgress(curr_sec);
-		 					System.out.println("Distributor progress: " + curr_sec);
+		 					//System.out.println("Distributor progress: " + curr_sec);
 		 				}		 				
 			 			curr_sec = event.sec;
 		 			}
@@ -108,7 +108,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		now = (System.currentTimeMillis() - startOfSimulation)/1000;			
 				distributorProgressPerSec.put(batch_limit,now);
 	 			eventqueues.setDistributorProgress(batch_limit); 				
-	 			System.out.println("Distributor progress: " + batch_limit);		 			
+	 			//System.out.println("Distributor progress: " + batch_limit);		 			
 		 			
 	 			if (batch_limit < lastSec) { 			
 	 				
@@ -118,7 +118,7 @@ public class SingleQueueDistributor extends EventDistributor {
  					if (now < batch_limit*1000) {
 		 			
  						int sleep_time = new Double(batch_limit*1000 - now).intValue();		 			
- 						//System.out.println("Driver sleeps " + sleep_time + " ms");		 			
+ 						//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			
  						Thread.sleep(sleep_time);
  						distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch_limit;
  					}
