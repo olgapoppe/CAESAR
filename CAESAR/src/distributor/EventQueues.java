@@ -40,7 +40,7 @@ public class EventQueues {
 				wait();
 				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				double durationOfWaiting = endOfWaiting - startOfWaiting;
-				if (durationOfWaiting>1 && sec>10000) 
+				if (durationOfWaiting>1) 
 					System.out.println(	"Scheduler waits from " + startOfWaiting + 
 										" to " + endOfWaiting + 
 										" for distributor to processes second " + sec);

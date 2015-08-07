@@ -32,6 +32,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			// Time
 			double prev_batch_limit = -1;
 			long now = 0;
+			double curr_sec = -1;
 						
 			Random random = new Random();
 			int min = 6;
@@ -82,6 +83,19 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				if (count_and_rate && eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
 		 				//System.out.println(event.toString());											
 		 			}
+		 			
+		 			/*** Set distributer progress ***/	
+		 			if (curr_sec < event.sec) {
+		 				
+		 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 				distributorProgressPerSec.put(curr_sec,now);
+		 				if (curr_sec>50) {
+		 					eventqueues.setDistributorProgress(curr_sec);
+		 					System.out.println("Distributor progress: " + curr_sec);
+		 				}		 				
+			 			curr_sec = event.sec;
+		 			}
+		 			
 		 			/*** Reset event ***/
 		 			if (scanner.hasNextLine()) {		 				
 		 				line = scanner.nextLine();   
@@ -90,19 +104,11 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				event = null;		 				
 		 			}
 		 		}		 			
-		 		/*** Set distributor progress per second ***/
-		 		now = (System.currentTimeMillis() - startOfSimulation)/1000;
-		 					 		
-		 		for (double i=prev_batch_limit+1; i<=batch_limit; i++) {
-					
-					//System.out.println("Distributor progress for " + i + " is " + now);
-					distributorProgressPerSec.put(i,now);
-				}
-				prev_batch_limit = batch_limit;
-				
-				/*** Update distributer progress ***/			 	
+		 		/*** Set distributor progress ***/
+		 		now = (System.currentTimeMillis() - startOfSimulation)/1000;			
+				distributorProgressPerSec.put(batch_limit,now);
 	 			eventqueues.setDistributorProgress(batch_limit); 				
-	 			if (batch_limit>10000) System.out.println("Distributor progress: " + batch_limit);		 			
+	 			System.out.println("Distributor progress: " + batch_limit);		 			
 		 			
 	 			if (batch_limit < lastSec) { 			
 	 				
@@ -118,6 +124,7 @@ public class SingleQueueDistributor extends EventDistributor {
  					}
  					
  					/*** Rest batch_limit ***/
+ 					prev_batch_limit = batch_limit;
  					batch_limit += random.nextInt(max - min + 1) + min + distributor_wakeup_time;		 			
 	 				if (batch_limit > lastSec) batch_limit = lastSec;
 	 				//System.out.println("Batch limit: " + batch_limit);
