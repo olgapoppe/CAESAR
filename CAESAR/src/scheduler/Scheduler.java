@@ -78,9 +78,10 @@ public abstract class Scheduler implements Runnable {
 				transaction_number.await();			
 				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				double durationOfWaiting = endOfWaiting - startOfWaiting;
-				if (durationOfWaiting>1) 
-					System.out.println(	"Duration of scheduler waiting for executor at second " + sec + " is " + durationOfWaiting +
-										". It waited from " + startOfWaiting + " to " + endOfWaiting + ".");
+				if (durationOfWaiting>1 && sec>10000) 
+					System.out.println(	"Scheduler waits from " + startOfWaiting + 
+										" to " + endOfWaiting + 
+										" for executor to processes second " + sec);
 			
 				transaction_number = new CountDownLatch(number);			
 				for (Transaction t : transactions) { 
