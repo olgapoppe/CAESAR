@@ -30,9 +30,9 @@ public abstract class Event {
 	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, double scheduling_time) {
 		
 		// Print an error message and update the accident warning failed variable
-		double diff = emit - p.sec;
+		double diff = emit - p.distributorTime;
 		
-		if (!failed.get() && diff > 5) {
+		if (p.sec>20 && !failed.get() && diff > 5) {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
