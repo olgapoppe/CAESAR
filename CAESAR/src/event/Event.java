@@ -32,7 +32,7 @@ public abstract class Event {
 		// Print an error message and update the accident warning failed variable
 		double diff = emit - p.distributorTime;
 		
-		if (p.sec>20 && !failed.get() && diff > 5) {
+		if (p.sec>50 && !failed.get() && diff > 5) {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
