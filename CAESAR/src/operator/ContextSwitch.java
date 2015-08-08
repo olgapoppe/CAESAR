@@ -1,12 +1,24 @@
 package operator;
 
-public class ContextSwitch extends Operator {
+public class ContextSwitch implements Operator {
+	
+	String context;
 
-	ContextSwitch (double c) {
-		super(c);
+	ContextSwitch (String con) {		
+		context = con;
 	}
 	
 	public boolean omittable (Operator neighbor) {
-		return false;
+		
+		// Neighbor is no context initiation
+		if (!(neighbor instanceof ContextSwitch)) 
+			return false;
+				
+		ContextSwitch other = (ContextSwitch) neighbor;
+		return context.equals(other.context);
+	}
+	
+	public int getCost() {
+		return 1;
 	}
 }

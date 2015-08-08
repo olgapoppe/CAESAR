@@ -19,7 +19,7 @@ public class FilterTest {
 		
 		Disjunction d1 = new Disjunction(conjuncts);
 		
-		Filter f1 = new Filter(1, d1);
+		Filter f1 = new Filter(d1);
 		
 		AtomicPredicate p2 = new AtomicPredicate ("x", ">", 10);		
 		ArrayList<AtomicPredicate> conj2 = new ArrayList<AtomicPredicate>();
@@ -31,7 +31,7 @@ public class FilterTest {
 		
 		Disjunction d2 = new Disjunction(conjuncts2);
 		
-		Filter f2 = new Filter(1, d2);
+		Filter f2 = new Filter(d2);
 		
 		Assert.assertTrue(f1.omittable(f1));
 		Assert.assertTrue(f1.omittable(f2));

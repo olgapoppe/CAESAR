@@ -1,11 +1,10 @@
 package operator;
 
-public class Filter extends Operator {
+public class Filter implements Operator {
 	
 	Disjunction predicate;
 
-	Filter (double c, Disjunction p) {
-		super(c);
+	Filter (Disjunction p) {
 		predicate = p;
 	}
 	
@@ -18,5 +17,9 @@ public class Filter extends Operator {
 		Filter other = (Filter) neighbor;
 		
 		return other.predicate.subsumedBy(predicate);
+	}
+	
+	public int getCost() {
+		return predicate.getNumber();
 	}
 }

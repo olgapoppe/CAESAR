@@ -2,12 +2,11 @@ package operator;
 
 import java.util.ArrayList;
 
-public class Projection extends Operator {
+public class Projection implements Operator {
 	
 	ArrayList<String> attributes;
 	
 	Projection (ArrayList<String> a) {
-		super(a.size());
 		attributes = a;
 	}
 
@@ -25,5 +24,9 @@ public class Projection extends Operator {
 		
 		// Neighbor has all attributes of this projection
 		return attributes.containsAll(other.attributes);	
+	}
+	
+	public int getCost() {
+		return attributes.size();
 	}
 }

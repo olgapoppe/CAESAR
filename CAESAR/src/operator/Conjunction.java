@@ -10,6 +10,10 @@ public class Conjunction {
 		this.atomicPredicates = p;
 	}
 	
+	int getNumber() {		
+		return atomicPredicates.size();
+	}
+	
 	boolean subsumedBy (Conjunction c2) {
 		for (AtomicPredicate p : c2.atomicPredicates) {
 			if (!p.impliedBy(this)) { return false; }			

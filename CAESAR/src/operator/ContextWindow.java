@@ -1,11 +1,10 @@
 package operator;
 
-public class ContextWindow extends Operator {
+public class ContextWindow implements Operator {
 	
 	String context;
 	
-	ContextWindow (double c, String con) {
-		super(c);
+	ContextWindow (String con) {		
 		context = con;
 	}
 
@@ -19,5 +18,9 @@ public class ContextWindow extends Operator {
 		
 		// Neighbor is the same context window
 		return context.equals(other.context);	
+	}
+	
+	public int getCost() {
+		return 1;
 	}
 }

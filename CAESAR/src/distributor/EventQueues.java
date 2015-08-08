@@ -36,14 +36,14 @@ public class EventQueues {
 		
 		try {
 			while (distributorProgress.get() < sec) {
-				double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+				//double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				wait();
-				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+				/*double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				double durationOfWaiting = endOfWaiting - startOfWaiting;
 				if (durationOfWaiting>1 && sec>8000) 
 					System.out.println(	"Scheduler waits from " + startOfWaiting + 
 										" to " + endOfWaiting + 
-										" for distributor to processes second " + sec);
+										" for distributor to processes second " + sec);*/
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			

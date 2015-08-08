@@ -10,6 +10,14 @@ public class Disjunction {
 		this.conjunctivePredicates = p;
 	}
 	
+	int getNumber() {		
+		int n = 0;		
+		for (Conjunction c : conjunctivePredicates) {
+			n += c.getNumber();
+		}		
+		return n;
+	}
+	
 	boolean subsumedBy (Disjunction d2) {
 		for (Conjunction c : d2.conjunctivePredicates) {
 			if (!c.impliedBy(this)) { return false; }			

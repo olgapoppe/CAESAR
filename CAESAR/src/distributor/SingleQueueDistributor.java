@@ -89,7 +89,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				
 		 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 				distributorProgressPerSec.put(curr_sec,now);
-		 				if (curr_sec>10) {
+		 				if (curr_sec>50) {
 		 					eventqueues.setDistributorProgress(curr_sec);
 		 					//System.out.println("Distributor progress: " + curr_sec);
 		 				}		 				

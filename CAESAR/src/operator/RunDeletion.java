@@ -1,12 +1,14 @@
 package operator;
 
-public class RunDeletion extends Operator {
-	
-	RunDeletion (double c) {
-		super(c);
-	}
+public class RunDeletion implements Operator {
 	
 	public boolean omittable (Operator neighbor) {
-		return false;
+		
+		// Neighbor is no context initiation
+		return (neighbor instanceof RunDeletion);
+	}
+	
+	public int getCost() {
+		return 1;
 	}
 }
