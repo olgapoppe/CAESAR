@@ -6,7 +6,7 @@ public class Projection implements Operator {
 	
 	ArrayList<String> attributes;
 	
-	Projection (ArrayList<String> a) {
+	public Projection (ArrayList<String> a) {
 		attributes = a;
 	}
 

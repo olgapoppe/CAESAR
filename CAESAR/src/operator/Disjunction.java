@@ -6,7 +6,7 @@ public class Disjunction {
 	
 	public ArrayList<Conjunction> conjunctivePredicates;
 	
-	Disjunction (ArrayList<Conjunction> p) {
+	public Disjunction (ArrayList<Conjunction> p) {
 		this.conjunctivePredicates = p;
 	}
 	

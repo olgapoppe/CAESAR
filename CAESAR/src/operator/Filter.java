@@ -4,7 +4,7 @@ public class Filter implements Operator {
 	
 	Disjunction predicate;
 
-	Filter (Disjunction p) {
+	public Filter (Disjunction p) {
 		predicate = p;
 	}
 	
