@@ -12,9 +12,9 @@ import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {	
 		
-	public SingleQueueDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, EventQueues rq, 
+	public SingleQueueDistributor (AtomicInteger dp, String f, HashMap<RunID,Run> rs, EventQueues rq, 
 			AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
-		super(dp, distrProgrPerSec, f, rs, rq, x1, x2, last, start, cr);		 
+		super(dp, f, rs, rq, x1, x2, last, start, cr);		 
 	}
 
 	/** 
@@ -88,7 +88,6 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			if (curr_sec < event.sec) {
 		 				
 		 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
-		 				distributorProgressPerSec.put(curr_sec,now);
 		 				if (curr_sec>50) {
 		 					eventqueues.setDistributorProgress(curr_sec);
 		 					//System.out.println("Distributor progress: " + curr_sec);
@@ -106,8 +105,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		}		 			
 		 		/*** Set distributor progress ***/
 		 		now = (System.currentTimeMillis() - startOfSimulation)/1000;			
-				distributorProgressPerSec.put(batch_limit,now);
-	 			eventqueues.setDistributorProgress(batch_limit); 				
+				eventqueues.setDistributorProgress(batch_limit); 				
 	 			//System.out.println("Distributor progress: " + batch_limit);		 			
 		 			
 	 			if (batch_limit < lastSec) { 			

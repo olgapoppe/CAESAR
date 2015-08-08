@@ -19,15 +19,13 @@ public abstract class Transaction implements Runnable {
 	
 	long startOfSimulation;
 	AtomicDouble max_exe_time;
-	HashMap<Double,Long> distributorProgressPerSec;	
 	public CountDownLatch transaction_number;
 				
-	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicDouble met, HashMap<Double,Long> distrProgrPerSec) {
+	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicDouble met) {
 		
 		events = eventList;		
 		runs = rs;
 		startOfSimulation = start;
-		max_exe_time = met;
-		distributorProgressPerSec = distrProgrPerSec;
+		max_exe_time = met;		
 	}	
 }

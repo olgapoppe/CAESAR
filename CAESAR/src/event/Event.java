@@ -25,10 +25,9 @@ public abstract class Event {
 	 * @param emit			emission time of complex event
 	 * @param failed		true if latency constraint was violated before
 	 * @param max_latency	maximal latency so far
-	 * @param s				type of complex event
-	 * @param distrProgr 	distributor progress in application time of input event
+	 * @param s				type of complex event 
 	 */
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, long distrProgr) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
 		
 		// Print an error message and update the accident warning failed variable
 		double diff = emit - p.sec;
@@ -37,8 +36,7 @@ public abstract class Event {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
-								"triggered " + this.toString() +
-								"Distributer progress in " + p.sec + " is " + distrProgr);
+								"triggered " + this.toString());
 			failed.compareAndSet(false, true);
 		}	
 	}

@@ -12,8 +12,7 @@ import run.*;
 public abstract class EventDistributor implements Runnable {
 	
 	AtomicInteger distributorProgress;
-	HashMap<Double,Long> distributorProgressPerSec;
-	
+		
 	String filename;
 	HashMap<RunID,Run> runs;
 	final EventQueues eventqueues;
@@ -24,12 +23,11 @@ public abstract class EventDistributor implements Runnable {
 	long startOfSimulation;
 	boolean count_and_rate;
 		
-	public EventDistributor (AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, String f, HashMap<RunID,Run> rs, EventQueues rq, 
+	public EventDistributor (AtomicInteger dp, String f, HashMap<RunID,Run> rs, EventQueues rq, 
 			AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
 		
 		distributorProgress = dp;
-		distributorProgressPerSec = distrProgrPerSec;
-		
+				
 		filename = f;
 		runs = rs;
 		eventqueues = rq;	

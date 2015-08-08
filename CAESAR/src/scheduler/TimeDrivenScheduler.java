@@ -23,11 +23,11 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	boolean early_condensed_filtering;
 	boolean reduced_stream_history_traversal;
 			
-	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<Double,Long> distrProgrPerSec, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
+	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
 			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met,
 			boolean ed, boolean pr, boolean fi, boolean sh) {	
 		
-		super(dp,distrProgrPerSec,rs,rq,e,tn,d,maxX,bothD,lastS,start,met);
+		super(dp,rs,rq,e,tn,d,maxX,bothD,lastS,start,met);
 		
 		sec = 0;
 		splitQueries = sq;

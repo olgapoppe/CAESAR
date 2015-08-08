@@ -20,8 +20,8 @@ public class TrafficManagement extends Transaction {
 	AtomicBoolean tollNotificationsFailed;
 	
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
-			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf, HashMap<Double,Long> distrProgrPerSec) {
-		super(eventList,rs,start,met,distrProgrPerSec);
+			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf) {
+		super(eventList,rs,start,met);
 		run = r;
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;			
@@ -56,10 +56,9 @@ public class TrafficManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run and remove old data
-			long distrProgr = distributorProgressPerSec.get(event.sec);
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
-			run.trafficManagement(event, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed, distrProgr); 	
+			run.trafficManagement(event, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			

@@ -543,10 +543,9 @@ public class Run {
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
-	 * @param distrProgr			distributor progress in event.sec
 	 */
 	public void trafficManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -589,13 +588,13 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 	
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); 	
 					if (count_and_rate) {
 						output.real_toll_count++;
 						output.update_real_tollnotification_rates(runID, event.min);
 					}
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);	
+					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed);	
 					if (count_and_rate) { 
 						output.zero_toll_count++;
 						output.update_zero_tollnotification_rates(runID, event.min);
@@ -605,7 +604,7 @@ public class Run {
 				
 				if (isAccident) {		
 					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed);
 					if (count_and_rate) output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
@@ -684,11 +683,10 @@ public class Run {
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param run_priorization		whether run priorities are maintained
-	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
-	 * @param distrProgr			distributor progress in event.sec
+	 * @param accidentWarningsFailed whether accident warnings failed the constraints already 
 	 */
 	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
-			AtomicBoolean accidentWarningsFailed, long distrProgr) {
+			AtomicBoolean accidentWarningsFailed) {
 		
 		//System.out.println(event.timesToString());
 		
@@ -705,7 +703,7 @@ public class Run {
 			// Derive accident warnings
 			if (event.lane < 4 && isAccident) {		
 					
-				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, distrProgr);
+				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed);
 				output.accidentWarnings.add(accidentWarning);				
 			}
 		/********************************************** If the vehicle was in the segment before ***********************************************/
@@ -764,11 +762,10 @@ public class Run {
 	 * @param event					incoming position report
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead 
-	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
-	 * @param distrProgr			distributor progress in event.sec
+	 * @param tollNotificationsFailed whether toll notifications failed the constraints already 
 	 */
 	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
-			AtomicBoolean tollNotificationsFailed, long distrProgr) { 
+			AtomicBoolean tollNotificationsFailed) { 
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -812,10 +809,10 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed, distrProgr); 
+					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); 
 					
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed, distrProgr);				
+					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed);				
 				}
 				output.tollNotifications.add(tollNotification);
 			}
