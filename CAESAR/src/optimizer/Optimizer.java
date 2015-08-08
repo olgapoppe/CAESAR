@@ -1,5 +1,6 @@
 package optimizer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -7,20 +8,22 @@ import operator.*;
 
 public class Optimizer {
 	
-	static void omit (LinkedList<Operator> query_plan) {
+	static ArrayList<QueryPlan> omit (QueryPlan query_plan) {
 		
-		for (int i=0; i<query_plan.size(); i++) {
+		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
+		
+		for (int i=0; i<query_plan.operators.size(); i++) {
 			
-			Operator operator = query_plan.get(i);
-			Operator before = query_plan.get(i-1);
-			Operator after = query_plan.get(i+1);
+			Operator operator = query_plan.operators.get(i);
+			Operator before = query_plan.operators.get(i-1);
+			Operator after = query_plan.operators.get(i+1);
 			if (operator.omittable(before) || operator.omittable(after)) {
-				 LinkedList<Operator> new_query_plan = new LinkedList<Operator>();
-				 new_query_plan.addAll(query_plan);
-				 new_query_plan.remove(i);
+				 QueryPlan new_query_plan = new QueryPlan(query_plan.operators);
+				 new_query_plan.operators.remove(i);
+				 new_query_plans.add(new_query_plan);
 			}
 		}
-		
+		return new_query_plans;
 	}
 	
 	static void permute (LinkedList<Operator> arr, int k) {

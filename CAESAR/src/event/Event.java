@@ -37,7 +37,7 @@ public abstract class Event {
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
 								"triggered " + this.toString() +
-								"Transaction scheduling time is " + scheduling_time);
+								"\nTransaction scheduling time is " + scheduling_time);
 			failed.compareAndSet(false, true);
 		}	
 	}
