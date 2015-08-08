@@ -27,7 +27,7 @@ public abstract class Event {
 	 * @param max_latency	maximal latency so far
 	 * @param s				type of complex event 
 	 */
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s) {
+	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, double scheduling_time) {
 		
 		// Print an error message and update the accident warning failed variable
 		double diff = emit - p.sec;
@@ -36,7 +36,8 @@ public abstract class Event {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
-								"triggered " + this.toString());
+								"triggered " + this.toString() +
+								"Transaction scheduling time is " + scheduling_time);
 			failed.compareAndSet(false, true);
 		}	
 	}

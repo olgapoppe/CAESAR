@@ -45,7 +45,7 @@ public class CongestionManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run and remove old data
-			run.congestionManagement(event, startOfSimulation, segWithAccAhead, tollNotificationsFailed); 	
+			run.congestionManagement(event, scheduling_time, startOfSimulation, segWithAccAhead, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);					
 		}		
 		// Count down the number of transactions

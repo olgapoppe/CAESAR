@@ -83,6 +83,7 @@ public abstract class Scheduler implements Runnable {
 			
 				transaction_number = new CountDownLatch(number);			
 				for (Transaction t : transactions) { 
+					t.scheduling_time = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 					t.transaction_number = transaction_number;
 					executor.execute(t); 
 				}				

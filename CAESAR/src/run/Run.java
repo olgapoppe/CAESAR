@@ -544,7 +544,7 @@ public class Run {
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
 	 */
-	public void trafficManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
+	public void trafficManagement (PositionReport event, double scheduling_time, long startOfSimulation, double segWithAccAhead, 
 			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
@@ -588,13 +588,13 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); 	
+					tollNotification = new TollNotification(event, avgSpd, vehCount, scheduling_time, startOfSimulation, tollNotificationsFailed); 	
 					if (count_and_rate) {
 						output.real_toll_count++;
 						output.update_real_tollnotification_rates(runID, event.min);
 					}
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed);	
+					tollNotification = new TollNotification(event, avgSpd, scheduling_time, startOfSimulation, tollNotificationsFailed);	
 					if (count_and_rate) { 
 						output.zero_toll_count++;
 						output.update_zero_tollnotification_rates(runID, event.min);
@@ -604,7 +604,7 @@ public class Run {
 				
 				if (isAccident) {		
 					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, startOfSimulation, accidentWarningsFailed);
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, scheduling_time, startOfSimulation, accidentWarningsFailed);
 					if (count_and_rate) output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
@@ -685,7 +685,7 @@ public class Run {
 	 * @param run_priorization		whether run priorities are maintained
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already 
 	 */
-	public void accidentManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
+	public void accidentManagement (PositionReport event, double scheduling_time, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
 			AtomicBoolean accidentWarningsFailed) {
 		
 		//System.out.println(event.timesToString());
@@ -703,7 +703,7 @@ public class Run {
 			// Derive accident warnings
 			if (event.lane < 4 && isAccident) {		
 					
-				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed);
+				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, scheduling_time, startOfSimulation, accidentWarningsFailed);
 				output.accidentWarnings.add(accidentWarning);				
 			}
 		/********************************************** If the vehicle was in the segment before ***********************************************/
@@ -764,7 +764,7 @@ public class Run {
 	 * @param segWithAccAhead		segment with accident ahead 
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already 
 	 */
-	public void congestionManagement (PositionReport event, long startOfSimulation, double segWithAccAhead, 
+	public void congestionManagement (PositionReport event, double scheduling_time, long startOfSimulation, double segWithAccAhead, 
 			AtomicBoolean tollNotificationsFailed) { 
 		
 		// Set auxiliary variables
@@ -812,7 +812,7 @@ public class Run {
 					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); 
 					
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, startOfSimulation, tollNotificationsFailed);				
+					tollNotification = new TollNotification(event, avgSpd, scheduling_time, startOfSimulation, tollNotificationsFailed);				
 				}
 				output.tollNotifications.add(tollNotification);
 			}
