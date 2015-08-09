@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AccidentWarning extends Event {
 	
+	public double distributorTime;
 	public double emit;
 	double seg;
 			
@@ -16,6 +17,7 @@ public class AccidentWarning extends Event {
 		
 		super(1,p.sec,p.vid);	
 		
+		distributorTime = p.distributorTime;
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		seg = s;
 				

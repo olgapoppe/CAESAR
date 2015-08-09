@@ -9,9 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class TollNotification extends Event {
 	
+	public double distributorTime;
 	public double emit;
 	double avgSpd;
-	double toll;
+	double toll;	
 		
 	/**
 	 * Construct real toll notification when the road segment is congested.
@@ -25,6 +26,7 @@ public class TollNotification extends Event {
 		
 		super(0,p.sec,p.vid);	
 		
+		distributorTime = p.distributorTime;
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
@@ -43,6 +45,7 @@ public class TollNotification extends Event {
 		
 		super(0,p.sec,p.vid);
 		
+		distributorTime = p.distributorTime;
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
 		toll = 0;
