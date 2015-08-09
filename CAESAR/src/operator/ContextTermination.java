@@ -9,16 +9,21 @@ public class ContextTermination implements Operator {
 	}
 	
 	public boolean omittable (Operator neighbor) {
-		
-		// Neighbor is no context initiation
-		if (!(neighbor instanceof ContextTermination)) 
-			return false;
-				
-		ContextTermination other = (ContextTermination) neighbor;
-		return context.equals(other.context);
+		return this.equals(neighbor);
 	}
 	
 	public int getCost() {
 		return 1;
+	}
+	
+	public boolean equals(Operator operator) {
+		
+		if (!(operator instanceof ContextTermination)) return false;						
+		ContextTermination other = (ContextTermination) operator;
+		return context.equals(other.context);
+	}
+	
+	public String toString() {
+		return "CT " + context;
 	}
 }

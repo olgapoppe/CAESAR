@@ -100,6 +100,10 @@ public class Disjunction {
 		return new Disjunction(conjs);
 	}
 	
+	public boolean equals (Disjunction other) {
+		return this.subsumedBy(other) && other.subsumedBy(this);
+	}
+	
 	public String toString() {
 		
 		String s = "";

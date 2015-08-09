@@ -9,5 +9,9 @@ public class Tuple {
 		attribute = a;
 		value = v;
 	}
+	
+	public String toString () {
+		return attribute + " " + value;
+	}
 
 }

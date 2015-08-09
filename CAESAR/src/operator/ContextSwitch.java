@@ -9,16 +9,21 @@ public class ContextSwitch implements Operator {
 	}
 	
 	public boolean omittable (Operator neighbor) {
-		
-		// Neighbor is no context initiation
-		if (!(neighbor instanceof ContextSwitch)) 
-			return false;
-				
-		ContextSwitch other = (ContextSwitch) neighbor;
-		return context.equals(other.context);
+		return this.equals(neighbor);
 	}
 	
 	public int getCost() {
 		return 1;
+	}
+	
+	public boolean equals(Operator operator) {
+		
+		if (!(operator instanceof ContextSwitch)) return false;						
+		ContextSwitch other = (ContextSwitch) operator;
+		return context.equals(other.context);
+	}
+	
+	public String toString() {
+		return "CS " + context;
 	}
 }

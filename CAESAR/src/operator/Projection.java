@@ -12,21 +12,29 @@ public class Projection implements Operator {
 
 	public boolean omittable (Operator neighbor) {
 		
-		// Neighbor is no projection
-		if (!(neighbor instanceof Projection)) 
-			return false;
+		if (!(neighbor instanceof Projection)) return false;		
 		
 		Projection other = (Projection) neighbor;
-		
-		// Neighbor has more attributes
-		if (other.attributes.size() > attributes.size()) 
-			return false;
-		
-		// Neighbor has all attributes of this projection
+		if (other.attributes.size() > attributes.size()) return false;		
 		return attributes.containsAll(other.attributes);	
+	}
+	
+	public boolean equals(Operator operator) {
+		
+		if (!(operator instanceof Projection)) 	return false;
+		Projection other = (Projection) operator;
+		return attributes.containsAll(other.attributes) && other.attributes.containsAll(attributes);
 	}
 	
 	public int getCost() {
 		return attributes.size();
+	}
+	
+	public String toString() {
+		String s = "PR ";
+		for (String a : attributes) {
+			s += a + ",";
+		}		
+		return s;
 	}
 }

@@ -11,16 +11,24 @@ public class RunUpdate implements Operator {
 	}
 	
 	public boolean omittable (Operator neighbor) {
-		
-		// Neighbor is no context initiation
-		if (!(neighbor instanceof RunUpdate)) 
-		return false;
-						
-		RunUpdate other = (RunUpdate) neighbor;
-		return tuples.containsAll(other.tuples) && other.tuples.containsAll(tuples);
+		return this.equals(neighbor);		
 	}
 	
 	public int getCost() {
 		return tuples.size();
+	}
+	
+	public boolean equals (Operator operator) {
+		if (!(operator instanceof RunUpdate)) return false;
+		RunUpdate other = (RunUpdate) operator;
+		return tuples.containsAll(other.tuples) && other.tuples.containsAll(tuples);		
+	}
+	
+	public String toString() {
+		String s = "RU";
+		for (Tuple t : tuples) {
+			s += t.toString() + ", ";
+		}
+		return s;
 	}
 }

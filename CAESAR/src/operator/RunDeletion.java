@@ -2,13 +2,19 @@ package operator;
 
 public class RunDeletion implements Operator {
 	
-	public boolean omittable (Operator neighbor) {
-		
-		// Neighbor is no context initiation
-		return (neighbor instanceof RunDeletion);
+	public boolean omittable (Operator neighbor) {		
+		return this.equals(neighbor);
 	}
 	
 	public int getCost() {
 		return 1;
+	}
+	
+	public boolean equals (Operator operator) {
+		return (operator instanceof RunDeletion);		
+	}
+	
+	public String toString() {
+		return "RD";
 	}
 }

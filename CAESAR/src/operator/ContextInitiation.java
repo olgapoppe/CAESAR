@@ -9,16 +9,21 @@ public class ContextInitiation implements Operator {
 	}
 	
 	public boolean omittable (Operator neighbor) {
-		
-		// Neighbor is no context initiation
-		if (!(neighbor instanceof ContextInitiation)) 
-			return false;
-				
-		ContextInitiation other = (ContextInitiation) neighbor;
-		return context.equals(other.context);
+		return this.equals(neighbor);
 	}
 
 	public int getCost() {
 		return 1;
+	}
+	
+	public boolean equals(Operator operator) {
+		
+		if (!(operator instanceof ContextInitiation)) return false;						
+		ContextInitiation other = (ContextInitiation) operator;
+		return context.equals(other.context);
+	}
+	
+	public String toString() {
+		return "CI " + context;
 	}
 }

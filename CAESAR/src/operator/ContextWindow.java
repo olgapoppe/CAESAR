@@ -4,23 +4,26 @@ public class ContextWindow implements Operator {
 	
 	String context;
 	
-	ContextWindow (String con) {		
+	public ContextWindow (String con) {		
 		context = con;
 	}
 
-	public boolean omittable (Operator neighbor) {
-		
-		// Neighbor is no context window
-		if (!(neighbor instanceof ContextWindow)) 
-			return false;
-		
-		ContextWindow other = (ContextWindow) neighbor;
-		
-		// Neighbor is the same context window
-		return context.equals(other.context);	
+	public boolean omittable (Operator neighbor) {		
+		return this.equals(neighbor);	
 	}
 	
 	public int getCost() {
 		return 1;
+	}
+	
+	public boolean equals(Operator operator) {
+		
+		if (!(operator instanceof ContextWindow)) return false;				
+		ContextWindow other = (ContextWindow) operator;	
+		return context.equals(other.context);
+	}
+	
+	public String toString() {
+		return "CW " + context;
 	}
 }
