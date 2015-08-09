@@ -47,14 +47,16 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		double scheduler_wakeup_time = 0;
 					
 		// Get the permission to schedule current second
-		while (hp_sec <= lastSec && eventqueues.getDistributorProgress(hp_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) { 
-			try {				 
+		while (hp_sec <= lastSec) { 
+			try {			
+				double dealy = eventqueues.getDistributorProgress(hp_sec, startOfSimulation);
+				
 				/*** HP queries are always processed faster ***/
 				if (hp_count < HPquery_frequency && lp_count < LPquery_frequency && hp_sec > lp_sec) {
 					
 					//System.out.println("All queries process " + hp_sec);
 					
-					all_queries_all_runs(true, hp_sec, false, true, false, false, false, false);
+					all_queries_all_runs(true, hp_sec, dealy, false, true, false, false, false, false);
 					hp_sec++;
 					lp_sec = hp_sec;
 					hp_count++;

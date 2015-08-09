@@ -9,19 +9,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AccidentWarning extends Event {
 	
-	public double distributorTime;
 	public double emit;
 	double seg;
-			
-	public AccidentWarning (PositionReport p, double s, double scheduling_time, long startOfSimulation, AtomicBoolean awf) {
+	
+	public double totalProcessingTime;
+	
+	/**
+	 * Construct accident warning when there is an accident on a road.
+	 * @param p					position report
+	 * @param s					segment with accident ahead
+	 * @param delay				scheduler wake-up time after waiting for distributor
+	 * @param startOfSimulation	start of simulation to generate the emission time
+	 * @param awf				indicates whether accident warning failed already
+	 */
+	public AccidentWarning (PositionReport p, double s, double delay, long startOfSimulation, AtomicBoolean awf) {
 		
 		super(1,p.sec,p.vid);	
 		
-		distributorTime = p.distributorTime;
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		seg = s;
+		
+		totalProcessingTime =  emit - p.distributorTime - delay;
 				
-		printError (p, emit, awf, "ACCIDENT WARNINGS", scheduling_time);			
+		printError (p, totalProcessingTime, awf, "ACCIDENT WARNINGS");			
 	}	
 
 	/** 

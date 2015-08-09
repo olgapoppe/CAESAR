@@ -47,11 +47,13 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		double curr_sec = -1;
 				
 		// Get the permission to schedule current second
-		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed)) {
+		while (curr_sec <= lastSec) {
+			
+			double delay = eventqueues.getDistributorProgress(curr_sec, startOfSimulation);
 		
 			try {
 				// Schedule the current second
-				all_queries_all_runs (splitQueries, curr_sec, false, false,
+				all_queries_all_runs (splitQueries, curr_sec, delay, false, false,
 					event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
 				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing				
 					

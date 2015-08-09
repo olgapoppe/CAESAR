@@ -9,48 +9,53 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class TollNotification extends Event {
 	
-	public double distributorTime;
 	public double emit;
 	double avgSpd;
-	double toll;	
+	double toll;
+	
+	public double totalProcessingTime;
 		
 	/**
 	 * Construct real toll notification when the road segment is congested.
 	 * @param p					position report
 	 * @param a					average speed for the last 5 minutes in the road segment
 	 * @param vehCount			vehicle count in the segment
+	 * @param delay				scheduler wake-up time after waiting for distributor
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double vehCount, double scheduling_time, long startOfSimulation, AtomicBoolean tnf) {
+	public TollNotification (PositionReport p, double a, double vehCount, double delay, long startOfSimulation, AtomicBoolean tnf) {
 		
 		super(0,p.sec,p.vid);	
 		
-		distributorTime = p.distributorTime;
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
-		printError (p, emit, tnf, "TOLL NOTIFICATIONS", scheduling_time);		 	
+		totalProcessingTime =  emit - p.distributorTime - delay;
+		
+		printError (p, totalProcessingTime, tnf, "TOLL NOTIFICATIONS");		 	
 	}
 	
 	/**
-	 * Construct real toll notification when there is an accident on the road or the road segment is not congested.
+	 * Construct zero toll notification when there is not accident on the road and the road segment is congested.
 	 * @param p					position report
 	 * @param a					average speed for the last 5 minutes in the road segment
+	 * @param delay				scheduler wake-up time after waiting for distributor
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double scheduling_time, long startOfSimulation, AtomicBoolean tnf) {
+	public TollNotification (PositionReport p, double a, double delay, long startOfSimulation, AtomicBoolean tnf) {
 		
 		super(0,p.sec,p.vid);
 		
-		distributorTime = p.distributorTime;
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
 		toll = 0;
 		
-		printError (p, emit, tnf, "TOLL NOTIFICATIONS", scheduling_time);			
+		totalProcessingTime =  emit - p.distributorTime - delay;
+		
+		printError (p, totalProcessingTime, tnf, "TOLL NOTIFICATIONS");			
 	}
 	
 	/** 

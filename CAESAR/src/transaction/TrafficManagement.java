@@ -58,7 +58,7 @@ public class TrafficManagement extends Transaction {
 			// WRITE: Update this run and remove old data
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
-			run.trafficManagement(event, scheduling_time, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed); 	
+			run.trafficManagement(event, delay, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			

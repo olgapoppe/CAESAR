@@ -60,7 +60,7 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (boolean splitQueries, double sec, boolean run_priorization, boolean catchup,
+	public int all_queries_all_runs (boolean splitQueries, double sec, double delay, boolean run_priorization, boolean catchup,
 			boolean ed, boolean pr, boolean fi, boolean sh) {
 		
 		int number = 0;
@@ -86,6 +86,7 @@ public abstract class Scheduler implements Runnable {
 				
 				transaction_number = new CountDownLatch(number);			
 				for (Transaction t : transactions) { 
+					t.delay = delay;
 					t.scheduling_time = now;					
 					t.transaction_number = transaction_number;
 					executor.execute(t); 

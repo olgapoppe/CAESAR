@@ -22,22 +22,17 @@ public abstract class Event {
 	 * Print an error message if the latency constraint of 5 seconds is violated.
 	 * Update accident failed and maximal latency.
 	 * @param p				input position report
-	 * @param emit			emission time of complex event
+	 * @param totalProcessingTime total processing time of the input event
 	 * @param failed		true if latency constraint was violated before
-	 * @param max_latency	maximal latency so far
 	 * @param s				type of complex event 
 	 */
-	public void printError (PositionReport p, double emit, AtomicBoolean failed, String s, double scheduling_time) {
+	public void printError (PositionReport p, double totalProcessingTime, AtomicBoolean failed, String s) {
 		
-		// Print an error message and update the accident warning failed variable
-		double diff = emit - p.distributorTime;
-		
-		if (!failed.get() && diff > 5) {
+		if (!failed.get() && totalProcessingTime > 5) {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
 								p.timesToString() + 
-								"triggered " + this.toString() +
-								"Transaction scheduling time is " + scheduling_time);
+								"triggered " + this.toString());
 			failed.compareAndSet(false, true);
 		}	
 	}

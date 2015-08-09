@@ -157,8 +157,7 @@ public class Output {
 	public double writeTollNotifications2File (BufferedWriter file, double max_latency) {
 		for (TollNotification t : tollNotifications) {
 			try { 
-				double diff = t.emit - t.distributorTime;
-				if (max_latency < diff) max_latency = diff;
+				if (max_latency < t.totalProcessingTime) max_latency = t.totalProcessingTime;
 				file.write(t.toString()); 
 			} catch (IOException e) { e.printStackTrace(); }
 		}  
@@ -172,8 +171,7 @@ public class Output {
 	public double writeAccidentWarnings2File (BufferedWriter file, double max_latency) {
 		for (AccidentWarning a : accidentWarnings) {			
 			try { 
-				double diff = a.emit - a.distributorTime;
-				if (max_latency < diff) max_latency = diff;
+				if (max_latency < a.totalProcessingTime) max_latency = a.totalProcessingTime;
 				file.write(a.toString()); 
 			} catch (IOException e) { e.printStackTrace(); }
 		}

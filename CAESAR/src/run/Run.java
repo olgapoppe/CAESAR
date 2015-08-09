@@ -539,12 +539,13 @@ public class Run {
 	 * trafficManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings (like accidentManagement) and 
 	 * 					 maintains average speeds and vehicle counts and derives toll notifications (like congestionManagement).   
 	 * @param event					incoming position report
+	 * @param delay					scheduler wake-up time after waiting for distributor
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
 	 */
-	public void trafficManagement (PositionReport event, double scheduling_time, long startOfSimulation, double segWithAccAhead, 
+	public void trafficManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, 
 			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
@@ -588,13 +589,13 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, scheduling_time, startOfSimulation, tollNotificationsFailed); 	
+					tollNotification = new TollNotification(event, avgSpd, vehCount, delay, startOfSimulation, tollNotificationsFailed); 	
 					if (count_and_rate) {
 						output.real_toll_count++;
 						output.update_real_tollnotification_rates(runID, event.min);
 					}
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, scheduling_time, startOfSimulation, tollNotificationsFailed);	
+					tollNotification = new TollNotification(event, avgSpd, delay, startOfSimulation, tollNotificationsFailed);	
 					if (count_and_rate) { 
 						output.zero_toll_count++;
 						output.update_zero_tollnotification_rates(runID, event.min);
@@ -604,7 +605,7 @@ public class Run {
 				
 				if (isAccident) {		
 					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, scheduling_time, startOfSimulation, accidentWarningsFailed);
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, delay, startOfSimulation, accidentWarningsFailed);
 					if (count_and_rate) output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
@@ -680,12 +681,13 @@ public class Run {
 	/**
 	 * accidentManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings.   
 	 * @param event					incoming position report
+	 * @param delay					scheduler wake-up time after waiting for distributor
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead
 	 * @param run_priorization		whether run priorities are maintained
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already 
 	 */
-	public void accidentManagement (PositionReport event, double scheduling_time, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
+	public void accidentManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
 			AtomicBoolean accidentWarningsFailed) {
 		
 		//System.out.println(event.timesToString());
@@ -703,7 +705,7 @@ public class Run {
 			// Derive accident warnings
 			if (event.lane < 4 && isAccident) {		
 					
-				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, scheduling_time, startOfSimulation, accidentWarningsFailed);
+				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, delay, startOfSimulation, accidentWarningsFailed);
 				output.accidentWarnings.add(accidentWarning);				
 			}
 		/********************************************** If the vehicle was in the segment before ***********************************************/
@@ -760,11 +762,12 @@ public class Run {
 	/**
 	 * congestionManagement maintains average speeds and vehicle counts and derives toll notifications. 
 	 * @param event					incoming position report
+	 * @param delay					scheduler wake-up time after waiting for distributor
 	 * @param startOfSimulation 	start of simulation
 	 * @param segWithAccAhead		segment with accident ahead 
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already 
 	 */
-	public void congestionManagement (PositionReport event, double scheduling_time, long startOfSimulation, double segWithAccAhead, 
+	public void congestionManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, 
 			AtomicBoolean tollNotificationsFailed) { 
 		
 		// Set auxiliary variables
@@ -809,10 +812,10 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); 
+					tollNotification = new TollNotification(event, avgSpd, vehCount, delay, startOfSimulation, tollNotificationsFailed); 
 					
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, scheduling_time, startOfSimulation, tollNotificationsFailed);				
+					tollNotification = new TollNotification(event, avgSpd, delay, startOfSimulation, tollNotificationsFailed);				
 				}
 				output.tollNotifications.add(tollNotification);
 			}
