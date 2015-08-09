@@ -90,7 +90,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				now = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 				if (curr_sec>50) { // Avoid null run exception when the stream is read too fast
 		 					eventqueues.setDistributorProgress(curr_sec);
-		 					if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
+		 					//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
 		 				}		 				
 			 			curr_sec = event.sec;
 		 			}
@@ -106,7 +106,8 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		/*** Set distributor progress ***/
 		 		now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 				eventqueues.setDistributorProgress(batch_limit); 				
-				if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);		 			
+				//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);	
+				curr_sec = batch_limit;
 		 			
 	 			if (batch_limit < lastSec) { 			
 	 				
