@@ -1,4 +1,4 @@
-package distributor;
+/*package distributor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,11 +19,11 @@ public class DoubleQueueDistributor extends EventDistributor {
 		HPrunqueues = hprq;
 	}
 
-	/** 
+	*//** 
 	 * Read the input file, parse the events, 
 	 * generate new runs if they do not exist yet and
 	 * distribute events into run task queues.
-	 */	
+	 *//*	
 	public void run() {	
 		
 		Scanner scanner;
@@ -46,7 +46,7 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 		
 		 			if (event.correctPositionReport()) {
 		 			
-		 				/******************************************* Run *******************************************/
+		 				*//******************************************* Run *******************************************//*
 		 				RunID runid = new RunID (event.xway, event.dir, event.seg); 
 		 				Run run;        		
 		 				if (runs.containsKey(runid)) {
@@ -56,16 +56,16 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 					run = new Run(runid, event.sec, event.min, firstHPseg, count_and_rate);
 		 					runs.put(runid, run);
 		 				}  			 	
-		 				/*************************************** Run queues ****************************************/
+		 				*//*************************************** Run queues ****************************************//*
 		 				// Append event's distributor time and write it into the run queue
 		 				event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 		 				
-		 				/*LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
+		 				LinkedBlockingQueue<PositionReport> runtaskqueue = runqueues.contents.get(runid);
 		 				if (runtaskqueue == null) {    
 		 					runtaskqueue = new LinkedBlockingQueue<PositionReport>();
 		 					runqueues.contents.put(runid, runtaskqueue);		 				
 		 				}		 				
-		 				runtaskqueue.add(event);*/	
+		 				runtaskqueue.add(event);	
 		 				
 		 				ConcurrentLinkedQueue<PositionReport> HPruntaskqueue = HPrunqueues.contents.get(runid);
 		 				if (HPruntaskqueue == null) {    
@@ -98,7 +98,7 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 		}
 		 		curr_app_sec++;
 			}			
-		 	/*** Close scanner ***/		
+		 	*//*** Close scanner ***//*		
 			scanner.close();
 			System.out.println("Distributor is done.");
 		
@@ -106,3 +106,4 @@ public class DoubleQueueDistributor extends EventDistributor {
 		  catch (FileNotFoundException e1) { e1.printStackTrace(); } 						 
 	}
 }
+*/

@@ -10,6 +10,23 @@ public class Conjunction {
 		this.atomicPredicates = p;
 	}
 	
+	public static Conjunction parse(String s) {
+		
+		ArrayList<AtomicPredicate> preds = new ArrayList<AtomicPredicate>();
+		
+		String allPredicates[] = s.split(" AND "); 
+		if (allPredicates.length>1) {		
+			for (int i=0; i<allPredicates.length; i++) {
+				AtomicPredicate p = AtomicPredicate.parse(allPredicates[i]);
+				preds.add(p);
+			}
+		} else {
+			AtomicPredicate p = AtomicPredicate.parse(s);
+			preds.add(p);
+		}	
+		return new Conjunction(preds);
+	}	
+	
 	int getNumber() {		
 		return atomicPredicates.size();
 	}

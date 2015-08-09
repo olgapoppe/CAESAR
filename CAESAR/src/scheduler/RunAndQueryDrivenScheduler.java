@@ -1,4 +1,4 @@
-package scheduler;
+/*package scheduler;
 
 import iogenerator.AtomicDouble;
 
@@ -9,11 +9,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import distributor.*;
 
-/**
+*//**
  * As soon as all events with the same time stamp become available,
  * run and query driven scheduler submits HP runs and HP queries for execution more often than LP runs and LP queries.
  * @author Olga Poppe 
- */
+ *//*
 public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 
 	public final EventQueues HPrunqueues;
@@ -32,14 +32,14 @@ public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 		LP_frequency = lpf;
 	}
 	
-	/**
+	*//**
 	 * As long as not all events are processed, iterate over all run task queues and pick tasks to execute.
 	 * If there is an accident, HP runs and HP queries of LP runs are executed faster than LP queries of LP runs.
 	 * Otherwise, HP queries are processed faster than LP queries.
-	 */
+	 *//*
 	public void run() {	
 		
-		/*** Local variables ***/
+		*//*** Local variables ***//*
 		double hp_sec = -1;
 		double lp_sec = -1;
 		int hp_count = 0;
@@ -48,7 +48,7 @@ public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 				
 		//while (!shutdown) {
 			try {				 
-				/*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***/
+				*//*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***//*
 				int distr_progr = distributorProgress.get();
 				
 				if (distr_progr > hp_sec) { 
@@ -57,7 +57,7 @@ public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 					int x1 = xway0dir1HPrunsFromSeg.get();
 					boolean accident = (x0>=0 || x1>=0); 
 										
-					/*** If there is an accident, HP runs and HP queries of LP runs are processed faster than LP queries of LP runs ***/
+					*//*** If there is an accident, HP runs and HP queries of LP runs are processed faster than LP queries of LP runs ***//*
 					if (accident) {						
 						if (hp_count < HP_frequency && lp_count < LP_frequency) {
 							
@@ -80,7 +80,7 @@ public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 						}
 						LPqueries_of_LPruns_catchup = true;
 					} else {
-					/*** If there is no accident, HP queries are processed faster than LP queries. LP queries of previous LP runs catch up with previous HP computations in one transaction. ***/
+					*//*** If there is no accident, HP queries are processed faster than LP queries. LP queries of previous LP runs catch up with previous HP computations in one transaction. ***//*
 						
 						hp_sec++;
 						lp_sec = hp_sec;
@@ -116,7 +116,7 @@ public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 						}										
 					}												
 				} else {
-					/*** If the stream is over, catch up LP runs if any, wait for acknowledgment of the previous transactions and sleep. ***/
+					*//*** If the stream is over, catch up LP runs if any, wait for acknowledgment of the previous transactions and sleep. ***//*
 					
 					if (hp_sec == lastSec) {
 						
@@ -136,3 +136,4 @@ public class RunAndQueryDrivenScheduler extends Scheduler implements Runnable {
 		//}	
 	}
 }
+*/

@@ -7,7 +7,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+//import java.util.concurrent.atomic.AtomicInteger;
 import accident.*;
 import event.*;
 
@@ -37,14 +37,13 @@ public class Run {
 	
 	// Mapping of minutes to segments ahead with accidents
 	public HashMap<Double,Double> accidentsAhead;
-	AtomicInteger firstHPseg;	
-	
+		
 	public Output output;	
 	
 	boolean count_and_rate;
 	public String context;
 	
-	public Run (RunID id, double s, double m, AtomicInteger f, boolean cr) {
+	public Run (RunID id, double s, double m, boolean cr) {
 		
 		runID = id;		
 		time = new Time(s,m);
@@ -61,8 +60,7 @@ public class Run {
 		accidents = new LinkedBlockingQueue<Accident>();
 		
 		accidentsAhead = new HashMap<Double,Double>();
-		firstHPseg = f;
-			
+					
 		output = new Output();	
 		
 		count_and_rate = cr;
@@ -279,34 +277,7 @@ public class Run {
 			
 			// Update current accident location
 			currentAccidentLocation.reset(event.lane,event.pos);
-			
-			/*System.out.println(	event.sec + ": Run " + runID + " changes its state to ACCIDENT in lane " + 
-								event.lane + " at position " + event.pos + " during minute " + event.min + ".");*/
-			
-			// Update first HP segment on this road in this direction
-			if (run_priorization) {
-				
-				//long beginOfPriorityMaintenance = System.currentTimeMillis();
-				
-				Double firstSeg;
-				double lastSeg;
-				if (runID.dir == 0) {
-					double x = runID.seg-4;
-					firstSeg = Math.max(0, x); // if x<0
-					lastSeg = 99;
-				} else {
-					double x = runID.seg+4;
-					firstSeg = Math.min(x, 99); // if x>99
-					lastSeg = 0;
-				}
-				firstHPseg.set(firstSeg.intValue());
-							
-				//long durationOfPriorityMaintenance = System.currentTimeMillis() - beginOfPriorityMaintenance;
-				//time.priorityMaintenanceTime += durationOfPriorityMaintenance;
-			
-				System.out.println(	time.sec + ": New HPruns: xway " + runID.xway + " dir " + runID.dir + 
-									" from seg " + firstSeg + " to seg " + lastSeg);
-		}}
+		}
 	}
 	
 	/**
@@ -328,33 +299,7 @@ public class Run {
 		
 			// Update current accident location
 			currentAccidentLocation.reset(-1,-1);	
-		
-			//System.out.println(event.sec + ": Run " + runID + " changes its state from ACCIDENT during minute " + clearAppMin + ".");
-		
-			// Update first HP segment on this road in this direction
-			if (run_priorization) {
-			
-				//long beginOfPriorityMaintenance = System.currentTimeMillis();
-			
-				firstHPseg.set(-1); // assuming there is only one accident per road in one direction
-						
-				//long durationOfPriorityMaintenance = System.currentTimeMillis() - beginOfPriorityMaintenance;
-				//time.priorityMaintenanceTime += durationOfPriorityMaintenance;
-			
-				Double firstSeg;
-				double lastSeg;
-				if (runID.dir == 0) {
-					double x = runID.seg-4;
-					firstSeg = Math.max(0, x); // if x<0
-					lastSeg = 99;
-				} else {
-					double x = runID.seg+4;
-					firstSeg = Math.min(x, 99); // if x>99
-					lastSeg = 0;
-				}
-				System.out.println(	time.sec + ": No HPruns anymore: xway " + runID.xway + " dir " + runID.dir + 
-									" from seg " + firstSeg + " to seg " + lastSeg);
-		}}
+		}
 	}	
 	
 	/************************************************* Accident ahead *************************************************/
@@ -545,7 +490,8 @@ public class Run {
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already
 	 */
-	public void trafficManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, 
+	public void trafficManagement (PositionReport event, double segWithAccAhead, long startOfSimulation, 
+			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes,
 			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
@@ -589,13 +535,13 @@ public class Run {
 				if 	(!isAccident && congested(event.min)) { 
 	
 					double vehCount = lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, avgSpd, vehCount, delay, startOfSimulation, tollNotificationsFailed); 	
+					tollNotification = new TollNotification(event, avgSpd, vehCount, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed); 	
 					if (count_and_rate) {
 						output.real_toll_count++;
 						output.update_real_tollnotification_rates(runID, event.min);
 					}
 				} else {
-					tollNotification = new TollNotification(event, avgSpd, delay, startOfSimulation, tollNotificationsFailed);	
+					tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
 					if (count_and_rate) { 
 						output.zero_toll_count++;
 						output.update_zero_tollnotification_rates(runID, event.min);
@@ -605,7 +551,7 @@ public class Run {
 				
 				if (isAccident) {		
 					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, delay, startOfSimulation, accidentWarningsFailed);
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, distrFinishTimes, schedStartTimes, startOfSimulation, accidentWarningsFailed);
 					if (count_and_rate) output.update_accidentwarning_rates(runID, event.min);
 					output.accidentWarnings.add(accidentWarning);				
 			}}
@@ -687,7 +633,7 @@ public class Run {
 	 * @param run_priorization		whether run priorities are maintained
 	 * @param accidentWarningsFailed whether accident warnings failed the constraints already 
 	 */
-	public void accidentManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
+	/*public void accidentManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, boolean run_priorization, 
 			AtomicBoolean accidentWarningsFailed) {
 		
 		//System.out.println(event.timesToString());
@@ -695,7 +641,7 @@ public class Run {
 		// Set auxiliary variables
 		boolean isAccident = segWithAccAhead != -1;   		
 		
-		/************************************************* If the vehicle is new in the segment *************************************************/
+		*//************************************************* If the vehicle is new in the segment *************************************************//*
 		if (vehicles.get(event.vid) == null) {
 			
 			// Update vehicles
@@ -708,7 +654,7 @@ public class Run {
 				AccidentWarning accidentWarning = new AccidentWarning (event, segWithAccAhead, delay, startOfSimulation, accidentWarningsFailed);
 				output.accidentWarnings.add(accidentWarning);				
 			}
-		/********************************************** If the vehicle was in the segment before ***********************************************/
+		*//********************************************** If the vehicle was in the segment before ***********************************************//*
 		} else {
 			// Get previous info about the vehicle
 			Vehicle existingVehicle = vehicles.get(event.vid);
@@ -757,7 +703,7 @@ public class Run {
 				existingVehicle.pos = event.pos;
 		}} 
 		//event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-	}	
+	}	*/
 	
 	/**
 	 * congestionManagement maintains average speeds and vehicle counts and derives toll notifications. 
@@ -767,7 +713,7 @@ public class Run {
 	 * @param segWithAccAhead		segment with accident ahead 
 	 * @param tollNotificationsFailed whether toll notifications failed the constraints already 
 	 */
-	public void congestionManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, 
+	/*public void congestionManagement (PositionReport event, double delay, long startOfSimulation, double segWithAccAhead, 
 			AtomicBoolean tollNotificationsFailed) { 
 		
 		// Set auxiliary variables
@@ -775,12 +721,12 @@ public class Run {
 		boolean isAccident = segWithAccAhead != -1;   
 
 		// Set event processing time
-		/*if (time.minOfLastStorageOfEventProcessingTime < event.min) {
+		if (time.minOfLastStorageOfEventProcessingTime < event.min) {
 			
 			event.processingTime = (System.currentTimeMillis() - startOfSimulation)/1000;
 			output.positionReports.add(event);
 			time.minOfLastStorageOfEventProcessingTime = event.min;  		   			 	
-		}*/	
+		}	
 
 		// Update run data: avgSpd, time
 		if (time.min < event.min) {  
@@ -793,7 +739,7 @@ public class Run {
 		// Get previous info about the vehicle
 		Vehicle vehicle = vehicles.get(event.vid);
 		
-		/************************************************* If the vehicle is new in the segment *************************************************/
+		*//************************************************* If the vehicle is new in the segment *************************************************//*
 		if (vehicle.appearance_sec == event.sec) {
 			
 			// Update vehicle speeds and vehCounts
@@ -819,7 +765,7 @@ public class Run {
 				}
 				output.tollNotifications.add(tollNotification);
 			}
-		/*********************************************** If the vehicle was in the segment before ***********************************************/
+		*//*********************************************** If the vehicle was in the segment before ***********************************************//*
 		} else {			
 		
 			// Update vehCounts
@@ -846,7 +792,7 @@ public class Run {
 			}		
 		} 	
 		//event.executorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-	}	
+	}	*/
 	
 	/************************************************* Output *************************************************/
 	/**

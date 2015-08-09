@@ -12,6 +12,58 @@ public class AtomicPredicate {
 		value = v;
 	}
 	
+	public static AtomicPredicate parse(String s) {
+		String attr;
+		String op;
+		int val;
+		String c;
+		
+		String[] parts1 = s.split(">");
+		if (parts1.length>1) {
+			attr = parts1[0].trim();
+			op = ">";
+			c = parts1[1].trim();
+		} else {
+			
+		String[] parts2 = s.split("<");
+		if (parts2.length>1) {
+			attr = parts2[0].trim();
+			op = "<";
+			c = parts2[1].trim();
+		} else {
+			
+		String[] parts3 = s.split(">=");
+		if (parts3.length>1) {
+			attr = parts3[0].trim();
+			op = ">=";
+			c = parts3[1].trim();
+		} else {
+			
+		String[] parts4 = s.split("<=");
+		if (parts4.length>1) {
+			attr = parts4[0].trim();
+			op = "<=";
+			c = parts4[1].trim();
+		} else {
+
+		String[] parts5 = s.split("=");
+		if (parts5.length>1) {
+			attr = parts5[0].trim();
+			op = "=";
+			c = parts5[1].trim();
+		} else {
+
+			String[] parts6 = s.split("!=");
+			attr = parts6[0].trim();
+			op = "!=";
+			c = parts6[1].trim();
+		}}}}}
+		
+		val = Integer.parseInt(c);
+		
+		return new AtomicPredicate(attr, op, val);
+	}
+	
 	public AtomicPredicate getNegated() {
 		
 		String new_comparison_operator;

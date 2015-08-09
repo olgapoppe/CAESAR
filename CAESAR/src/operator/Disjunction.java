@@ -10,6 +10,23 @@ public class Disjunction {
 		this.conjunctivePredicates = p;
 	}
 	
+	public static Disjunction parse(String s) {
+		
+		ArrayList<Conjunction> conjs = new ArrayList<Conjunction>();
+		
+		String allConjuncts[] = s.split(" OR "); 
+		if (allConjuncts.length>1) {		
+			for (int i=0; i<allConjuncts.length; i++) {
+				Conjunction c = Conjunction.parse(allConjuncts[i]);
+				conjs.add(c);
+			}
+		} else {
+			Conjunction c = Conjunction.parse(s);
+			conjs.add(c);
+		}
+		return new Disjunction(conjs);
+	}
+	
 	int getNumber() {		
 		int n = 0;		
 		for (Conjunction c : conjunctivePredicates) {

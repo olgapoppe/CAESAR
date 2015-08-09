@@ -1,4 +1,4 @@
-package transaction;
+/*package transaction;
 
 import iogenerator.AtomicDouble;
 
@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.*;
 
-/** 
+*//** 
  * A accident managing transaction processes all events in the event sequence by their respective run
  * using a fully optimized query plan containing queries related to accident.  
  * @author Olga Poppe
- */
+ *//*
 public class AccidentManagement extends Transaction {
 	
 	Run run;
@@ -27,9 +27,9 @@ public class AccidentManagement extends Transaction {
 		accidentWarningsFailed = awf;		
 	}
 	
-	/**
+	*//**
 	 * Execute these events by this run.
-	 */	
+	 *//*	
 	public void run() {
 		
 		double segWithAccAhead;
@@ -61,3 +61,4 @@ public class AccidentManagement extends Transaction {
 		transaction_number.countDown();
 	}
 }
+*/

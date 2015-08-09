@@ -2,7 +2,7 @@ package scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -21,112 +21,89 @@ import iogenerator.*;
  */
 public abstract class Scheduler implements Runnable {
 	
-	AtomicInteger distributorProgress;
+	int max_xway;
+	boolean both_dirs;
+	int lastSec;
 		
 	HashMap<RunID,Run> runs;
 	public final EventQueues eventqueues;		
 	ExecutorService executor;
 	
+	AtomicInteger distributorProgress;
+	HashMap<Double,Double> distrFinishTimes;
+	HashMap<Double,Double> schedStartTimes;
 	CountDownLatch transaction_number;
-	CountDownLatch done;
-	int max_xway;
-	boolean both_dirs;
-	int lastSec;
+	CountDownLatch done;	
+	
 	long startOfSimulation;
+	boolean optimized;
 	AtomicDouble max_exe_time;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
-	Scheduler (AtomicInteger dp, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met) {
+	Scheduler (int max_x, boolean both_d, int lastS,
+			HashMap<RunID,Run> rs, EventQueues evqueues, ExecutorService exe, 
+			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch d,  
+			long start, boolean opt, AtomicDouble max_exe) {
 		
-		distributorProgress = dp;
+		max_xway = max_x;
+		both_dirs = both_d;
+		lastSec = lastS;	
 				
 		runs = rs;
-		eventqueues = rq;			
+		eventqueues = evqueues;		
+		executor = exe;
 		
-		executor = e;
-		
-		transaction_number = tn;
+		distributorProgress = distrProgr;
+		distrFinishTimes = distrFinishT;
+		schedStartTimes = schedStartT;
+		transaction_number = trans_numb;
 		done = d;
-		max_xway = maxX;
-		both_dirs = bothD;
-		lastSec = lastS;
+		
 		startOfSimulation = start;
-		max_exe_time = met;
+		optimized = opt;
+		max_exe_time = max_exe;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (boolean splitQueries, double sec, double delay, boolean run_priorization, boolean catchup,
-			boolean ed, boolean pr, boolean fi, boolean sh) {
+	public int all_queries_all_runs (double sec) {
 		
 		int number = 0;
 		
-		try {	
-			if (!splitQueries) {
+		try {
+			// Get transactions to schedule
+			ArrayList<Transaction> transactions = one_query_all_runs(sec);
+			number = transactions.size();
+			
+			// Wait for executor
+			double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
+			transaction_number.await();			
+			double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			double durationOfWaiting = endOfWaiting - startOfWaiting;
+			if (durationOfWaiting>1) 
+				System.out.println(	"Scheduler waits from " + startOfWaiting + 
+									" to " + endOfWaiting + 
+									" for executor to processes second " + sec);
+			
+			// Print out scheduler progress
+			//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
 				
-				// Schedule all queries
-				ArrayList<Transaction> transactions = one_query_all_runs(sec, 0, run_priorization, catchup, ed, pr, fi, sh);
-				number = transactions.size();
-			
-				double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
-				transaction_number.await();			
-				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-				double durationOfWaiting = endOfWaiting - startOfWaiting;
-				if (durationOfWaiting>1) 
-					System.out.println(	"Scheduler waits from " + startOfWaiting + 
-										" to " + endOfWaiting + 
-										" for executor to processes second " + sec);
-			
-				double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-				//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
-				
-				transaction_number = new CountDownLatch(number);			
-				for (Transaction t : transactions) { 
-					t.delay = delay;
-					t.scheduling_time = now;					
-					t.transaction_number = transaction_number;
-					executor.execute(t); 
-				}				
-			} else {
-				// Schedule HP query of all runs							
-				ArrayList<Transaction> transactions1 = one_query_all_runs(sec, 1, run_priorization, catchup, ed, pr, fi, sh);
-				number = transactions1.size();
-			
-				//long startOfFirstWaiting = System.currentTimeMillis();					
-				transaction_number.await();			
-				//long durationOfFirstWaiting = System.currentTimeMillis() - startOfFirstWaiting;
-			
-				transaction_number = new CountDownLatch(number);			
-				for (Transaction t : transactions1) { 
-					t.transaction_number = transaction_number;
-					executor.execute(t); 
-				}			
-				// Schedule LP query of all runs
-				ArrayList<Transaction> transactions2 = one_query_all_runs(sec, 2, run_priorization, catchup, ed, pr, fi, sh);
-				number = transactions2.size();
-			
-				//long startOfSecondWaiting = System.currentTimeMillis();			
-				transaction_number.await();			
-				//long durationOfSecondWaiting = System.currentTimeMillis() - startOfSecondWaiting;
-			
-				//if (accidentWarningsFailed.get() || tollNotificationsFailed.get()) 
-				//	System.out.println(sec + ": Scheduler waited for executor " + durationOfFirstWaiting + " and " + durationOfSecondWaiting + "ms");
-			
-				transaction_number = new CountDownLatch(number);				
-				for (Transaction t : transactions2) { 
-					t.transaction_number = transaction_number;
-					executor.execute(t); 
-			}}		
+			// Schedule all transactions at current second
+			transaction_number = new CountDownLatch(number);			
+			for (Transaction t : transactions) { 				
+				t.transaction_number = transaction_number;
+				executor.execute(t); 
+			}				
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 		
 		return number;
 	}
 	
-	public int all_queries_all_runs (double hp_run_sec, double lp_run_sec, boolean run_priorization, int x0, int x1, boolean catchup) {
+	/*public int all_queries_all_runs (double hp_run_sec, double lp_run_sec, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		int number = 0;
 		
@@ -159,7 +136,7 @@ public abstract class Scheduler implements Runnable {
 			}		
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 		return number;
-	}
+	}*/
 	
 	/*public void all_queries_all_runs (double hp_query_sec, double lp_query_sec, boolean run_priorization, boolean catchup) {
 		
@@ -176,7 +153,7 @@ public abstract class Scheduler implements Runnable {
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 	}*/
 	
-	public int all_queries_HP_runs (double sec, boolean run_priorization, int x0, int x1, boolean catchup) {
+	/*public int all_queries_HP_runs (double sec, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		int number = 0;
 		
@@ -200,9 +177,9 @@ public abstract class Scheduler implements Runnable {
 			}		
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 		return number;
-	}
+	}*/
 	
-	public int all_queries_LP_runs (double sec, boolean run_priorization, int x0, int x1, boolean catchup) {
+	/*public int all_queries_LP_runs (double sec, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		int number = 0;
 		
@@ -226,9 +203,9 @@ public abstract class Scheduler implements Runnable {
 			}		
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 		return number;
-	}
+	}*/
 	
-	public int one_query_all_runs_wrapper (double sec, int query, boolean run_priorization, boolean catchup) {
+	/*public int one_query_all_runs_wrapper (double sec, int query, boolean run_priorization, boolean catchup) {
 		
 		int number = 0;
 		
@@ -243,17 +220,13 @@ public abstract class Scheduler implements Runnable {
 			}				
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
 		return number;
-	}
+	}*/
 	
 	/**
 	 * Iterate over all run task queues and schedule transactions in round-robin manner.
 	 * @param sec				transaction time stamp			
-	 * @param query				1 - accident management, 2 - congestion management
-	 * @param run_priorization	whether run priority is maintained
-	 * @return int 				number of transactions submitted for execution
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec, int query, boolean run_priorization, boolean catchup, 
-			boolean ed, boolean pr, boolean fi, boolean sh) {
+	public ArrayList<Transaction> one_query_all_runs (double sec) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -262,13 +235,13 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=0; seg<=99; seg++) {
 				
 				RunID runid0 = new RunID(xway,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0, query, run_priorization, catchup, ed, pr, fi, sh);
+				Transaction t0 = one_query_one_run(sec, runid0);
 				if (t0!=null) transactions.add(t0);	
 								
 				if (xway != max_xway || both_dirs) {
 					
 					RunID runid1 = new RunID(xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1, query, run_priorization, catchup, ed, pr, fi, sh);
+					Transaction t1 = one_query_one_run(sec, runid1);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -283,7 +256,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param x1				first high-priority run on road 0, direction 1
 	 * @return int 				number of transactions submitted for execution
 	 */
-	public ArrayList<Transaction> one_query_HPruns (double sec, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
+	/*public ArrayList<Transaction> one_query_HPruns (double sec, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 		
@@ -304,7 +277,7 @@ public abstract class Scheduler implements Runnable {
 				if (t1!=null) transactions.add(t1);							
 		}}		
 		return transactions;
-	}	
+	}	*/
 	
 	/**
 	 * Iterate over run task queues of LP runs and schedule transactions in round-robin manner.
@@ -315,7 +288,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param x1				first high-priority run on road 0, direction 1
 	 * @return int 				number of transactions submitted for execution
 	 */
-	public ArrayList<Transaction> one_query_LPruns (double sec, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
+	/*public ArrayList<Transaction> one_query_LPruns (double sec, int query, boolean run_priorization, int x0, int x1, boolean catchup) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 		
@@ -338,21 +311,15 @@ public abstract class Scheduler implements Runnable {
 			if (t1!=null) transactions.add(t1);	
 		}		
 		return transactions;
-	}
+	}*/
 	
 	/**
 	 * Wraps the processing of all events with the given time stamp and that 
 	 * are relevant for the same run into one transaction and submits this transaction for execution.
 	 * @param sec				transaction time stamp
 	 * @param runid				identifier of the run the tasks of which are scheduled
-	 * @param query				1 - accident management, 2 - congestion management
-	 * @param run_priorization	whether run priority is maintained
-	 * @return boolean 			indicating whether this transaction was submitted for execution
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid, int query, boolean run_priorization, boolean catchup,
-			boolean ed, boolean pr, boolean fi, boolean sh) {
-		
-		if (0<query && query<2) System.err.println("Non-existing query is called by scheduler.");
+	public Transaction one_query_one_run (double sec, RunID runid) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
@@ -362,85 +329,24 @@ public abstract class Scheduler implements Runnable {
 				
 				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();		
 				
-				/*** Traffic management ***/
-				if (query == 0) {
-					
-					// Put all events with the same time stamp as this transaction into the event list
-					PositionReport event = eventqueue.peek();					
-					while (event!=null && event.sec==sec) { 				
-						eventqueue.poll();
-						event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-						event_list.add(event);				
-						event = eventqueue.peek();
-					}					
-					// If the event list is not empty, generate a transaction and submit it for execution
-					if (!event_list.isEmpty()) {
+				/*** Put all events with the same time stamp as this transaction into the event list ***/
+				PositionReport event = eventqueue.peek();					
+				while (event!=null && event.sec==sec) { 				
+					eventqueue.poll();
+					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+					event_list.add(event);				
+					event = eventqueue.peek();
+				}					
+				/*** If the event list is not empty, generate a transaction and submit it for execution ***/
+				if (!event_list.isEmpty()) {
 						
-						Run run = runs.get(runid);
-						if (ed & pr & fi & sh) {
-							return new TrafficManagement (run, event_list, runs, startOfSimulation, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
-						} else {
-							return new DefaultTrafficManagement (event_list, runs, startOfSimulation, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, ed, pr, fi, sh);
-						}
-				}}
-				
-				/*** Accident management ***/
-				if (query == 1) {
-					
-					// Put all events with the same time stamp as this transaction into the event list
-					Iterator<PositionReport> iterator = eventqueue.iterator();
-					/*if (catchup) {
-						while(iterator.hasNext()) {							
-							PositionReport event = iterator.next();						
-							if (event.sec<=sec) {
-								event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-								event_list.add(event);						
-							} else {
-								if (event.sec>sec) 
-									break;
-					}}} else {*/
-						while(iterator.hasNext()) {						
-							PositionReport event = iterator.next();						
-							if (event.sec==sec) {
-								event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-								event_list.add(event);						
-							} else {
-								if (event.sec>sec) break;
-							}
-						}
-					//}
-					// If the event list is not empty, generate a transaction and submit it for execution
-					if (!event_list.isEmpty()) {
-						
-						Run run = runs.get(runid);
-						return new AccidentManagement (run, event_list, runs, startOfSimulation, max_exe_time, run_priorization, accidentWarningsFailed);											
-				}}
-				
-				/*** Congestion management ***/
-				if (query == 2) { 
-					
-					// Put all events with the same time stamp as this transaction into the event list
-					PositionReport event = eventqueue.peek();
-					/*if (catchup) {
-						while (event!=null && event.sec<=sec) { 							
-							runtaskqueue.poll();
-							event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-							event_list.add(event);				
-							event = runtaskqueue.peek();
-					}} else {*/
-						while (event!=null && event.sec==sec) { 				
-							eventqueue.poll();
-							event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
-							event_list.add(event);				
-							event = eventqueue.peek();
-						}
-					//}
-					// If the event list is not empty, generate a transaction and submit it for execution
-					if (!event_list.isEmpty()) {
-					
-						Run run = runs.get(runid);
-						return new CongestionManagement (run, event_list, runs, startOfSimulation, max_exe_time, tollNotificationsFailed);					
-				}}
+					Run run = runs.get(runid);
+					if (optimized) {
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
+					} else {
+						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
+					}
+				}				
 		}}
 		return null;
 	}

@@ -1,4 +1,4 @@
-package transaction;
+/*package transaction;
 
 import iogenerator.AtomicDouble;
 
@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import run.*;
 import event.*;
 
-/** 
+*//** 
  * A congestion managing transaction processes all events in the event sequence by their respective run
  * using a fully optimized query plan containing queries related to congestion.  
  * @author Olga Poppe
- */
+ *//*
 public class CongestionManagement extends Transaction {
 	
 	Run run;	
@@ -25,9 +25,9 @@ public class CongestionManagement extends Transaction {
 		tollNotificationsFailed = tnf;		
 	}
 	
-	/**
+	*//**
 	 * Execute these events by this run.
-	 */	
+	 *//*	
 	public void run() {	
 		
 		double segWithAccAhead;
@@ -52,3 +52,4 @@ public class CongestionManagement extends Transaction {
 		transaction_number.countDown();
 	}
 }
+*/

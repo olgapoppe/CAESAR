@@ -21,27 +21,24 @@ import event.*;
  */
 public class DefaultTrafficManagement extends Transaction {	
 	
+	HashMap<Double,Double> distrFinishTimes;
+	HashMap<Double,Double> schedStartTimes;
+	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
-	
-	boolean event_derivation_omission;
-	boolean early_mandatory_projections;
-	boolean early_condensed_filtering;
-	boolean reduced_stream_history_traversal;
 		
-	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
-			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf, 
-			boolean ed, boolean pr, boolean fi, boolean sh) {
+	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, 
+			HashMap<RunID,Run> rs, long start,
+			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
+			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf) {
 		
-		super(eventList,rs,start,met);	
+		super(eventList,rs,start,met);
+		
+		distrFinishTimes = distrFinishT;
+		schedStartTimes = schedStartT;
 		
 		accidentWarningsFailed = awf;
-		tollNotificationsFailed = tnf;
-		
-		event_derivation_omission = ed;
-		early_mandatory_projections = pr;
-		early_condensed_filtering = fi;
-		reduced_stream_history_traversal = sh;		
+		tollNotificationsFailed = tnf;		
 	}
 		
 	/**
@@ -54,20 +51,9 @@ public class DefaultTrafficManagement extends Transaction {
 		for (PositionReport event : events) {
 			
 			// WRITE: Update the respective run and remove old data
-			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			
-			// All methods called below include garbage collection
-			if (event_derivation_omission && early_mandatory_projections && early_condensed_filtering) {
-				EDO_EMP_ECF (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed); 
-			} else {				
-			if (event_derivation_omission && early_mandatory_projections) {
-				EDO_EMP (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed); 
-			} else {
-			if (event_derivation_omission) {
-				EDO (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed);
-			} else {
-				defaultTrafficManagement (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed);
-			}}}
+			defaultTrafficManagement (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed);			
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
@@ -84,7 +70,7 @@ public class DefaultTrafficManagement extends Transaction {
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal 
 	 ***/
-	public void EDO_EMP_ECF (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
+	/*public void EDO_EMP_ECF (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -99,7 +85,7 @@ public class DefaultTrafficManagement extends Transaction {
 		}   
 		run.time.sec = event.sec;
 				
-		/************************************************* If the vehicle is new in the segment *************************************************/
+		*//************************************************* If the vehicle is new in the segment *************************************************//*
 		if (run.vehicles.get(event.vid) == null) {
 			
 			// Update vehicles, vehCounts
@@ -144,7 +130,7 @@ public class DefaultTrafficManagement extends Transaction {
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, scheduling_time, startOfSimulation, accidentWarningsFailed);					
 					run.output.accidentWarnings.add(accidentWarning);				
 			}}
-			/************************************************* If the vehicle was in the segment before *************************************************/
+			*//************************************************* If the vehicle was in the segment before *************************************************//*
 		} else {
 			// Get previous info about the vehicle
 			Vehicle existingVehicle = run.vehicles.get(event.vid);
@@ -213,12 +199,12 @@ public class DefaultTrafficManagement extends Transaction {
 				existingVehicle.pos = event.pos;
 		}}	
 		run.collectGarbage(event.min);
-	}
+	}*/
 	
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal and early condensed filtering
 	 ***/
-	public void EDO_EMP (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
+	/*public void EDO_EMP (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -237,7 +223,7 @@ public class DefaultTrafficManagement extends Transaction {
 		runLookUp(event); // RL 2			
 		run.time.sec = event.sec; // TU
 						
-		/************************************************* If the vehicle is new in the segment *************************************************/
+		*//************************************************* If the vehicle is new in the segment *************************************************//*
 		// New car detection
 		runLookUp(event); // RL 3
 		
@@ -321,7 +307,7 @@ public class DefaultTrafficManagement extends Transaction {
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
 			}
-		/*********************************************** If the vehicle was in the segment before ***********************************************/
+		*//*********************************************** If the vehicle was in the segment before ***********************************************//*
 		} else {	
 			
 			// Old car detection
@@ -427,12 +413,12 @@ public class DefaultTrafficManagement extends Transaction {
 				existingVehicle.pos = event.pos;
 		}}
 		run.collectGarbage(event.min);
-	}
+	}*/
 	
 	/*** 
 	 * This method is same as run.trafficManagement but without reduced stream history traversal, early condensed filtering and early mandatory projections
 	 ***/
-	public void EDO (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
+	/*public void EDO (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -458,7 +444,7 @@ public class DefaultTrafficManagement extends Transaction {
 		double rsec = run.time.sec; 
 		run.time.sec = event.sec; // TU
 						
-		/************************************************* If the vehicle is new in the segment *************************************************/
+		*//************************************************* If the vehicle is new in the segment *************************************************//*
 		// New car detection
 		runLookUp(event); // RL 3
 				
@@ -555,7 +541,7 @@ public class DefaultTrafficManagement extends Transaction {
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
 			}
-		/*********************************************** If the vehicle was in the segment before ***********************************************/
+		*//*********************************************** If the vehicle was in the segment before ***********************************************//*
 		} else {	
 			
 			// Old car detection
@@ -690,7 +676,7 @@ public class DefaultTrafficManagement extends Transaction {
 				existingVehicle.pos = event.pos;
 		}}
 		run.collectGarbage(event.min);
-	}
+	}*/
 	
 	/*** 
 	 * This method is same as run.trafficManagement but without optimization heuristics
@@ -794,19 +780,19 @@ public class DefaultTrafficManagement extends Transaction {
 						
 					runLookUp(event); // RL 12		
 					double vehCount = run.lookUpVehCount(event.min);
-					tollNotification = new TollNotification(event, run.avgSpd, vehCount, startOfSimulation, tollNotificationsFailed); // ED	
+					tollNotification = new TollNotification(event, run.avgSpd, vehCount, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed); // ED	
 					run.output.tollNotifications.add(tollNotification);
 				} 
 				if (clear) { // CW
 							
 					runLookUp(event); // RL 6					
-					tollNotification = new TollNotification(event, run.avgSpd, scheduling_time, startOfSimulation, tollNotificationsFailed);	// ED
+					tollNotification = new TollNotification(event, run.avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	// ED
 					run.output.tollNotifications.add(tollNotification);
 				}
 				if (accident) { // CW
 							
 					runLookUp(event); // RL 7				
-					tollNotification = new TollNotification(event, run.avgSpd, scheduling_time, startOfSimulation, tollNotificationsFailed);	// ED	
+					tollNotification = new TollNotification(event, run.avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	// ED	
 					run.output.tollNotifications.add(tollNotification);
 				}		
 						
@@ -814,7 +800,7 @@ public class DefaultTrafficManagement extends Transaction {
 				if (accident) { // CW
 							
 					runLookUp(event); // RL 8					
-					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, scheduling_time, startOfSimulation, accidentWarningsFailed); // ED
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, distrFinishTimes, schedStartTimes, startOfSimulation, accidentWarningsFailed); // ED
 					run.output.accidentWarnings.add(accidentWarning);				
 				}			
 			}

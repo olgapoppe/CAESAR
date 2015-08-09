@@ -12,9 +12,11 @@ import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {	
 		
-	public SingleQueueDistributor (AtomicInteger dp, String f, HashMap<RunID,Run> rs, EventQueues rq, 
-			AtomicInteger x1, AtomicInteger x2, int last, long start, boolean cr) {
-		super(dp, f, rs, rq, x1, x2, last, start, cr);		 
+	public SingleQueueDistributor (String filename, int lastSec, 
+			HashMap<RunID,Run> runs, EventQueues eventqueues, 
+			long start, AtomicInteger distrProgress, HashMap<Double,Double> distrFinishTimes, boolean cr) {
+		
+		super(filename, lastSec, runs, eventqueues, start, distrProgress, distrFinishTimes, cr);		 
 	}
 
 	/** 
@@ -60,10 +62,8 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				RunID runid = new RunID (event.xway, event.dir, event.seg); 
 		 				Run run;
 						      		
-		 				if (!runs.containsKey(runid) || runs.get(runid) == null) {
-							
-		 					AtomicInteger firstHPseg = (runid.dir == 0) ? xway0dir0firstHPseg : xway0dir1firstHPseg;
-		 					run = new Run(runid, event.sec, event.min, firstHPseg, count_and_rate);
+		 				if (!runs.containsKey(runid) || runs.get(runid) == null) {							
+		 					run = new Run(runid, event.sec, event.min, count_and_rate);
 		 					runs.put(runid, run);						
 		 				} else {
 		 					run = runs.get(runid);
@@ -89,9 +89,10 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				
 		 				if (curr_sec>50) { // Avoid null run exception when the stream is read too fast
 		 					eventqueues.setDistributorProgress(curr_sec, startOfSimulation);
-		 					//now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		 					//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
-		 				}		 				
+		 				}
+		 				now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+		 				distrFinishTimes.put(curr_sec, now);
 			 			curr_sec = event.sec;
 		 			}
 		 			
@@ -105,8 +106,9 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		}		 			
 		 		/*** Set distributor progress ***/		 					
 				eventqueues.setDistributorProgress(batch_limit, startOfSimulation);
-				//now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);	
+				now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+ 				distrFinishTimes.put(batch_limit, now);
 				curr_sec = batch_limit;
 		 			
 	 			if (batch_limit < lastSec) { 			

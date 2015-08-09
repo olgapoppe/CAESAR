@@ -20,8 +20,6 @@ public abstract class Transaction implements Runnable {
 	long startOfSimulation;
 	AtomicDouble max_exe_time;
 	
-	public double delay;
-	public double scheduling_time; 
 	public CountDownLatch transaction_number;
 				
 	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicDouble met) {

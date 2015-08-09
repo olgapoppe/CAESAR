@@ -1,4 +1,4 @@
-package scheduler;
+/*package scheduler;
 
 import iogenerator.AtomicDouble;
 
@@ -13,12 +13,12 @@ import transaction.*;
 import event.*;
 import distributor.*;
 
-/**
+*//**
  * As soon as all events with the same time stamp become available,
  * query driven scheduler always submits HP queries for execution 
  * more often than LP queries.
  * @author Olga Poppe 
- */
+ *//*
 public class QueryDrivenScheduler extends Scheduler implements Runnable {
 	
 	public final EventQueues HPrunqueues;
@@ -33,10 +33,10 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		LPquery_frequency = lpqf;
 	}
 	
-	/**
+	*//**
 	 * As long as not all events are processed, iterate over all run task queues and pick tasks to execute in round-robin manner.
 	 * HP queries are always executed faster than LP queries.
-	 */	
+	 *//*	
 	public void run() {	
 		
 		// Local variables
@@ -47,11 +47,10 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		double scheduler_wakeup_time = 0;
 					
 		// Get the permission to schedule current second
-		while (hp_sec <= lastSec) { 
+		while (hp_sec <= lastSec && eventqueues.getDistributorProgress(hp_sec, startOfSimulation)) { 
 			try {			
-				double dealy = eventqueues.getDistributorProgress(hp_sec, startOfSimulation);
-				
-				/*** HP queries are always processed faster ***/
+					
+				*//*** HP queries are always processed faster ***//*
 				if (hp_count < HPquery_frequency && lp_count < LPquery_frequency && hp_sec > lp_sec) {
 					
 					//System.out.println("All queries process " + hp_sec);
@@ -77,15 +76,15 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 						lp_count = 0;
 					}
 				}				
-				/*** If the stream is over, catch up LP queries, wait for acknowledgment of the previous transactions and sleep. ***/					
+				*//*** If the stream is over, catch up LP queries, wait for acknowledgment of the previous transactions and sleep. ***//*					
 				if (hp_sec-1 == lastSec) {
 						
-					/*System.out.println("HP queries are done. LP queries are processed from second " + lp_sec);
+					System.out.println("HP queries are done. LP queries are processed from second " + lp_sec);
 						
 					while (lp_sec < lastSec) {						
 						lp_sec++;
 						one_query_all_runs_wrapper(lp_sec, 2, false, false);
-					}*/
+					}
 					transaction_number.await();						
 					done.countDown();						
 				}				
@@ -98,7 +97,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		
 		if (query!=1 && query!=2) System.err.println("Non-existing query is called by scheduler.");
 		
-		/*** Accident management ***/
+		*//*** Accident management ***//*
 		if (query == 1) {
 		
 			if (HPrunqueues.contents.containsKey(runid)) {
@@ -122,7 +121,7 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 						Run run = runs.get(runid);
 						return new AccidentManagement (run, event_list, runs, startOfSimulation, max_exe_time, run_priorization, accidentWarningsFailed);						
 		}}}} else {				
-		/*** Congestion management ***/		 
+		*//*** Congestion management ***//*		 
 			
 			if (eventqueues.contents.containsKey(runid)) {
 				
@@ -148,3 +147,4 @@ public class QueryDrivenScheduler extends Scheduler implements Runnable {
 		return null;
 	}
 }
+*/

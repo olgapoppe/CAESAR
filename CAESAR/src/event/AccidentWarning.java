@@ -1,5 +1,6 @@
 package event;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -22,13 +23,16 @@ public class AccidentWarning extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param awf				indicates whether accident warning failed already
 	 */
-	public AccidentWarning (PositionReport p, double s, double delay, long startOfSimulation, AtomicBoolean awf) {
+	public AccidentWarning (PositionReport p, double s, 
+			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, long startOfSimulation, AtomicBoolean awf) {
 		
 		super(1,p.sec,p.vid);	
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		seg = s;
 		
+		double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
+		if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
 		totalProcessingTime =  emit - p.distributorTime - delay;
 				
 		printError (p, totalProcessingTime, awf, "ACCIDENT WARNINGS");			

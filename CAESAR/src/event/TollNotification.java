@@ -1,5 +1,6 @@
 package event;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -24,7 +25,8 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double vehCount, double delay, long startOfSimulation, AtomicBoolean tnf) {
+	public TollNotification (PositionReport p, double a, double vehCount, 
+			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, long startOfSimulation, AtomicBoolean tnf) {
 		
 		super(0,p.sec,p.vid);	
 		
@@ -32,6 +34,8 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
+		double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
+		if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
 		totalProcessingTime =  emit - p.distributorTime - delay;
 		
 		printError (p, totalProcessingTime, tnf, "TOLL NOTIFICATIONS");		 	
@@ -45,7 +49,8 @@ public class TollNotification extends Event {
 	 * @param startOfSimulation	start of simulation to generate the emission time
 	 * @param tnf				indicates whether toll notification failed already
 	 */
-	public TollNotification (PositionReport p, double a, double delay, long startOfSimulation, AtomicBoolean tnf) {
+	public TollNotification (PositionReport p, double a, 
+			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, long startOfSimulation, AtomicBoolean tnf) {
 		
 		super(0,p.sec,p.vid);
 		
@@ -53,6 +58,8 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 0;
 		
+		double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
+		if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
 		totalProcessingTime =  emit - p.distributorTime - delay;
 		
 		printError (p, totalProcessingTime, tnf, "TOLL NOTIFICATIONS");			

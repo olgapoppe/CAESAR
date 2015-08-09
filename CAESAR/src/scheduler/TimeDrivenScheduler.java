@@ -13,29 +13,14 @@ import iogenerator.*;
  * time driven scheduler submits them for execution.
  * @author Olga Poppe 
  */
-public class TimeDrivenScheduler extends Scheduler implements Runnable {
-	
-	int sec;
-	boolean splitQueries;
-	
-	boolean event_derivation_omission;
-	boolean early_mandatory_projections;
-	boolean early_condensed_filtering;
-	boolean reduced_stream_history_traversal;
+public class TimeDrivenScheduler extends Scheduler implements Runnable {	
 			
-	public TimeDrivenScheduler (boolean sq, AtomicInteger dp, HashMap<RunID,Run> rs, EventQueues rq, ExecutorService e, 
-			CountDownLatch tn, CountDownLatch d, int maxX, boolean bothD, int lastS, long start, AtomicDouble met,
-			boolean ed, boolean pr, boolean fi, boolean sh) {	
+	public TimeDrivenScheduler (int max_xway, boolean both_dirs, int lastSec,
+			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
+			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
+			long start, boolean opt, AtomicDouble max_exe_time) {	
 		
-		super(dp,rs,rq,e,tn,d,maxX,bothD,lastS,start,met);
-		
-		sec = 0;
-		splitQueries = sq;
-		
-		event_derivation_omission = ed;
-		early_mandatory_projections = pr;
-		early_condensed_filtering = fi;
-		reduced_stream_history_traversal = sh;		
+		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);			
 	}
 	
 	/**
@@ -43,20 +28,19 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	 */	
 	public void run() {	
 		
-		// Local variables
 		double curr_sec = -1;
 				
-		// Get the permission to schedule current second
-		while (curr_sec <= lastSec) {
-			
-			double delay = eventqueues.getDistributorProgress(curr_sec, startOfSimulation);
+		/*** Get the permission to schedule current second ***/
+		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
 		
 			try {
-				// Schedule the current second
-				all_queries_all_runs (splitQueries, curr_sec, delay, false, false,
-					event_derivation_omission, early_mandatory_projections, early_condensed_filtering, reduced_stream_history_traversal);
-				//one_query_all_runs_wrapper(curr_sec, 1, false, false); // 1 query, 1 queue for QDS testing				
-					
+				/*** Set scheduler start time for the current second ***/
+				double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+				schedStartTimes.put(curr_sec, now);
+				
+				/*** Schedule the current second ***/
+				all_queries_all_runs(curr_sec);
+									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				
 				if (curr_sec == lastSec) {	
 					transaction_number.await();						

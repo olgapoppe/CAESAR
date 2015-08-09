@@ -1,4 +1,4 @@
-package scheduler;
+/*package scheduler;
 
 import iogenerator.AtomicDouble;
 
@@ -9,12 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import distributor.*;
 import run.*;
 
-/**
+*//**
  * As soon as all events with the same time stamp become available,
  * run driven scheduler submits only HP runs for execution during an accident.
  * Otherwise, all runs are processed in time-driven manner.
  * @author Olga Poppe 
- */
+ *//*
 public class RunDrivenScheduler extends Scheduler implements Runnable {
 	
 	AtomicInteger xway0dir0HPrunsFromSeg;
@@ -32,13 +32,13 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 		LPrun_frequency = lprf;
 	}
 	
-	/**
+	*//**
 	 * As long as not all events are processed, iterate over all run task queues and pick tasks to execute.
 	 * If there is an accident, HP runs are executed faster. Otherwise, all runs are processed in time-driven manner.
-	 */	
+	 *//*	
 	public void run() {	
 		
-		/*** Local variables ***/
+		*//*** Local variables ***//*
 		double hp_sec = -1;
 		double lp_sec = -1;
 		int number = 0;
@@ -48,7 +48,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 				
 		//while (!shutdown) {
 			try {				 
-				/*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***/
+				*//*** If events with new time stamp are available, schedule their processing after the previous transactions are acknowledged ***//*
 				int distr_progr = distributorProgress.get();
 				
 				if (distr_progr > hp_sec) { 
@@ -57,7 +57,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 					int x1 = xway0dir1HPrunsFromSeg.get();
 					boolean accident = (x0>=0 || x1>=0); 
 										
-					/*** If there is an accident, HP runs are processed faster ***/
+					*//*** If there is an accident, HP runs are processed faster ***//*
 					if (accident) {
 						
 						if (hp_count < HPrun_frequency && lp_count < LPrun_frequency && hp_sec > lp_sec) {
@@ -87,7 +87,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 						LPruns_catchup = true;
 						
 					} else {
-					/*** If there is no accident, all runs are processed in time-driven manner. Previous LP runs catch up with previous HP runs in one transaction. ***/
+					*//*** If there is no accident, all runs are processed in time-driven manner. Previous LP runs catch up with previous HP runs in one transaction. ***//*
 						
 						hp_sec++;
 						lp_sec = hp_sec;
@@ -102,7 +102,7 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 							number = all_queries_all_runs (true, lp_sec,0, true, false, false, false, false, false);
 					}}														
 				} else {
-				/*** If the stream is over, catch up LP runs if any, wait for acknowledgment of the previous transactions and sleep. ***/
+				*//*** If the stream is over, catch up LP runs if any, wait for acknowledgment of the previous transactions and sleep. ***//*
 					
 					if (hp_sec == lastSec) {
 						
@@ -122,3 +122,4 @@ public class RunDrivenScheduler extends Scheduler implements Runnable {
 		//}	
 	}
 }
+*/

@@ -16,13 +16,24 @@ public class TrafficManagement extends Transaction {
 	
 	Run run;
 	
+	HashMap<Double,Double> distrFinishTimes;
+	HashMap<Double,Double> schedStartTimes;
+	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start,
+	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, 
+			HashMap<RunID,Run> rs, long start,
+			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
 			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf) {
+		
 		super(eventList,rs,start,met);
+		
 		run = r;
+		
+		distrFinishTimes = distrFinishT;
+		schedStartTimes = schedStartT;
+		
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;			
 	}
@@ -58,7 +69,7 @@ public class TrafficManagement extends Transaction {
 			// WRITE: Update this run and remove old data
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
-			run.trafficManagement(event, delay, startOfSimulation, segWithAccAhead, accidentWarningsFailed, tollNotificationsFailed); 	
+			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
