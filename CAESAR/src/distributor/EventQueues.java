@@ -21,13 +21,12 @@ public class EventQueues {
 	
 	public synchronized void setDistributorProgress (Double sec, long startOfSimulation) {
 		
+		distributorProgress.set(sec.intValue());			
+		notifyAll();
+		
 		Double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		distributorProgressPerSec.put(sec, now);
-		
 		//System.out.println("SET: " + sec);
-		distributorProgress.set(sec.intValue());		
-		
-		notifyAll();
 	}
 
 	public synchronized double getDistributorProgress (double sec, long startOfSimulation) {	
