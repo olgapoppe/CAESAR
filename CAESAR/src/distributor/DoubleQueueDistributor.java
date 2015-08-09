@@ -83,7 +83,7 @@ public class DoubleQueueDistributor extends EventDistributor {
 		 			}
 		 		}
 		 		// Update distributer progress
-		 		eventqueues.setDistributorProgress(curr_app_sec);		 					 				
+		 		eventqueues.setDistributorProgress(curr_app_sec, startOfSimulation);		 					 				
 		 						 				
 		 		// Sleep if curr_sec is smaller than curr_app_sec
 		 		curr_sec = (System.currentTimeMillis() - startOfSimulation)/1000;

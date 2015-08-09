@@ -11,24 +11,22 @@ public class EventQueues {
 	
 	public HashMap<RunID,ConcurrentLinkedQueue<PositionReport>> contents;
 	AtomicInteger distributorProgress;
-	int sec;
-		
+	HashMap<Double,Double> distributorProgressPerSec;
+			
 	public EventQueues (AtomicInteger dp) {
 		
 		contents = new HashMap <RunID,ConcurrentLinkedQueue<PositionReport>>();
 		distributorProgress = dp;
-		sec = 0;
+		distributorProgressPerSec = new HashMap<Double,Double>();
 	}
 	
-	public synchronized void setDistributorProgress (Double d) {
+	public synchronized void setDistributorProgress (Double sec, long startOfSimulation) {
 		
-		distributorProgress.set(d.intValue());
+		distributorProgress.set(sec.intValue());
 		
-		/*// Output the current progress every 5 min
-		if (d == sec+300) {
-			System.out.println("Distributor: " + d);
-			sec += 300;
-		}*/			
+		Double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+		distributorProgressPerSec.put(sec, now);
+		
 		notifyAll();
 	}
 
@@ -36,14 +34,15 @@ public class EventQueues {
 		
 		try {
 			while (distributorProgress.get() < sec) {
-				//double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-				wait();
-				/*double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-				double durationOfWaiting = endOfWaiting - startOfWaiting;
-				if (endOfWaiting>sec) 
-					System.out.println(	"Scheduler waits from " + startOfWaiting + 
-										" to " + endOfWaiting + 
-										" for distributor to processes second " + sec);*/
+				
+				wait();				
+				
+				if (sec > 50) {
+					double availabilityTime = distributorProgressPerSec.get(sec);
+					double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+					double diff = now - availabilityTime;				
+					if (diff > 1) System.out.println("Scheduler waited for distributor " + diff + " seconds too long.");
+				}
 			} 
 		} catch (InterruptedException e) { e.printStackTrace(); }
 			
