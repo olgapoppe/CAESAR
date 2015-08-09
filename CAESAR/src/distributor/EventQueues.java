@@ -21,10 +21,11 @@ public class EventQueues {
 	
 	public synchronized void setDistributorProgress (Double sec, long startOfSimulation) {
 		
-		distributorProgress.set(sec.intValue());
-		
 		Double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		distributorProgressPerSec.put(sec, now);
+		
+		//System.out.println("SET: " + sec);
+		distributorProgress.set(sec.intValue());		
 		
 		notifyAll();
 	}
@@ -37,7 +38,9 @@ public class EventQueues {
 				
 			try { wait(); } catch (InterruptedException e) { e.printStackTrace(); }			
 				
-			if (sec > 50) {
+			if (distributorProgressPerSec.containsKey(sec)) {
+				
+				//System.out.println("GET: " + sec);				
 				double availabilityTime = distributorProgressPerSec.get(sec);
 				double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				diff = now - availabilityTime;				
