@@ -82,7 +82,8 @@ public abstract class Scheduler implements Runnable {
 										" for executor to processes second " + sec);
 			
 				double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-				if (now > sec) System.out.println("Scheduling time of second " + sec + " is " + now);
+				if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
+				
 				transaction_number = new CountDownLatch(number);			
 				for (Transaction t : transactions) { 
 					t.scheduling_time = now;					

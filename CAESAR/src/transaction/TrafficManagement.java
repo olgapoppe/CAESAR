@@ -73,9 +73,9 @@ public class TrafficManagement extends Transaction {
 		// Count down the number of transactions
 		transaction_number.countDown();		
 		
-		double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-		if (now>sec && transaction_number.getCount()==0 && (accidentWarningsFailed.get() || tollNotificationsFailed.get())) {			
-			System.out.println("Executor is done with sec: " + sec + " at: " + now);
+		if ((sec % 10 == 0) && transaction_number.getCount()==0) {
+			double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			System.out.println("Execution time of second " + sec + " is " + now + "\n----------------------------");
 		}
 	}
 }
