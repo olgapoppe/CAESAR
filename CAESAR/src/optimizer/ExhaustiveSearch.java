@@ -93,7 +93,7 @@ public class ExhaustiveSearch {
 		return new_query_plans;
 	}
 	
-	/*** Recursive call ***/
+	/*** Recursive calls ***/
 	ArrayList<QueryPlan> search (ArrayList<QueryPlan> qps, String method) {
 		
 		ArrayList<QueryPlan> results = new ArrayList<QueryPlan>();
@@ -120,4 +120,15 @@ public class ExhaustiveSearch {
 		}		
 		return results;		
 	}	
+	
+	ArrayList<QueryPlan> permute_all (ArrayList<QueryPlan> qps) {
+		
+		ArrayList<QueryPlan> results = new ArrayList<QueryPlan>();
+		
+		for (QueryPlan qp : qps) {
+			ArrayList<QueryPlan> accumulator = new ArrayList<QueryPlan>();
+			results.addAll(permute(qp,0,accumulator));
+		}		
+		return results;		
+	}
 }
