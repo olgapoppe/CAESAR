@@ -87,7 +87,7 @@ public class Optimizer {
     	
     	System.out.println("After operator omission: ");
     	for (QueryPlan nqp : new_query_plans) {
-    		System.out.println(nqp.toString());
+    		System.out.println(nqp.toString() + " with cost " + nqp.getCost());
     	}
     }
 }
