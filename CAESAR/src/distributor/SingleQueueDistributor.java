@@ -71,7 +71,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 				if (count_and_rate) run.output.position_reports_count++;
 						
 		 				/*** Set the event distributor time ***/						
-		 				event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+		 				event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 						
 		 				/*** Put the event into the event queue ***/
 		 				ConcurrentLinkedQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);

@@ -1,5 +1,6 @@
 package event;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -26,13 +27,26 @@ public abstract class Event {
 	 * @param failed		true if latency constraint was violated before
 	 * @param s				type of complex event 
 	 */
-	public void printError (PositionReport p, double totalProcessingTime, AtomicBoolean failed, String s) {
+	public void printError (PositionReport p, double emit, HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, AtomicBoolean failed, String s) {
+		
+		/*System.out.println("Delay 1: " + (schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec)) + 
+				" Delay 2: " + (p.schedulerTime - p.distributorTime));*/
+		
+		double totalProcessingTime;
+		
+		if (schedStartTimes.containsKey(p.sec) && distrFinishTimes.containsKey(p.sec)) {
+			
+			double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
+			totalProcessingTime =  emit - p.distributorTime - delay;
+			//if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
+		} else {
+			totalProcessingTime =  emit - p.schedulerTime;
+		}		
 		
 		if (!failed.get() && totalProcessingTime > 5) {
 			
 			System.err.println(	s + " FAILED!!!\n" + 
-								p.timesToString() + 
-								"triggered " + this.toString());
+								p.timesToString() + "triggered " + this.toString());
 			failed.compareAndSet(false, true);
 		}	
 	}

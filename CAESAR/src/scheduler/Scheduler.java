@@ -333,7 +333,7 @@ public abstract class Scheduler implements Runnable {
 				PositionReport event = eventqueue.peek();					
 				while (event!=null && event.sec==sec) { 				
 					eventqueue.poll();
-					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/1000;
+					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 					event_list.add(event);				
 					event = eventqueue.peek();
 				}					
