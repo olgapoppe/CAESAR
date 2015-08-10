@@ -2,7 +2,7 @@ package operator;
 
 import java.util.ArrayList;
 
-public class Projection implements Operator {
+public class Projection extends Operator {
 	
 	ArrayList<String> attributes;
 	

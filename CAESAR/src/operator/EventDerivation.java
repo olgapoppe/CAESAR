@@ -1,6 +1,6 @@
 package operator;
 
-public class EventDerivation implements Operator {
+public class EventDerivation extends Operator {
 	
 	String event_type;
 	

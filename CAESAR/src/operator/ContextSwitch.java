@@ -1,6 +1,6 @@
 package operator;
 
-public class ContextSwitch implements Operator {
+public class ContextSwitch extends Operator {
 	
 	String context;
 

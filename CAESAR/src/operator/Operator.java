@@ -1,9 +1,13 @@
 package operator;
 
-public interface Operator {
+public abstract class Operator {
 	
-	public boolean omittable (Operator neighbor); 
-	public int getCost ();
-	public boolean equals (Operator op);
-	public String toString ();
+	public abstract boolean omittable (Operator neighbor); 
+	public abstract int getCost ();
+	public abstract boolean equals (Operator op);
+	public abstract String toString ();
+	
+	public boolean mergable (Operator neighbor) {
+		return false;
+	}
 }

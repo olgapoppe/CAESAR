@@ -1,6 +1,6 @@
 package operator;
 
-public class ContextWindow implements Operator {
+public class ContextWindow extends Operator {
 	
 	String context;
 	

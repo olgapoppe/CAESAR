@@ -1,6 +1,6 @@
 package operator;
 
-public class ContextTermination implements Operator {
+public class ContextTermination extends Operator {
 	
 	String context;
 

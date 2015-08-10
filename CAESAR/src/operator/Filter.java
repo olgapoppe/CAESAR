@@ -1,6 +1,6 @@
 package operator;
 
-public class Filter implements Operator {
+public class Filter extends Operator {
 	
 	Disjunction predicate;
 
@@ -20,6 +20,10 @@ public class Filter implements Operator {
 		if (!(neighbor instanceof Filter)) return false;				
 		Filter other = (Filter) neighbor;		
 		return other.predicate.subsumedBy(predicate);
+	}
+	
+	public boolean mergable (Operator neighbor) {		
+		return (neighbor instanceof Filter);		
 	}
 	
 	public int getCost() {

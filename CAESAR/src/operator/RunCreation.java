@@ -1,6 +1,6 @@
 package operator;
 
-public class RunCreation implements Operator {
+public class RunCreation extends Operator {
 	
 	public static RunCreation parse(String s) {
 		return new RunCreation();

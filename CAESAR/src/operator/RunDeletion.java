@@ -1,6 +1,6 @@
 package operator;
 
-public class RunDeletion implements Operator {
+public class RunDeletion extends Operator {
 	
 	public static RunDeletion parse(String s) {
 		return new RunDeletion();

@@ -2,7 +2,7 @@ package operator;
 
 import java.util.ArrayList;
 
-public class RunUpdate implements Operator {
+public class RunUpdate extends Operator {
 	
 	ArrayList<Tuple> tuples;
 	

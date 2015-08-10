@@ -1,6 +1,6 @@
 package operator;
 
-public class ContextInitiation implements Operator {
+public class ContextInitiation extends Operator {
 	
 	String context;
 	
