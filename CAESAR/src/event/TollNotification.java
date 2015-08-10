@@ -14,8 +14,6 @@ public class TollNotification extends Event {
 	double avgSpd;
 	double toll;
 	
-	public double totalProcessingTime;
-		
 	/**
 	 * Construct real toll notification when the road segment is congested.
 	 * @param p					position report

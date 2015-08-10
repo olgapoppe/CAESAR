@@ -13,8 +13,6 @@ public class AccidentWarning extends Event {
 	public double emit;
 	double seg;
 	
-	public double totalProcessingTime;
-	
 	/**
 	 * Construct accident warning when there is an accident on a road.
 	 * @param p					position report

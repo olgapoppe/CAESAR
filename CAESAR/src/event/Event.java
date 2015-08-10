@@ -13,6 +13,8 @@ public abstract class Event {
 	public double sec;
 	public double vid;
 	
+	public double totalProcessingTime;
+	
 	public Event (double t, double s, double v) {
 		
 		type = t;
@@ -32,13 +34,12 @@ public abstract class Event {
 		/*System.out.println("Delay 1: " + (schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec)) + 
 				" Delay 2: " + (p.schedulerTime - p.distributorTime));*/
 		
-		double totalProcessingTime;
-		
 		if (schedStartTimes.containsKey(p.sec) && distrFinishTimes.containsKey(p.sec)) {
 			
 			double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
 			totalProcessingTime =  emit - p.distributorTime - delay;
 			//if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
+			
 		} else {
 			totalProcessingTime =  emit - p.schedulerTime;
 		}		
