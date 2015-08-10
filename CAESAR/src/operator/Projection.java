@@ -10,6 +10,17 @@ public class Projection implements Operator {
 		attributes = a;
 	}
 
+	public static Projection parse(String s) {		
+		
+		ArrayList<String> attributes = new ArrayList<String>();
+		String attributes_string = s.substring(3); // Skip "PR "	
+		String allAttributes[] = attributes_string.split(", ");
+		for (String attribute : allAttributes) {
+			attributes.add(attribute);
+		}				
+		return new Projection(attributes);
+	}
+
 	public boolean omittable (Operator neighbor) {
 		
 		if (!(neighbor instanceof Projection)) return false;		

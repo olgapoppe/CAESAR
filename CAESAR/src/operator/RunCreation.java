@@ -2,6 +2,10 @@ package operator;
 
 public class RunCreation implements Operator {
 	
+	public static RunCreation parse(String s) {
+		return new RunCreation();
+	}
+	
 	public boolean omittable (Operator neighbor) {		
 		return this.equals(neighbor);
 	}

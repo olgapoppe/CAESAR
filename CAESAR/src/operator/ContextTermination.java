@@ -8,6 +8,12 @@ public class ContextTermination implements Operator {
 		context = con;
 	}
 	
+	public static ContextTermination parse(String s) {		
+		
+		String context = s.substring(3); // Skip "CT "				
+		return new ContextTermination(context);
+	}
+	
 	public boolean omittable (Operator neighbor) {
 		return this.equals(neighbor);
 	}

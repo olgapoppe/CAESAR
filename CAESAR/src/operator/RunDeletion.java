@@ -2,6 +2,10 @@ package operator;
 
 public class RunDeletion implements Operator {
 	
+	public static RunDeletion parse(String s) {
+		return new RunDeletion();
+	}
+	
 	public boolean omittable (Operator neighbor) {		
 		return this.equals(neighbor);
 	}

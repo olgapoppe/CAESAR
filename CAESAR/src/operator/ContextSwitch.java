@@ -8,6 +8,12 @@ public class ContextSwitch implements Operator {
 		context = con;
 	}
 	
+	public static ContextSwitch parse(String s) {		
+		
+		String context = s.substring(3); // Skip "CS "				
+		return new ContextSwitch(context);
+	}
+	
 	public boolean omittable (Operator neighbor) {
 		return this.equals(neighbor);
 	}

@@ -8,6 +8,12 @@ public class ContextInitiation implements Operator {
 		context = con;
 	}
 	
+	public static ContextInitiation parse(String s) {		
+		
+		String context = s.substring(3); // Skip "CI "				
+		return new ContextInitiation(context);
+	}
+	
 	public boolean omittable (Operator neighbor) {
 		return this.equals(neighbor);
 	}

@@ -10,6 +10,18 @@ public class RunUpdate implements Operator {
 		tuples = t;
 	}
 	
+	public static RunUpdate parse(String s) {
+		
+		ArrayList<Tuple> tuples = new ArrayList<Tuple>();
+		String tuples_string = s.substring(3); // Skip "RU "	
+		String allTuples[] = tuples_string.split(", ");
+		for (String tuple_string : allTuples) {
+			Tuple tuple = Tuple.parse(tuple_string);
+			tuples.add(tuple);
+		}				
+		return new RunUpdate(tuples);
+	}
+	
 	public boolean omittable (Operator neighbor) {
 		return this.equals(neighbor);		
 	}

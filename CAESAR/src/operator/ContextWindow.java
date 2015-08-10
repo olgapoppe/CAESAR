@@ -7,6 +7,12 @@ public class ContextWindow implements Operator {
 	public ContextWindow (String con) {		
 		context = con;
 	}
+	
+	public static ContextWindow parse(String s) {		
+		
+		String context = s.substring(3); // Skip "CW "				
+		return new ContextWindow(context);
+	}
 
 	public boolean omittable (Operator neighbor) {		
 		return this.equals(neighbor);	

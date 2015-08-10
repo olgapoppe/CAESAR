@@ -8,6 +8,12 @@ public class EventDerivation implements Operator {
 		event_type = et;
 	}
 	
+	public static EventDerivation parse(String s) {		
+		
+		String event_type = s.substring(3); // Skip "ED "				
+		return new EventDerivation(event_type);
+	}
+	
 	public boolean omittable (Operator neighbor) {
 		return !(event_type.equals("tn") || event_type.equals("aw"));
 	}

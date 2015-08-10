@@ -10,8 +10,15 @@ public class Tuple {
 		value = v;
 	}
 	
+	public static Tuple parse(String s) {
+		String components[] = s.split("=");
+		String attribute = components[0];
+		String value = components[1];
+		return new Tuple(attribute, value);
+	}
+	
 	public String toString () {
-		return attribute + " " + value;
+		return attribute + "=" + value;
 	}
 
 }
