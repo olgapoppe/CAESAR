@@ -18,7 +18,7 @@ public class ContextTermination extends Operator {
 		return this.equals(neighbor);
 	}
 	
-	public int getCost() {
+	public double getCost() {
 		return 1;
 	}
 	

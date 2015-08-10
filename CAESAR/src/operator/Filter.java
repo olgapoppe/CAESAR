@@ -2,10 +2,11 @@ package operator;
 
 public class Filter extends Operator {
 	
-	Disjunction predicate;
+	public Disjunction predicate;
 
 	public Filter (Disjunction p) {
 		predicate = p;
+		selectivity = 0.5;
 	}
 	
 	public static Filter parse(String s) {		
@@ -26,7 +27,7 @@ public class Filter extends Operator {
 		return (neighbor instanceof Filter);		
 	}
 	
-	public int getCost() {
+	public double getCost() {
 		return predicate.getNumber();
 	}
 	

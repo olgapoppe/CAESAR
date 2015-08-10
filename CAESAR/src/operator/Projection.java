@@ -37,7 +37,7 @@ public class Projection extends Operator {
 		return attributes.containsAll(other.attributes) && other.attributes.containsAll(attributes);
 	}
 	
-	public int getCost() {
+	public double getCost() {
 		return attributes.size();
 	}
 	

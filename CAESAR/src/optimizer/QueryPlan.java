@@ -37,10 +37,10 @@ public class QueryPlan {
 		return new QueryPlan(operators);
 	}
 	
-	public int getCost() {
-		int cost = 0;
-		for (Operator op : operators) {
-			cost += op.getCost();
+	public double getCost() {
+		double cost = operators.get(0).getCost();
+		for (int i=1; i<operators.size(); i++) {
+			cost += operators.get(i-1).selectivity*operators.get(i).getCost();
 		}		
 		return cost;
 	}

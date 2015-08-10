@@ -18,7 +18,7 @@ public class EventDerivation extends Operator {
 		return !(event_type.equals("tn") || event_type.equals("aw"));
 	}
 	
-	public int getCost() {
+	public double getCost() {
 		return 1;
 	}	
 	

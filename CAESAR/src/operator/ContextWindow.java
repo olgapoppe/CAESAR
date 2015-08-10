@@ -6,6 +6,7 @@ public class ContextWindow extends Operator {
 	
 	public ContextWindow (String con) {		
 		context = con;
+		selectivity = 0.3;
 	}
 	
 	public static ContextWindow parse(String s) {		
@@ -18,7 +19,7 @@ public class ContextWindow extends Operator {
 		return this.equals(neighbor);	
 	}
 	
-	public int getCost() {
+	public double getCost() {
 		return 1;
 	}
 	
