@@ -105,9 +105,9 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			}
 		 		}		 			
 		 		/*** Set distributor progress ***/		 					
-				eventqueues.setDistributorProgress(batch_limit, startOfSimulation);
-				//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);	
+				eventqueues.setDistributorProgress(batch_limit, startOfSimulation);					
 				now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+				//System.out.println("Distribution time of second " + batch_limit + " is " + now);
  				distrFinishTimes.put(batch_limit, now);
 				curr_sec = batch_limit;
 		 			

@@ -27,7 +27,7 @@ public class Main {
 	 * 1			optimized: 1 for yes, 0 for no
 	 * 
 	 *				STATISTICS
-	 * 2			count and rate computation: 0 for no, 1 for yes
+	 * 2			count and rate computation: 1 for yes, 0 for no
 	 * 
 	 *  			INPUT
 	 * 3			last second : 10784

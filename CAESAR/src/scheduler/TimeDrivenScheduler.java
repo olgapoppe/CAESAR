@@ -38,6 +38,8 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 				double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				schedStartTimes.put(curr_sec, now);
 				
+				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
+				
 				/*** Schedule the current second ***/
 				all_queries_all_runs(curr_sec);
 									

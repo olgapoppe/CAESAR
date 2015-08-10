@@ -34,8 +34,15 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 2*(vehCount-50)*(vehCount-50);
 		
-		double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
-		if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
+		double delay = 0;
+		if (schedStartTimes.containsKey(p.sec) && distrFinishTimes.containsKey(p.sec)) {
+			delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
+			//if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
+		} else {
+			System.out.println("For the second " + p.sec + 
+					" distribution time is missing: " + !distrFinishTimes.containsKey(p.sec) +
+					" and scheduling time is missing: " + !schedStartTimes.containsKey(p.sec));
+		}
 		totalProcessingTime =  emit - p.distributorTime - delay;
 		
 		printError (p, totalProcessingTime, tnf, "TOLL NOTIFICATIONS");		 	
@@ -58,8 +65,15 @@ public class TollNotification extends Event {
 		avgSpd = a;
 		toll = 0;
 		
-		double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
-		if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
+		double delay = 0;
+		if (schedStartTimes.containsKey(p.sec) && distrFinishTimes.containsKey(p.sec)) {
+			delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
+			//if (delay>1) System.out.println("Scheduler wait time for distributor at second " + p.sec + " is " + delay + " seconds too long.");
+		} else {
+			System.out.println("For the second " + p.sec + 
+					" distribution time is missing: " + !distrFinishTimes.containsKey(p.sec) +
+					" and scheduling time is missing: " + !schedStartTimes.containsKey(p.sec));
+		}		
 		totalProcessingTime =  emit - p.distributorTime - delay;
 		
 		printError (p, totalProcessingTime, tnf, "TOLL NOTIFICATIONS");			
