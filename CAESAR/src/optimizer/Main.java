@@ -13,7 +13,8 @@ public class Main {
 	    	    	
 	    ArrayList<QueryPlan> query_plans = new ArrayList<QueryPlan>();
 	    query_plans.add(qp);
-	    		
+	    
+	    /*** Exhaustive search ***/
 	    // Operator omission
 	    ExhaustiveSearch es = new ExhaustiveSearch();
 	    ArrayList<QueryPlan> new_query_plans = es.omit(query_plans);
@@ -25,6 +26,13 @@ public class Main {
 	    
 	    // Operator permutation
 	    	
+	    // Operator merge
+	    
+	    /*** Optimized search ***/
+	    // Operator omission
+	    
+	    // Operator permutation
+    	
 	    // Operator merge
 	 }
 }
