@@ -40,7 +40,7 @@ public class QueryPlan {
 	public double getCost() {
 		double cost = operators.get(0).getCost();
 		for (int i=1; i<operators.size(); i++) {
-			cost += operators.get(i-1).selectivity*operators.get(i).getCost();
+			cost += operators.get(i-1).getSelectivity()*operators.get(i).getCost();
 		}		
 		return cost;
 	}

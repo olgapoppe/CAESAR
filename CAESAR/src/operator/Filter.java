@@ -6,7 +6,6 @@ public class Filter extends Operator {
 
 	public Filter (Disjunction p) {
 		predicate = p;
-		selectivity = 0.5;
 	}
 	
 	public static Filter parse(String s) {		
@@ -29,6 +28,10 @@ public class Filter extends Operator {
 	
 	public double getCost() {
 		return predicate.getNumber();
+	}
+	
+	public double getSelectivity () {
+		return Math.pow(0.5,predicate.getNumber());
 	}
 	
 	public boolean equals(Operator operator) {

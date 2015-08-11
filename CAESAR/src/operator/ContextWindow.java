@@ -6,7 +6,6 @@ public class ContextWindow extends Operator {
 	
 	public ContextWindow (String con) {		
 		context = con;
-		selectivity = 0.3;
 	}
 	
 	public static ContextWindow parse(String s) {		
@@ -21,6 +20,10 @@ public class ContextWindow extends Operator {
 	
 	public double getCost() {
 		return 1;
+	}
+	
+	public double getSelectivity () {
+		return 0.3;
 	}
 	
 	public boolean equals(Operator operator) {

@@ -2,8 +2,6 @@ package operator;
 
 public abstract class Operator {
 	
-	public double selectivity = 1;
-	
 	public abstract boolean omittable (Operator neighbor); 
 	public abstract double getCost ();
 	public abstract boolean equals (Operator op);
@@ -11,5 +9,9 @@ public abstract class Operator {
 	
 	public boolean mergable (Operator neighbor) {
 		return false;
+	}
+	
+	public double getSelectivity () {
+		return 1;
 	}
 }

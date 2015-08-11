@@ -87,7 +87,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 			/*** Set distributer progress ***/	
 		 			if (curr_sec < event.sec) {		 				
 		 				
-		 				if (curr_sec>50) { // Avoid null run exception when the stream is read too fast
+		 				if (curr_sec>300) { // Avoid null run exception when the stream is read too fast
 		 					eventqueues.setDistributorProgress(curr_sec, startOfSimulation);
 		 					//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
 		 				}
