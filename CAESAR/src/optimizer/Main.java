@@ -11,7 +11,12 @@ public class Main {
 		
 		// Original query plan
 	    //String query_plan_string = "FI x>3; FI z>3; CW c; PR x, y, z; ED a; FI x>10; FI y>3; CW c; PR x, y; ED b";
-		String query_plan_string = "FI x>3; FI z>3; CW c; PR x, y, z; ED a";
+		//String query_plan_string = "FI x>3; FI z>3; CW c; PR x, y, z; ED a";
+		String query_plan_string = "";
+		for (String s : args) {
+			query_plan_string += s + " ";
+		}
+		
 	    QueryPlan original_query_plan = QueryPlan.parse(query_plan_string);
 	    System.out.println("Original query plan: " + original_query_plan.toString());
 	    	    	
