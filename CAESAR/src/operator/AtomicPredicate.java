@@ -64,6 +64,8 @@ public class AtomicPredicate {
 		return new AtomicPredicate(attr, op, val);
 	}
 	
+	
+	
 	public AtomicPredicate getNegated() {
 		
 		String new_comparison_operator;

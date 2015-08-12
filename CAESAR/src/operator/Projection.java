@@ -30,6 +30,25 @@ public class Projection extends Operator {
 		return attributes.containsAll(other.attributes);	
 	}
 	
+	public boolean lowerable (Operator neighbor) {
+				
+		if (neighbor instanceof Projection) {
+			Projection other = (Projection) neighbor;
+			return this.attributes.containsAll(other.attributes);
+		}
+		
+		if (neighbor instanceof Filter) {
+			Filter other = (Filter) neighbor;
+			return this.attributes.containsAll(other.predicate.getAttributes());
+		}
+		
+		if (neighbor instanceof RunUpdate) {
+			RunUpdate other = (RunUpdate) neighbor;
+			return this.attributes.containsAll(other.getAttributes());
+		}		
+		return true;		
+	}
+	
 	public boolean equals(Operator operator) {
 		
 		if (!(operator instanceof Projection)) 	return false;

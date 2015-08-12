@@ -1,6 +1,5 @@
 package optimizer;
 
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -43,11 +42,11 @@ public class Main {
 	    	AtomicBoolean omittor_done = new AtomicBoolean(false);
 	    	    
 	    	// Start one thread per operation
-	    	/*Permuter permuter = new Permuter(original_query_plan, results_of_permutation, permuter_done);
+	    	Permuter permuter = new Permuter(original_query_plan, results_of_permutation, permuter_done);
 	    	Thread permuter_thread = new Thread(permuter);
-	    	permuter_thread.start();*/
-	    	results_of_permutation.add(original_query_plan);
-	    	permuter_done.set(true);
+	    	permuter_thread.start();
+	    	/*results_of_permutation.add(original_query_plan);
+	    	permuter_done.set(true);*/
 	    
 	    	Merger merger = new Merger(results_of_permutation, results_of_merge, permuter_done, merger_done);
 	    	Thread merger_thread = new Thread(merger);
@@ -70,10 +69,12 @@ public class Main {
 			}}  	    
 	    /*** Optimized search ***/
 	    } else {
-	    	// QueryPlan afterOmission = Omittor.greedy_omission(original_query_plan);
-	    	// System.out.println(afterOmission.toString());
-	    	QueryPlan qp = Merger.greedy_merge(original_query_plan);
-	    	System.out.println(qp.toString());	    	
+	    	
+	    	QueryPlan after_omission = Omittor.greedy_omission(original_query_plan);
+	    	System.out.println("Result of omission: " + after_omission.toString());	 
+	    	
+	    	QueryPlan after_merge = Merger.greedy_merge(after_omission);
+	    	System.out.println("Result of merge: " + after_merge.toString());	    	   		    	
 	    }
 	    
 	    /*** Duration of search ***/

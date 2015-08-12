@@ -46,4 +46,6 @@ public class Permuter implements Runnable {
 	       		System.out.println("Result of permutation: " + nqp.toString() + " with cost " + nqp.getCost());
 	    }}	    
 	}
+	
+	
 }

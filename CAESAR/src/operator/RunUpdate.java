@@ -26,6 +26,14 @@ public class RunUpdate extends Operator {
 		return this.equals(neighbor);		
 	}
 	
+	public ArrayList<String> getAttributes() {
+		ArrayList<String> attributes = new ArrayList<String>();
+		for (Tuple t : tuples) {
+			attributes.add(t.attribute);
+		}
+		return attributes;
+	}	
+	
 	public double getCost() {
 		return tuples.size();
 	}

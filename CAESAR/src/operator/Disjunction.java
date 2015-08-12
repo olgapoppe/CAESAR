@@ -35,6 +35,14 @@ public class Disjunction {
 		return n;
 	}
 	
+	ArrayList<String> getAttributes () {
+		ArrayList<String> attributes = new ArrayList<String>();
+		for (Conjunction c : conjunctivePredicates) {
+			attributes.addAll(c.getAttributes());
+		}
+		return attributes;
+	}
+	
 	boolean subsumedBy (Disjunction d2) {
 		for (Conjunction c : d2.conjunctivePredicates) {
 			if (!c.impliedBy(this)) { return false; }			

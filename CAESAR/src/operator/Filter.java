@@ -44,6 +44,10 @@ public class Filter extends Operator {
 		return result;
 	}
 	
+	public boolean lowerable (Operator neighbor) {		
+		return (neighbor instanceof Projection) || (neighbor instanceof Filter);
+	}
+	
 	public double getCost() {
 		return predicate.getNumber();
 	}
