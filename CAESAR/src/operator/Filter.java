@@ -36,6 +36,14 @@ public class Filter extends Operator {
 		return merged_filter;
 	}
 	
+	public static Filter mergeAll (ArrayList<Filter> list) {
+		Filter result = list.get(0);
+		for (int i=1; i<list.size(); i++) {
+			result = result.merge(list.get(i));
+		}
+		return result;
+	}
+	
 	public double getCost() {
 		return predicate.getNumber();
 	}

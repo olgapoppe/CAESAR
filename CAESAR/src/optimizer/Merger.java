@@ -88,7 +88,40 @@ public class Merger implements Runnable {
 		return new_query_plans;
 	}
 	
-	static ArrayList<OperatorsToMerge> greedy_merge (QueryPlan query_plan) {
+	static QueryPlan greedy_merge (QueryPlan query_plan) {		
+		
+		LinkedList<Operator> new_operators = new LinkedList<Operator>();
+		ArrayList<OperatorsToMerge> ops2merge = Merger.getOperators2merge(query_plan);
+		int i = 0;
+		
+		for (OperatorsToMerge toMerge : ops2merge) {
+			
+			// Before operators to merge
+			while (i<toMerge.from) {
+				new_operators.add(query_plan.operators.get(i));
+				i++;
+			}
+			// Merged filters
+			ArrayList<Filter> filters2merge = new ArrayList<Filter>();
+			while (i<=toMerge.to) {
+				Filter fi = (Filter) query_plan.operators.get(i);
+				filters2merge.add(fi);
+				i++;
+			}
+			Filter mergedFilter = Filter.mergeAll(filters2merge);
+			new_operators.add(mergedFilter);			
+			
+			i = toMerge.to+1;			
+		}
+		// After operators to merge
+		while (i<query_plan.operators.size()) {
+			new_operators.add(query_plan.operators.get(i));
+			i++;
+		}		
+		return new QueryPlan(new_operators);	
+	}
+	
+	static ArrayList<OperatorsToMerge> getOperators2merge (QueryPlan query_plan) {
 		
 		ArrayList<OperatorsToMerge> ops2merge = new ArrayList<OperatorsToMerge>(); 		
 		int i = 0;
@@ -108,9 +141,9 @@ public class Merger implements Runnable {
 				OperatorsToMerge ops = new OperatorsToMerge(start,end);
 				ops2merge.add(ops);
 			}
-			start = 0;
+			start = -1;
 			i++;
 		}
-		return ops2merge;	
+		return ops2merge;
 	}
 }

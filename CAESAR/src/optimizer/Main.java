@@ -72,10 +72,8 @@ public class Main {
 	    } else {
 	    	// QueryPlan afterOmission = Omittor.greedy_omission(original_query_plan);
 	    	// System.out.println(afterOmission.toString());
-	    	ArrayList<OperatorsToMerge> ops2merge = Merger.greedy_merge(original_query_plan);
-	    	for (OperatorsToMerge ops : ops2merge) {
-	    		System.out.println(ops.toString());
-	    	}
+	    	QueryPlan qp = Merger.greedy_merge(original_query_plan);
+	    	System.out.println(qp.toString());	    	
 	    }
 	    
 	    /*** Duration of search ***/
