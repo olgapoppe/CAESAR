@@ -13,20 +13,12 @@ public class Merger implements Runnable {
 	AtomicBoolean permuter_done;
 	AtomicBoolean merger_done;
 	
-	double min_cost;
-	public QueryPlan cheapest_query_plan;
-	int number_of_options;
-	
-	public Merger (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean od, AtomicBoolean pd) {
+	public Merger (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean pd, AtomicBoolean md) {
 		
 		input_query_plans = input;
 		output_query_plans = output;
-		permuter_done = od;
-		merger_done = pd;
-		
-		min_cost = Double.MAX_VALUE;
-		cheapest_query_plan = new QueryPlan(new LinkedList<Operator>());
-		number_of_options = 0;
+		permuter_done = pd;
+		merger_done = md;
 	}
 	
 	public void run () {
@@ -38,7 +30,7 @@ public class Merger implements Runnable {
 				ArrayList<QueryPlan> qps = new ArrayList<QueryPlan>();
 				qps.add(qp);
 				ArrayList<QueryPlan> accumulator = new ArrayList<QueryPlan>();
-				search(qps,accumulator);				
+				exhaustive_search(qps,accumulator);				
 	    		
 	    	} else {
 	    		try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
@@ -48,7 +40,7 @@ public class Merger implements Runnable {
 		System.out.println("Merger is done.");
 	}
 	
-	void search (ArrayList<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
+	void exhaustive_search (ArrayList<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
 		
 		for (QueryPlan qp : qps) {
 			
@@ -57,21 +49,14 @@ public class Merger implements Runnable {
 				
 				accumulator.add(qp);
 				output_query_plans.add(qp);
-				double cost = qp.getCost();
-				System.out.println("Result of merge: " + qp.toString() + " with cost " + cost);
-				
-				if (cost<min_cost) {
-		    		min_cost = cost;
-		    		cheapest_query_plan = qp;
-		    	}
-				number_of_options++;
+				System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());			
 			}				
 			// Recursive case: Merge operators in this query plan
-			search(merge(qp), accumulator);			
+			exhaustive_search(exhaustive_merge(qp), accumulator);			
 		}				
 	}
 	
-	ArrayList<QueryPlan> merge (QueryPlan query_plan) {
+	ArrayList<QueryPlan> exhaustive_merge (QueryPlan query_plan) {
 		
 		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
 				
@@ -94,15 +79,38 @@ public class Merger implements Runnable {
 						if (j==i) {
 							Filter fi1 = (Filter) query_plan.operators.get(i);
 							Filter fi2 = (Filter) query_plan.operators.get(i+1);
-							ArrayList<Disjunction> disjs = new ArrayList<Disjunction>();
-							disjs.add(fi2.predicate);
-							Disjunction predicate = fi1.predicate.getCNF(disjs);
-							Filter merged_filter = new Filter(predicate);
+							Filter merged_filter = fi1.merge(fi2);
 							new_ops.add(merged_filter);
 				}}}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
 				new_query_plans.add(new_query_plan);
 		}}
 		return new_query_plans;
+	}
+	
+	static ArrayList<OperatorsToMerge> greedy_merge (QueryPlan query_plan) {
+		
+		ArrayList<OperatorsToMerge> ops2merge = new ArrayList<OperatorsToMerge>(); 		
+		int i = 0;
+		int start = -1;
+		int end = -1;
+		
+		while (i+1<query_plan.operators.size()) {
+			
+			while (i+1<query_plan.operators.size() && query_plan.operators.get(i).mergable(query_plan.operators.get(i+1))) {
+				
+				if (start==-1) start=i;
+				i++;
+			}
+			if (start>-1) {
+				
+				end = i;
+				OperatorsToMerge ops = new OperatorsToMerge(start,end);
+				ops2merge.add(ops);
+			}
+			start = 0;
+			i++;
+		}
+		return ops2merge;	
 	}
 }

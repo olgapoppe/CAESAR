@@ -1,5 +1,7 @@
 package operator;
 
+import java.util.ArrayList;
+
 public class Filter extends Operator {
 	
 	public Disjunction predicate;
@@ -24,6 +26,14 @@ public class Filter extends Operator {
 	
 	public boolean mergable (Operator neighbor) {		
 		return (neighbor instanceof Filter);		
+	}
+	
+	public Filter merge (Filter other) {		
+		ArrayList<Disjunction> disjs = new ArrayList<Disjunction>();
+		disjs.add(other.predicate);
+		Disjunction predicate = this.predicate.getCNF(disjs);
+		Filter merged_filter = new Filter(predicate);
+		return merged_filter;
 	}
 	
 	public double getCost() {
