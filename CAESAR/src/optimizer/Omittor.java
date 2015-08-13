@@ -70,7 +70,7 @@ public class Omittor implements Runnable {
 		}				
 	}
 	
-	ArrayList<QueryPlan> exhaustive_omission(QueryPlan query_plan) {
+	ArrayList<QueryPlan> exhaustive_omission (QueryPlan query_plan) {
 		
 		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
 		
@@ -103,7 +103,7 @@ public class Omittor implements Runnable {
 		return new_query_plans;
 	}
 	
-	static QueryPlan greedy_omission(QueryPlan query_plan) {
+	static QueryPlan greedy_omission (QueryPlan query_plan) {
 		
 		LinkedList<Operator> new_ops = new LinkedList<Operator>();
 		QueryPlan new_query_plan = new QueryPlan(new_ops);

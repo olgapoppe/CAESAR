@@ -37,6 +37,32 @@ public class QueryPlan {
 		return new QueryPlan(operators);
 	}
 	
+	ArrayList<OperatorsToMerge> getOperators2merge () {
+		
+		ArrayList<OperatorsToMerge> ops2merge = new ArrayList<OperatorsToMerge>(); 		
+		int i = 0;
+		int start = -1;
+		int end = -1;
+		
+		while (i+1<operators.size()) {
+			
+			while (i+1<operators.size() && operators.get(i).mergable(operators.get(i+1))) {
+				
+				if (start==-1) start=i;
+				i++;
+			}
+			if (start>-1) {
+				
+				end = i;
+				OperatorsToMerge ops = new OperatorsToMerge(start,end);
+				ops2merge.add(ops);
+			}
+			start = -1;
+			i++;
+		}
+		return ops2merge;
+	}
+	
 	public double getCost() {
 		double cost = operators.get(0).getCost();
 		for (int i=1; i<operators.size(); i++) {

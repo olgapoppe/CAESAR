@@ -73,8 +73,11 @@ public class Main {
 	    	QueryPlan after_omission = Omittor.greedy_omission(original_query_plan);
 	    	System.out.println("Result of omission: " + after_omission.toString());	 
 	    	
-	    	QueryPlan after_merge = Merger.greedy_merge(after_omission);
-	    	System.out.println("Result of merge: " + after_merge.toString());	    	   		    	
+	    	QueryPlan after_permutation = Permuter.greedy_permutation(after_omission);
+	    	System.out.println("Result of permutation: " + after_permutation.toString());	
+	    	
+	    	QueryPlan after_merge = Merger.greedy_merge(after_permutation);
+	    	System.out.println("Result of merge: " + after_merge.toString() + " with cost " + after_merge.getCost());	    	   		    	
 	    }
 	    
 	    /*** Duration of search ***/

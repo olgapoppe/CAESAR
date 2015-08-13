@@ -47,5 +47,15 @@ public class Permuter implements Runnable {
 	    }}	    
 	}
 	
-	
+	static QueryPlan greedy_permutation (QueryPlan query_plan) {
+		
+		for(int i = 0; i < query_plan.operators.size(); i++) {
+			int j = i;
+			while (j-1>=0 && query_plan.operators.get(j).lowerable(query_plan.operators.get(j-1))) {
+				Collections.swap(query_plan.operators, j, j-1);
+				j--;
+			}
+		}
+		return query_plan;	
+	}
 }

@@ -91,7 +91,7 @@ public class Merger implements Runnable {
 	static QueryPlan greedy_merge (QueryPlan query_plan) {		
 		
 		LinkedList<Operator> new_operators = new LinkedList<Operator>();
-		ArrayList<OperatorsToMerge> ops2merge = Merger.getOperators2merge(query_plan);
+		ArrayList<OperatorsToMerge> ops2merge = query_plan.getOperators2merge();
 		int i = 0;
 		
 		for (OperatorsToMerge toMerge : ops2merge) {
@@ -121,29 +121,5 @@ public class Merger implements Runnable {
 		return new QueryPlan(new_operators);	
 	}
 	
-	static ArrayList<OperatorsToMerge> getOperators2merge (QueryPlan query_plan) {
-		
-		ArrayList<OperatorsToMerge> ops2merge = new ArrayList<OperatorsToMerge>(); 		
-		int i = 0;
-		int start = -1;
-		int end = -1;
-		
-		while (i+1<query_plan.operators.size()) {
-			
-			while (i+1<query_plan.operators.size() && query_plan.operators.get(i).mergable(query_plan.operators.get(i+1))) {
-				
-				if (start==-1) start=i;
-				i++;
-			}
-			if (start>-1) {
-				
-				end = i;
-				OperatorsToMerge ops = new OperatorsToMerge(start,end);
-				ops2merge.add(ops);
-			}
-			start = -1;
-			i++;
-		}
-		return ops2merge;
-	}
+	
 }

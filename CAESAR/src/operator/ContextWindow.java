@@ -18,6 +18,10 @@ public class ContextWindow extends Operator {
 		return this.equals(neighbor);	
 	}
 	
+	public boolean lowerable (Operator neighbor) {
+		return true;
+	}
+	
 	public double getCost() {
 		return 1;
 	}

@@ -11,6 +11,10 @@ public abstract class Operator {
 		return false;
 	}
 	
+	public boolean lowerable (Operator neighbor) {
+		return false;
+	}
+	
 	public double getSelectivity () {
 		return 1;
 	}
