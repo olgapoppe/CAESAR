@@ -19,7 +19,9 @@ public class Main {
 			query_plan_string += args[i] + " ";
 		}		
 	    QueryPlan original_query_plan = QueryPlan.parse(query_plan_string);
-	    System.out.println("Original query plan: " + original_query_plan.toString());
+	    System.out.println("Original query plan (" + original_query_plan.toString() + 
+	    		")\nhas " + original_query_plan.operators.size() +
+	    		" operators and cost " + original_query_plan.getCost());
 	    
 	    /*** Start the timer ***/
 	    double start = System.currentTimeMillis()/new Double(1000);

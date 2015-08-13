@@ -45,7 +45,7 @@ public class RunUpdate extends Operator {
 	}
 	
 	public String toString() {
-		String s = "RU";
+		String s = "RU ";
 		for (Tuple t : tuples) {
 			s += t.toString() + ", ";
 		}

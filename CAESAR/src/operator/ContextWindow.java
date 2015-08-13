@@ -19,7 +19,9 @@ public class ContextWindow extends Operator {
 	}
 	
 	public boolean lowerable (Operator neighbor) {
-		return true;
+		return !((neighbor instanceof ContextInitiation) ||
+				(neighbor instanceof ContextSwitch) ||
+				(neighbor instanceof ContextTermination));
 	}
 	
 	public double getCost() {
