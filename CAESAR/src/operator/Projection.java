@@ -32,17 +32,17 @@ public class Projection extends Operator {
 	
 	public boolean lowerable (Operator neighbor) {
 		
-		if (neighbor instanceof ContextWindow) return false;
+		if ((neighbor instanceof ContextWindow) || (neighbor instanceof Filter)) return false;
 				
 		if (neighbor instanceof Projection) {
 			Projection other = (Projection) neighbor;
 			return this.attributes.containsAll(other.attributes);
 		}
 		
-		if (neighbor instanceof Filter) {
+		/*if (neighbor instanceof Filter) {
 			Filter other = (Filter) neighbor;
 			return this.attributes.containsAll(other.predicate.getAttributes()) && !other.lowerable(this);
-		}
+		}*/
 		
 		if (neighbor instanceof RunUpdate) {
 			RunUpdate other = (RunUpdate) neighbor;

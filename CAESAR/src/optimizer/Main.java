@@ -11,7 +11,9 @@ public class Main {
 	 public static void main(String[] args) {
 		 
 		/*** Optimized or exhaustive search ***/
-		boolean optimized = (Integer.parseInt(args[0])==1);
+		boolean optimized = (Integer.parseInt(args[0])==1);		
+		String s = optimized ? "Optimized search." : "Exhaustive search.";
+		System.out.println(s);
 		
 		/*** Original query plan ***/	   
 		String query_plan_string = "";
@@ -19,9 +21,10 @@ public class Main {
 			query_plan_string += args[i] + " ";
 		}		
 	    QueryPlan original_query_plan = QueryPlan.parse(query_plan_string);
-	    System.out.println("Original query plan (" + original_query_plan.toString() + 
+	    System.out.println("----------------------------------------\nOriginal query plan (" + original_query_plan.toString() + 
 	    		")\nhas " + original_query_plan.operators.size() +
-	    		" operators and cost " + original_query_plan.getCost());
+	    		" operators and cost " + original_query_plan.getCost() +
+	    		"\n----------------------------------------");
 	    
 	    /*** Start the timer ***/
 	    double start = System.currentTimeMillis()/new Double(1000);

@@ -52,7 +52,7 @@ public class Filter extends Operator {
 	}
 	
 	public boolean lowerable (Operator neighbor) {		
-		return (neighbor instanceof Projection) || (neighbor instanceof Filter);
+		return (neighbor instanceof Projection);
 	}
 	
 	public double getCost() {

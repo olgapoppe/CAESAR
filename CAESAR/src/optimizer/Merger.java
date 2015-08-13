@@ -10,20 +10,24 @@ public class Merger implements Runnable {
 	
 	LinkedBlockingQueue<QueryPlan> input_query_plans;
 	LinkedBlockingQueue<QueryPlan> output_query_plans;
-	AtomicBoolean permuter_done;
+	AtomicBoolean previous_done;
 	AtomicBoolean merger_done;
+	
+	public boolean change;
 	
 	public Merger (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean pd, AtomicBoolean md) {
 		
 		input_query_plans = input;
 		output_query_plans = output;
-		permuter_done = pd;
+		previous_done = pd;
 		merger_done = md;
+		
+		change = false;
 	}
 	
 	public void run () {
 		
-		while (!(permuter_done.get() && input_query_plans.isEmpty())) {			
+		while (!(previous_done.get() && input_query_plans.isEmpty())) {			
 			if (input_query_plans.peek()!=null) {
 				
 				QueryPlan qp = input_query_plans.poll();
@@ -96,6 +100,7 @@ public class Merger implements Runnable {
 				}}}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
 				new_query_plans.add(new_query_plan);
+				change = true;
 		}}
 		return new_query_plans;
 	}

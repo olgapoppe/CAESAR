@@ -10,40 +10,24 @@ public class Omittor implements Runnable {
 	
 	LinkedBlockingQueue<QueryPlan> input_query_plans;
 	LinkedBlockingQueue<QueryPlan> output_query_plans;
-	AtomicBoolean merger_done;
-	AtomicBoolean omittor_done;
+	AtomicBoolean omittor_done;	
 	
-	double min_cost;
-	public QueryPlan cheapest_query_plan;
-	int number_of_options;
+	public boolean change;
 	
-	public Omittor (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean md, AtomicBoolean od) {
+	public Omittor (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean od) {
 		
 		input_query_plans = input;
 		output_query_plans = output;
-		merger_done = md;
 		omittor_done = od;
 		
-		min_cost = Double.MAX_VALUE;
-		cheapest_query_plan = new QueryPlan(new LinkedList<Operator>());
-		number_of_options = 0;
+		change = false;
 	}
 	
 	public void run () {
 		
-		while (!(merger_done.get() && input_query_plans.isEmpty())) {			
-			if (input_query_plans.peek()!=null) {
-		
-				QueryPlan qp = input_query_plans.poll();
-				ArrayList<QueryPlan> qps = new ArrayList<QueryPlan>();
-				qps.add(qp);
-				ArrayList<QueryPlan> accumulator = new ArrayList<QueryPlan>();
-				exhaustive_search(qps,accumulator);			
-		
-	    	} else {
-	    		try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
-	    	}		
-		}	
+		ArrayList<QueryPlan> accumulator = new ArrayList<QueryPlan>();
+		exhaustive_search(input_query_plans,accumulator);	
+	    	
 		omittor_done.set(true);
 		System.out.println("Omittor is done.");
 	}
@@ -55,7 +39,7 @@ public class Omittor implements Runnable {
 	 * @param qps			input query plans 
 	 * @param accumulator	resulting query plans found so far
 	 */
-	void exhaustive_search (ArrayList<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
+	void exhaustive_search (LinkedBlockingQueue<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
 				
 		for (QueryPlan qp : qps) {
 			
@@ -63,14 +47,7 @@ public class Omittor implements Runnable {
 			if (!qp.contained(accumulator)) {
 				accumulator.add(qp);
 				output_query_plans.add(qp); 
-				double cost = qp.getCost();
-				System.out.println("Result of omission: " + qp.toString() + " with cost " + cost);
-				
-				if (cost<min_cost) {
-		    		min_cost = cost;
-		    		cheapest_query_plan = qp;
-		    	}
-				number_of_options++;
+				System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());			
 			}				
 			// Recursive case: Omit operators in this query plan
 			exhaustive_search(exhaustive_omission(qp), accumulator);			
@@ -84,9 +61,9 @@ public class Omittor implements Runnable {
 	 * @param query_plan input query plan
 	 * @return resulting query plans
 	 */
-	ArrayList<QueryPlan> exhaustive_omission (QueryPlan query_plan) {
+	LinkedBlockingQueue<QueryPlan> exhaustive_omission (QueryPlan query_plan) {
 		
-		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
+		LinkedBlockingQueue<QueryPlan> new_query_plans = new LinkedBlockingQueue<QueryPlan>();
 		
 		for (int i=0; i<query_plan.operators.size(); i++) {
 			
@@ -112,6 +89,7 @@ public class Omittor implements Runnable {
 				}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
 				new_query_plans.add(new_query_plan);
+				change = true;
 			}
 		}
 		return new_query_plans;
