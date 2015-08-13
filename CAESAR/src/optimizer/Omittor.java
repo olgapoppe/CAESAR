@@ -48,6 +48,13 @@ public class Omittor implements Runnable {
 		System.out.println("Omittor is done.");
 	}
 	
+	/**
+	 * Finds all alternative query plans that arise due to operator omission.
+	 * Finds the cheapest query plan and its cost.
+	 * Computes the total number of alternative query plans.
+	 * @param qps			input query plans 
+	 * @param accumulator	resulting query plans found so far
+	 */
 	void exhaustive_search (ArrayList<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
 				
 		for (QueryPlan qp : qps) {
@@ -57,7 +64,7 @@ public class Omittor implements Runnable {
 				accumulator.add(qp);
 				output_query_plans.add(qp); 
 				double cost = qp.getCost();
-				//System.out.println("Result of omission: " + qp.toString() + " with cost " + cost);
+				System.out.println("Result of omission: " + qp.toString() + " with cost " + cost);
 				
 				if (cost<min_cost) {
 		    		min_cost = cost;
@@ -70,6 +77,13 @@ public class Omittor implements Runnable {
 		}				
 	}
 	
+	/**
+	 * For each operator in the query plan: 
+	 * If it can be omitted, 
+	 * new query plan is created where this operator is skipped.
+	 * @param query_plan input query plan
+	 * @return resulting query plans
+	 */
 	ArrayList<QueryPlan> exhaustive_omission (QueryPlan query_plan) {
 		
 		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
@@ -103,10 +117,16 @@ public class Omittor implements Runnable {
 		return new_query_plans;
 	}
 	
-	static QueryPlan greedy_omission (QueryPlan query_plan) {
+	/**
+	 * All operators in the query plan that can be omitted, are skipped.
+	 * @param query_plan input query plan
+	 * @return resulting query plan
+	 */
+	static OutputOfOptimizedSearch greedy_omission (QueryPlan query_plan) {
 		
 		LinkedList<Operator> new_ops = new LinkedList<Operator>();
 		QueryPlan new_query_plan = new QueryPlan(new_ops);
+		boolean change = false;
 				
 		for (int i=0; i<query_plan.operators.size(); i++) {
 			
@@ -125,8 +145,12 @@ public class Omittor implements Runnable {
 			} else {
 				a = false;
 			}			
-			if (!b && !a) new_ops.add(operator);			
+			if (!b && !a) {
+				new_ops.add(operator);			
+			} else {
+				change = true;
+			}
 		}
-		return new_query_plan;
+		return new OutputOfOptimizedSearch(new_query_plan,change);
 	}		
 }

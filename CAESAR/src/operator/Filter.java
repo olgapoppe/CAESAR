@@ -28,12 +28,19 @@ public class Filter extends Operator {
 		return (neighbor instanceof Filter);		
 	}
 	
-	public Filter merge (Filter other) {		
-		ArrayList<Disjunction> disjs = new ArrayList<Disjunction>();
-		disjs.add(other.predicate);
-		Disjunction predicate = this.predicate.getCNF(disjs);
-		Filter merged_filter = new Filter(predicate);
-		return merged_filter;
+	public Filter merge (Filter other) {
+		if (this.predicate.subsumedBy(other.predicate)) { // this is more specific
+			return this;
+		} else {
+		if (other.predicate.subsumedBy(this.predicate)) { // other is more specific
+			return other;
+		} else {
+			ArrayList<Disjunction> disjs = new ArrayList<Disjunction>();
+			disjs.add(other.predicate);
+			Disjunction predicate = this.predicate.getCNF(disjs);
+			Filter merged_filter = new Filter(predicate);
+			return merged_filter;
+		}}
 	}
 	
 	public static Filter mergeAll (ArrayList<Filter> list) {

@@ -43,7 +43,7 @@ public class Disjunction {
 		return attributes;
 	}
 	
-	boolean subsumedBy (Disjunction d2) {
+	public boolean subsumedBy (Disjunction d2) {
 		for (Conjunction c : d2.conjunctivePredicates) {
 			if (!c.impliedBy(this)) { return false; }			
 		}
@@ -139,8 +139,7 @@ public class Disjunction {
 				s += " OR \n";
 			} else {
 				s += "";
-			}
-		}
+		}}
 		return s;
 	}
 }

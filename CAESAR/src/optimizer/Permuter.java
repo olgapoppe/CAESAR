@@ -29,6 +29,11 @@ public class Permuter implements Runnable {
 		System.out.println("Permuter is done.");
 	}
 	
+	/**
+	 * Finds all alternative query plans that arise due to operator permutation.
+	 * @param qps			input query plans 
+	 * @param accumulator	resulting query plans found so far
+	 */
 	void permute (QueryPlan query_plan, int k, ArrayList<QueryPlan> accumulator) {
 			
 		for(int i = k; i < query_plan.operators.size(); i++) {
@@ -47,15 +52,23 @@ public class Permuter implements Runnable {
 	    }}	    
 	}
 	
-	static QueryPlan greedy_permutation (QueryPlan query_plan) {
+	/**
+	 * All operators in the query plan that can be pushed down, 
+	 * are pushed down to the lowest possible position.
+	 * @param query_plan input query plan
+	 * @return resulting query plan
+	 */
+	static OutputOfOptimizedSearch greedy_permutation (QueryPlan query_plan) {
+		
+		boolean change = false;
 		
 		for(int i = 0; i < query_plan.operators.size(); i++) {
 			int j = i;
 			while (j-1>=0 && query_plan.operators.get(j).lowerable(query_plan.operators.get(j-1))) {
 				Collections.swap(query_plan.operators, j, j-1);
 				j--;
-			}
-		}
-		return query_plan;	
+				change = true;
+		}}
+		return new OutputOfOptimizedSearch(query_plan, change);	
 	}
 }

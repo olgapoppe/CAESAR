@@ -40,6 +40,11 @@ public class Merger implements Runnable {
 		System.out.println("Merger is done.");
 	}
 	
+	/**
+	 * Finds all alternative query plans that arise due to operator merge.
+	 * @param qps			input query plans 
+	 * @param accumulator	resulting query plans found so far
+	 */
 	void exhaustive_search (ArrayList<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
 		
 		for (QueryPlan qp : qps) {
@@ -56,6 +61,13 @@ public class Merger implements Runnable {
 		}				
 	}
 	
+	/**
+	 * For each operator in the query plan: 
+	 * If it can be merged with the successor, 
+	 * new query plan is created where these operators are merged.
+	 * @param query_plan input query plan
+	 * @return resulting query plans
+	 */
 	ArrayList<QueryPlan> exhaustive_merge (QueryPlan query_plan) {
 		
 		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
@@ -88,10 +100,16 @@ public class Merger implements Runnable {
 		return new_query_plans;
 	}
 	
-	static QueryPlan greedy_merge (QueryPlan query_plan) {		
+	/**
+	 * All operators in the query plan that can be merged, are merged.
+	 * @param query_plan input query plan
+	 * @return resulting query plan
+	 */
+	static OutputOfOptimizedSearch greedy_merge (QueryPlan query_plan) {		
 		
 		LinkedList<Operator> new_operators = new LinkedList<Operator>();
 		ArrayList<OperatorsToMerge> ops2merge = query_plan.getOperators2merge();
+		boolean change = !ops2merge.isEmpty();
 		int i = 0;
 		
 		for (OperatorsToMerge toMerge : ops2merge) {
@@ -118,8 +136,6 @@ public class Merger implements Runnable {
 			new_operators.add(query_plan.operators.get(i));
 			i++;
 		}		
-		return new QueryPlan(new_operators);	
+		return new OutputOfOptimizedSearch(new QueryPlan(new_operators),change);	
 	}
-	
-	
 }
