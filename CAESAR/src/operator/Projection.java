@@ -30,7 +30,7 @@ public class Projection extends Operator {
 		return attributes.containsAll(other.attributes);	
 	}
 	
-	public boolean lowerable (Operator neighbor) {
+	public boolean lowerable_optimized (Operator neighbor) {
 		
 		if ((neighbor instanceof ContextWindow) || (neighbor instanceof Filter)) return false;
 				
@@ -39,10 +39,24 @@ public class Projection extends Operator {
 			return this.attributes.containsAll(other.attributes);
 		}
 		
-		/*if (neighbor instanceof Filter) {
+		if (neighbor instanceof RunUpdate) {
+			RunUpdate other = (RunUpdate) neighbor;
+			return this.attributes.containsAll(other.getAttributes());
+		}		
+		return true;		
+	}
+	
+	public boolean lowerable_exhaustive (Operator neighbor) {
+		
+		if (neighbor instanceof Filter) {
 			Filter other = (Filter) neighbor;
-			return this.attributes.containsAll(other.predicate.getAttributes()) && !other.lowerable(this);
-		}*/
+			return this.attributes.containsAll(other.predicate.getAttributes());
+		}
+		
+		if (neighbor instanceof Projection) {
+			Projection other = (Projection) neighbor;
+			return this.attributes.containsAll(other.attributes);
+		}		
 		
 		if (neighbor instanceof RunUpdate) {
 			RunUpdate other = (RunUpdate) neighbor;

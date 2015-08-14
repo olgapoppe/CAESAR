@@ -19,15 +19,14 @@ public class ExhaustiveSearch {
     	AtomicBoolean merger_done = new AtomicBoolean(false);
     	AtomicBoolean omittor_done = new AtomicBoolean(false);
     	
-    	boolean change = true;
-		int iteration = 1;
+    	int iteration = 1;
 		int number_of_query_plans = 0;
 		double cost = 0;
 		QueryPlan query_plan = new QueryPlan (new LinkedList<Operator>());
+		int prev_number_of_query_plans = 0;
 		
-		while (change) {
+		while (prev_number_of_query_plans < initial_query_plans.size()) {
 			
-			change = false;
 			System.out.println("----------------------------------------\nIteration " + iteration + ".");
     	    
 			// Start one thread per operation
@@ -45,20 +44,18 @@ public class ExhaustiveSearch {
     	
 			// Search result in current iteration 
 			while (true) {
-				if (permuter_done.get()) {					
-				
-					if (omittor.change || merger.change || permuter.change) {
-						number_of_query_plans = permuter.number_of_query_plans;
-						query_plan = permuter.cheapest_query_plan;
-						cost = permuter.min_cost;
-					}
+				if (permuter_done.get()) {	
+					
+					number_of_query_plans = permuter.number_of_query_plans;
+					query_plan = permuter.cheapest_query_plan;
+					cost = permuter.min_cost;
 					break;
 			    
 				} else {
 					try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
 			}}
-			// Reset local variables
-			change = omittor.change || merger.change || permuter.change;
+			// Reset local variables	
+			prev_number_of_query_plans = initial_query_plans.size();
 			initial_query_plans.clear();
 			initial_query_plans.addAll(results_of_permutation);
 			results_of_omission.clear();
@@ -67,11 +64,9 @@ public class ExhaustiveSearch {
 			merger_done.set(false);
 			results_of_permutation.clear();
 			permuter_done.set(false);
-			iteration++;
-			
-			System.out.println(initial_query_plans.size());
+			iteration++;	
 		} 
-		System.out.println("\nExhaustive search creates " + number_of_query_plans + " query plans. (" + 
-				query_plan.toString() + ") is the cheapest. Its cost is " + cost);	
+		System.out.println(	"\nExhaustive search creates " + number_of_query_plans + " query plans. (" + 
+							query_plan.toString() + ") is the cheapest. Its cost is " + cost);	
 	}
 }

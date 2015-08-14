@@ -13,7 +13,7 @@ public class Merger implements Runnable {
 	AtomicBoolean previous_done;
 	AtomicBoolean merger_done;
 	
-	public boolean change;
+	ArrayList<QueryPlan> accumulator;
 	
 	public Merger (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean pd, AtomicBoolean md) {
 		
@@ -22,7 +22,7 @@ public class Merger implements Runnable {
 		previous_done = pd;
 		merger_done = md;
 		
-		change = false;
+		accumulator = new ArrayList<QueryPlan>();
 	}
 	
 	public void run () {
@@ -32,9 +32,8 @@ public class Merger implements Runnable {
 				
 				QueryPlan qp = input_query_plans.poll();
 				ArrayList<QueryPlan> qps = new ArrayList<QueryPlan>();
-				qps.add(qp);
-				ArrayList<QueryPlan> accumulator = new ArrayList<QueryPlan>();
-				exhaustive_search(qps,accumulator);				
+				qps.add(qp);				
+				exhaustive_search(qps);				
 	    		
 	    	} else {
 	    		try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
@@ -46,10 +45,9 @@ public class Merger implements Runnable {
 	
 	/**
 	 * Finds all alternative query plans that arise due to operator merge.
-	 * @param qps			input query plans 
-	 * @param accumulator	resulting query plans found so far
+	 * @param qps			input query plans
 	 */
-	void exhaustive_search (ArrayList<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
+	void exhaustive_search (ArrayList<QueryPlan> qps) {
 		
 		for (QueryPlan qp : qps) {
 			
@@ -61,7 +59,7 @@ public class Merger implements Runnable {
 				System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());			
 			}				
 			// Recursive case: Merge operators in this query plan
-			exhaustive_search(exhaustive_merge(qp), accumulator);			
+			exhaustive_search(exhaustive_merge(qp));			
 		}				
 	}
 	
@@ -99,8 +97,7 @@ public class Merger implements Runnable {
 							new_ops.add(merged_filter);
 				}}}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
-				new_query_plans.add(new_query_plan);
-				change = true;
+				new_query_plans.add(new_query_plan);				
 		}}
 		return new_query_plans;
 	}

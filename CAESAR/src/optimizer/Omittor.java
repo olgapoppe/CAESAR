@@ -12,7 +12,7 @@ public class Omittor implements Runnable {
 	LinkedBlockingQueue<QueryPlan> output_query_plans;
 	AtomicBoolean omittor_done;	
 	
-	public boolean change;
+	ArrayList<QueryPlan> accumulator;
 	
 	public Omittor (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean od) {
 		
@@ -20,14 +20,12 @@ public class Omittor implements Runnable {
 		output_query_plans = output;
 		omittor_done = od;
 		
-		change = false;
+		accumulator = new ArrayList<QueryPlan>();
 	}
 	
-	public void run () {
+	public void run () {		
 		
-		ArrayList<QueryPlan> accumulator = new ArrayList<QueryPlan>();
-		exhaustive_search(input_query_plans,accumulator);	
-	    	
+		exhaustive_search(input_query_plans);    	
 		omittor_done.set(true);
 		System.out.println("Omittor is done.");
 	}
@@ -36,10 +34,9 @@ public class Omittor implements Runnable {
 	 * Finds all alternative query plans that arise due to operator omission.
 	 * Finds the cheapest query plan and its cost.
 	 * Computes the total number of alternative query plans.
-	 * @param qps			input query plans 
-	 * @param accumulator	resulting query plans found so far
+	 * @param qps			input query plans
 	 */
-	void exhaustive_search (LinkedBlockingQueue<QueryPlan> qps, ArrayList<QueryPlan> accumulator) {
+	void exhaustive_search (LinkedBlockingQueue<QueryPlan> qps) {
 				
 		for (QueryPlan qp : qps) {
 			
@@ -50,7 +47,7 @@ public class Omittor implements Runnable {
 				System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());			
 			}				
 			// Recursive case: Omit operators in this query plan
-			exhaustive_search(exhaustive_omission(qp), accumulator);			
+			exhaustive_search(exhaustive_omission(qp));			
 		}				
 	}
 	
@@ -89,7 +86,6 @@ public class Omittor implements Runnable {
 				}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
 				new_query_plans.add(new_query_plan);
-				change = true;
 			}
 		}
 		return new_query_plans;

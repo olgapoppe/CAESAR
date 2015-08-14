@@ -51,8 +51,14 @@ public class Filter extends Operator {
 		return result;
 	}
 	
-	public boolean lowerable (Operator neighbor) {		
+	public boolean lowerable_optimized (Operator neighbor) {		
 		return (neighbor instanceof Projection);
+	}
+	
+	public boolean lowerable_exhaustive (Operator neighbor) {		
+		return 	(neighbor instanceof Filter) ||
+				(neighbor instanceof ContextWindow) ||
+				(neighbor instanceof Projection);
 	}
 	
 	public double getCost() {
