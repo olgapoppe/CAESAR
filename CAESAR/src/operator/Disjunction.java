@@ -130,8 +130,7 @@ public class Disjunction {
 		for (int i=0; i<conjunctivePredicates.size(); i++) {
 			if (!conjunctivePredicates.get(i).equals(other.conjunctivePredicates.get(i))) {
 				return false;
-			}
-		}
+		}}
 		return true;
 	}
 	

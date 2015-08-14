@@ -62,9 +62,7 @@ public class AtomicPredicate {
 		val = Integer.parseInt(c);
 		
 		return new AtomicPredicate(attr, op, val);
-	}
-	
-	
+	}	
 	
 	public AtomicPredicate getNegated() {
 		
@@ -156,5 +154,4 @@ public class AtomicPredicate {
 	public String toString() {
 		return attribute + comparisonOperator + value;
 	}
-
 }

@@ -22,7 +22,7 @@ public class ExhaustiveSearch {
     	int iteration = 1;
 		int number_of_query_plans = 0;
 		double cost = 0;
-		QueryPlan query_plan = new QueryPlan (new LinkedList<Operator>());
+		QueryPlan cheapest_query_plan = new QueryPlan (new LinkedList<Operator>());
 		int prev_number_of_query_plans = 0;
 		
 		while (prev_number_of_query_plans < initial_query_plans.size()) {
@@ -47,7 +47,7 @@ public class ExhaustiveSearch {
 				if (permuter_done.get()) {	
 					
 					number_of_query_plans = permuter.number_of_query_plans;
-					query_plan = permuter.cheapest_query_plan;
+					cheapest_query_plan = permuter.cheapest_query_plan;
 					cost = permuter.min_cost;
 					break;
 			    
@@ -67,6 +67,6 @@ public class ExhaustiveSearch {
 			iteration++;	
 		} 
 		System.out.println(	"\nExhaustive search creates " + number_of_query_plans + " query plans. (" + 
-							query_plan.toString() + ") is the cheapest. Its cost is " + cost);	
+							cheapest_query_plan.toString() + ") is the cheapest. Its cost is " + cost);	
 	}
 }

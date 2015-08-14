@@ -38,13 +38,12 @@ public class Omittor implements Runnable {
 	void exhaustive_search (LinkedBlockingQueue<QueryPlan> qps) {
 				
 		for (QueryPlan qp : qps) {			
-			
 			if (!qp.contained(accumulator,false)) {
 				
 				// Base case: Add this query plan to the result
 				accumulator.add(qp);
 				output_query_plans.add(qp); 
-				System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());	
+				//System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());	
 				
 				// Recursive case: Omit operators in this query plan
 				exhaustive_search(exhaustive_omission(qp));	

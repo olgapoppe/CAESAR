@@ -59,8 +59,7 @@ public class Permuter implements Runnable {
 	 */
 	void exhaustive_search (ArrayList<QueryPlan> qps) {
 		
-		for (QueryPlan qp : qps) {			
-			
+		for (QueryPlan qp : qps) {				
 			if (!qp.contained(accumulator,false)) {
 				
 				// Base case: Add this query plan to the result

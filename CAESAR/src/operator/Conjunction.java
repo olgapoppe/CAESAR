@@ -37,8 +37,7 @@ public class Conjunction {
 			attributes.add(p.attribute);
 		}
 		return attributes;
-	}
-	
+	}	
 	
 	boolean subsumedBy (Conjunction c2) {
 		for (AtomicPredicate p : c2.atomicPredicates) {
