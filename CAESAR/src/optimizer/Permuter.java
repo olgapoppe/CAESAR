@@ -51,16 +51,19 @@ public class Permuter implements Runnable {
 	}
 	
 	/**
-	 * Finds all alternative query plans that arise due to operator reordering.
+	 * Finds all alternative query plans that arise due to operator reordering and 
+	 * adds them to the accumulator and the output.
+	 * Finds the cheapest query plan and its cost.
+	 * Computes the total number of alternative query plans.
 	 * @param qps			input query plans
 	 */
 	void exhaustive_search (ArrayList<QueryPlan> qps) {
 		
-		for (QueryPlan qp : qps) {
+		for (QueryPlan qp : qps) {			
 			
-			// Base case: Add this query plan to the result
 			if (!qp.contained(accumulator)) {
 				
+				// Base case: Add this query plan to the result
 				accumulator.add(qp);
 				output_query_plans.add(qp);
 				double cost = qp.getCost();
@@ -71,30 +74,28 @@ public class Permuter implements Runnable {
 		    		cheapest_query_plan = qp;
 		    	}
 				number_of_query_plans++;
-			}				
-			// Recursive case: Merge operators in this query plan
-			exhaustive_search(exhaustive_reordering(qp));			
-		}				
+				
+				// Recursive case: Merge operators in this query plan
+				exhaustive_search(exhaustive_reordering(qp));
+		}}				
 	}
 	
 	/**
 	 * Finds all alternative query plans that arise due to operator permutation.
-	 * @param qps			input query plans 
-	 * @param accumulator	resulting query plans found so far
+	 * @param qps			input query plans
+	 * @return resulting alternative query plans
 	 */
 	ArrayList<QueryPlan> exhaustive_reordering (QueryPlan query_plan) {
 		
 		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
 			
 		for(int i = 0; i < query_plan.operators.size(); i++) {
-			if (i-1>=0 && query_plan.operators.get(i).lowerable_exhaustive(query_plan.operators.get(i-1))) {
+			if (i-1>=0 && query_plan.operators.get(i).lowerable(query_plan.operators.get(i-1),false)) {
 				LinkedList<Operator> new_ops = new LinkedList<Operator>();
 				new_ops.addAll(query_plan.operators);
 				Collections.swap(new_ops, i, i-1);
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
-				if (!new_query_plan.contained(accumulator)) {
-					new_query_plans.add(new_query_plan);				
-				}
+				new_query_plans.add(new_query_plan);			
 		}}
 		return new_query_plans;	
 	}
@@ -129,7 +130,7 @@ public class Permuter implements Runnable {
 		
 		for(int i = 0; i < query_plan.operators.size(); i++) {
 			int j = i;
-			while (j-1>=0 && query_plan.operators.get(j).lowerable_optimized(query_plan.operators.get(j-1))) {
+			while (j-1>=0 && query_plan.operators.get(j).lowerable(query_plan.operators.get(j-1),true)) {
 				Collections.swap(query_plan.operators, j, j-1);
 				j--;
 				change = true;

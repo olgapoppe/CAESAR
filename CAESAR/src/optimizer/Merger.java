@@ -44,23 +44,24 @@ public class Merger implements Runnable {
 	}
 	
 	/**
-	 * Finds all alternative query plans that arise due to operator merge.
+	 * Finds all alternative query plans that arise due to operator merge and 
+	 * adds them to the accumulator and the output.
 	 * @param qps			input query plans
 	 */
 	void exhaustive_search (ArrayList<QueryPlan> qps) {
 		
-		for (QueryPlan qp : qps) {
+		for (QueryPlan qp : qps) {			
 			
-			// Base case: Add this query plan to the result
 			if (!qp.contained(accumulator)) {
 				
+				// Base case: Add this query plan to the result
 				accumulator.add(qp);
 				output_query_plans.add(qp);
-				System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());			
-			}				
-			// Recursive case: Merge operators in this query plan
-			exhaustive_search(exhaustive_merge(qp));			
-		}				
+				System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());
+				
+				// Recursive case: Merge operators in this query plan
+				exhaustive_search(exhaustive_merge(qp));
+		}}				
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class Merger implements Runnable {
 						if (j==i) {
 							Filter fi1 = (Filter) query_plan.operators.get(i);
 							Filter fi2 = (Filter) query_plan.operators.get(i+1);
-							Filter merged_filter = fi1.merge(fi2);
+							Filter merged_filter = fi1.merge(fi2,false);
 							new_ops.add(merged_filter);
 				}}}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
@@ -128,7 +129,7 @@ public class Merger implements Runnable {
 				filters2merge.add(fi);
 				i++;
 			}
-			Filter mergedFilter = Filter.mergeAll(filters2merge);
+			Filter mergedFilter = Filter.mergeAll(filters2merge,true);
 			new_operators.add(mergedFilter);			
 			
 			i = toMerge.to+1;			

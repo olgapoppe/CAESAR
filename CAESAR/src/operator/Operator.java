@@ -11,11 +11,7 @@ public abstract class Operator {
 		return false;
 	}
 	
-	public boolean lowerable_optimized (Operator neighbor) {
-		return false;
-	}
-	
-	public boolean lowerable_exhaustive (Operator neighbor) {
+	public boolean lowerable (Operator neighbor, boolean optimized) {
 		return false;
 	}
 	

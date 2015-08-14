@@ -30,39 +30,24 @@ public class Projection extends Operator {
 		return attributes.containsAll(other.attributes);	
 	}
 	
-	public boolean lowerable_optimized (Operator neighbor) {
+	public boolean lowerable (Operator neighbor, boolean optimized) {
 		
-		if ((neighbor instanceof ContextWindow) || (neighbor instanceof Filter)) return false;
-				
+		if (optimized) {
+			if ((neighbor instanceof ContextWindow) || (neighbor instanceof Filter)) return false;				
+		} else { 
+			if (neighbor instanceof Filter) {
+				Filter other = (Filter) neighbor;
+				return this.attributes.containsAll(other.predicate.getAttributes());
+		}}
 		if (neighbor instanceof Projection) {
 			Projection other = (Projection) neighbor;
 			return this.attributes.containsAll(other.attributes);
 		}
-		
 		if (neighbor instanceof RunUpdate) {
 			RunUpdate other = (RunUpdate) neighbor;
 			return this.attributes.containsAll(other.getAttributes());
 		}		
-		return true;		
-	}
-	
-	public boolean lowerable_exhaustive (Operator neighbor) {
-		
-		if (neighbor instanceof Filter) {
-			Filter other = (Filter) neighbor;
-			return this.attributes.containsAll(other.predicate.getAttributes());
-		}
-		
-		if (neighbor instanceof Projection) {
-			Projection other = (Projection) neighbor;
-			return this.attributes.containsAll(other.attributes);
-		}		
-		
-		if (neighbor instanceof RunUpdate) {
-			RunUpdate other = (RunUpdate) neighbor;
-			return this.attributes.containsAll(other.getAttributes());
-		}		
-		return true;		
+		return true;
 	}
 	
 	public boolean equals(Operator operator) {

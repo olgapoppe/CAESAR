@@ -31,24 +31,24 @@ public class Omittor implements Runnable {
 	}
 	
 	/**
-	 * Finds all alternative query plans that arise due to operator omission.
-	 * Finds the cheapest query plan and its cost.
-	 * Computes the total number of alternative query plans.
+	 * Finds all alternative query plans that arise due to operator omission and 
+	 * adds them to the accumulator and the output.
 	 * @param qps			input query plans
 	 */
 	void exhaustive_search (LinkedBlockingQueue<QueryPlan> qps) {
 				
-		for (QueryPlan qp : qps) {
+		for (QueryPlan qp : qps) {			
 			
-			// Base case: Add this query plan to the result
 			if (!qp.contained(accumulator)) {
+				
+				// Base case: Add this query plan to the result
 				accumulator.add(qp);
 				output_query_plans.add(qp); 
-				System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());			
-			}				
-			// Recursive case: Omit operators in this query plan
-			exhaustive_search(exhaustive_omission(qp));			
-		}				
+				System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());	
+				
+				// Recursive case: Omit operators in this query plan
+				exhaustive_search(exhaustive_omission(qp));	
+		}}				
 	}
 	
 	/**

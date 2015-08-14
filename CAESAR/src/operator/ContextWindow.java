@@ -18,13 +18,7 @@ public class ContextWindow extends Operator {
 		return this.equals(neighbor);	
 	}
 	
-	public boolean lowerable_optimized (Operator neighbor) {
-		return !((neighbor instanceof ContextInitiation) ||
-				(neighbor instanceof ContextSwitch) ||
-				(neighbor instanceof ContextTermination));
-	}
-	
-	public boolean lowerable_exhaustive (Operator neighbor) {
+	public boolean lowerable (Operator neighbor, boolean optimized) {
 		return !((neighbor instanceof ContextInitiation) ||
 				(neighbor instanceof ContextSwitch) ||
 				(neighbor instanceof ContextTermination));
