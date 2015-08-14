@@ -32,8 +32,7 @@ public class ContextWindow extends Operator {
 		return 0.3;
 	}
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals(Operator operator) {		
 		if (!(operator instanceof ContextWindow)) return false;				
 		ContextWindow other = (ContextWindow) operator;	
 		return context.equals(other.context);

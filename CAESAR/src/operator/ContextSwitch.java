@@ -22,8 +22,7 @@ public class ContextSwitch extends Operator {
 		return 1;
 	}
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals(Operator operator) {		
 		if (!(operator instanceof ContextSwitch)) return false;						
 		ContextSwitch other = (ContextSwitch) operator;
 		return context.equals(other.context);

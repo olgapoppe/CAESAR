@@ -50,9 +50,9 @@ public class Merger implements Runnable {
 	 */
 	void exhaustive_search (ArrayList<QueryPlan> qps) {
 		
-		for (QueryPlan qp : qps) {			
+		for (QueryPlan qp : qps) {		
 			
-			if (!qp.contained(accumulator)) {
+			if (!qp.contained(accumulator,false)) {
 				
 				// Base case: Add this query plan to the result
 				accumulator.add(qp);
@@ -60,7 +60,7 @@ public class Merger implements Runnable {
 				System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());
 				
 				// Recursive case: Merge operators in this query plan
-				exhaustive_search(exhaustive_merge(qp));
+				exhaustive_search(exhaustive_merge(qp));								
 		}}				
 	}
 	

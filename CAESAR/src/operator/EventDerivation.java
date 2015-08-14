@@ -22,8 +22,7 @@ public class EventDerivation extends Operator {
 		return 1;
 	}	
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals(Operator operator) {		
 		if (!(operator instanceof EventDerivation)) return false;				
 		EventDerivation other = (EventDerivation) operator;
 		return event_type.equals(other.event_type);

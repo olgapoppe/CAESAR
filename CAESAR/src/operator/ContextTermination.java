@@ -22,8 +22,7 @@ public class ContextTermination extends Operator {
 		return 1;
 	}
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals(Operator operator) {		
 		if (!(operator instanceof ContextTermination)) return false;						
 		ContextTermination other = (ContextTermination) operator;
 		return context.equals(other.context);

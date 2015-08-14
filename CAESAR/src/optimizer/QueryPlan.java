@@ -71,18 +71,30 @@ public class QueryPlan {
 		return cost;
 	}
 	
-	public boolean contained (ArrayList<QueryPlan> list) {
+	public boolean contained (ArrayList<QueryPlan> list, boolean optimized) {
 		for (QueryPlan qp : list) {
-			if (this.equals(qp)) return true;
+			if (optimized) {
+				if (this.equivalent(qp)) return true;
+			} else {
+				if (this.equals(qp)) return true;
+			}		
 		}
 		return false;
 	}
 	
-	public boolean equals (QueryPlan other) {
-		
+	public boolean equals (QueryPlan other) {		
 		if (operators.size()!=other.operators.size()) return false;
 		for (int i=0; i<operators.size(); i++) {
 			if (!operators.get(i).equals(other.operators.get(i))) 
+				return false;	
+		}
+		return true;
+	}
+	
+	public boolean equivalent (QueryPlan other) {		
+		if (operators.size()!=other.operators.size()) return false;
+		for (int i=0; i<operators.size(); i++) {
+			if (!operators.get(i).equivalent(other.operators.get(i))) 
 				return false;	
 		}
 		return true;

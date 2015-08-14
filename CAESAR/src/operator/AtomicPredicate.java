@@ -149,6 +149,10 @@ public class AtomicPredicate {
 		return new AtomicPredicate(this.attribute, this.comparisonOperator, this.value);
 	}
 	
+	public boolean equals (AtomicPredicate other) {
+		return attribute.equals(other.attribute) && comparisonOperator.equals(other.comparisonOperator) && value == other.value;
+	}
+	
 	public String toString() {
 		return attribute + comparisonOperator + value;
 	}

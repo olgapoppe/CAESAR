@@ -50,8 +50,7 @@ public class Projection extends Operator {
 		return true;
 	}
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals(Operator operator) {		
 		if (!(operator instanceof Projection)) 	return false;
 		Projection other = (Projection) operator;
 		return attributes.containsAll(other.attributes) && other.attributes.containsAll(attributes);

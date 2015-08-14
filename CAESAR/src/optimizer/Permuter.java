@@ -61,7 +61,7 @@ public class Permuter implements Runnable {
 		
 		for (QueryPlan qp : qps) {			
 			
-			if (!qp.contained(accumulator)) {
+			if (!qp.contained(accumulator,false)) {
 				
 				// Base case: Add this query plan to the result
 				accumulator.add(qp);

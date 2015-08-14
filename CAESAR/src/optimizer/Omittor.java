@@ -25,7 +25,7 @@ public class Omittor implements Runnable {
 	
 	public void run () {		
 		
-		exhaustive_search(input_query_plans);    	
+		exhaustive_search(input_query_plans);	
 		omittor_done.set(true);
 		System.out.println("Omittor is done.");
 	}
@@ -39,7 +39,7 @@ public class Omittor implements Runnable {
 				
 		for (QueryPlan qp : qps) {			
 			
-			if (!qp.contained(accumulator)) {
+			if (!qp.contained(accumulator,false)) {
 				
 				// Base case: Add this query plan to the result
 				accumulator.add(qp);

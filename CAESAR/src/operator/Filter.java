@@ -69,11 +69,16 @@ public class Filter extends Operator {
 		return Math.pow(0.5,predicate.getNumber());
 	}
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals (Operator operator) {		
 		if (!(operator instanceof Filter)) return false;				
 		Filter other = (Filter) operator;
-		return predicate.equals(other.predicate);
+		return predicate.equals(other.predicate);				
+	}
+	
+	public boolean equivalent (Operator operator) {
+		if (!(operator instanceof Filter)) return false;				
+		Filter other = (Filter) operator;
+		return predicate.equivalent(other.predicate);
 	}
 	
 	public String toString() {

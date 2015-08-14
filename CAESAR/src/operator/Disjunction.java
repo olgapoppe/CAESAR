@@ -126,6 +126,16 @@ public class Disjunction {
 	}
 	
 	public boolean equals (Disjunction other) {
+		if (conjunctivePredicates.size()!=other.conjunctivePredicates.size()) return false;
+		for (int i=0; i<conjunctivePredicates.size(); i++) {
+			if (!conjunctivePredicates.get(i).equals(other.conjunctivePredicates.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean equivalent (Disjunction other) {
 		return this.subsumedBy(other) && other.subsumedBy(this);
 	}
 	

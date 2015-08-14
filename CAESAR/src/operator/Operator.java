@@ -7,6 +7,10 @@ public abstract class Operator {
 	public abstract boolean equals (Operator op);
 	public abstract String toString ();
 	
+	public boolean equivalent(Operator operator) {
+		return this.equals(operator);
+	}
+	
 	public boolean mergable (Operator neighbor) {
 		return false;
 	}

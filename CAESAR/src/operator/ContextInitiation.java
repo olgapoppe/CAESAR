@@ -22,8 +22,7 @@ public class ContextInitiation extends Operator {
 		return 1;
 	}
 	
-	public boolean equals(Operator operator) {
-		
+	public boolean equals(Operator operator) {		
 		if (!(operator instanceof ContextInitiation)) return false;						
 		ContextInitiation other = (ContextInitiation) operator;
 		return context.equals(other.context);

@@ -101,6 +101,16 @@ public class Conjunction {
 		return false;		
 	}
 	
+	public boolean equals (Conjunction other) {
+		if (atomicPredicates.size()!=other.atomicPredicates.size()) return false;
+		for (int i=0; i<atomicPredicates.size(); i++) {
+			if (!atomicPredicates.get(i).equals(other.atomicPredicates.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public String toString() {
 		
 		String s = "";
