@@ -53,7 +53,7 @@ public class Filter extends Operator {
 	
 	public boolean lowerable (Operator neighbor, boolean optimized) {
 		if (optimized) {
-			return (neighbor instanceof Projection);
+			return 	(neighbor instanceof Projection);
 		} else {
 			return 	(neighbor instanceof Filter) ||
 					(neighbor instanceof ContextWindow) ||

@@ -88,7 +88,7 @@ public class Permuter implements Runnable {
 		
 		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
 			
-		for(int i = 0; i < query_plan.operators.size(); i++) {
+		for(int i=0; i<query_plan.operators.size(); i++) {
 			if (i-1>=0 && query_plan.operators.get(i).lowerable(query_plan.operators.get(i-1),false)) {
 				LinkedList<Operator> new_ops = new LinkedList<Operator>();
 				new_ops.addAll(query_plan.operators);
