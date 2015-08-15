@@ -91,10 +91,10 @@ public class Merger implements Runnable {
 						new_ops.add(query_plan.operators.get(j));
 					} else {
 						if (j==i) {
-							Filter fi1 = (Filter) query_plan.operators.get(i);
-							Filter fi2 = (Filter) query_plan.operators.get(i+1);
-							Filter merged_filter = fi1.merge(fi2,false);
-							new_ops.add(merged_filter);
+							Operator op1 = query_plan.operators.get(i);
+							Operator op2 = query_plan.operators.get(i+1);
+							Operator merged_op = op1.merge(op2,false);
+							new_ops.add(merged_op);
 				}}}
 				QueryPlan new_query_plan = new QueryPlan(new_ops);	
 				new_query_plans.add(new_query_plan);				
@@ -128,7 +128,7 @@ public class Merger implements Runnable {
 				filters2merge.add(fi);
 				i++;
 			}
-			Filter mergedFilter = Filter.mergeAll(filters2merge,true);
+			Operator mergedFilter = Filter.mergeAll(filters2merge,true);
 			new_operators.add(mergedFilter);			
 			
 			i = toMerge.to+1;			

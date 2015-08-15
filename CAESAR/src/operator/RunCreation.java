@@ -7,7 +7,7 @@ public class RunCreation extends Operator {
 	}
 	
 	public boolean omittable (Operator neighbor) {		
-		return this.equals(neighbor);
+		return (neighbor instanceof RunDeletion) || this.equals(neighbor);
 	}
 	
 	public double getCost() {

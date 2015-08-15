@@ -23,7 +23,19 @@ public class RunUpdate extends Operator {
 	}
 	
 	public boolean omittable (Operator neighbor) {
-		return this.equals(neighbor);		
+		return (neighbor instanceof RunDeletion) || this.equals(neighbor);		
+	}
+	
+	public boolean mergable (Operator neighbor) {		
+		return (neighbor instanceof RunUpdate);		
+	}
+	
+	public Operator merge (Operator other, boolean optimized) {
+		RunUpdate ru = (RunUpdate) other;
+		ArrayList<Tuple> tups = new ArrayList<Tuple>();
+		tups.addAll(this.tuples);
+		tups.addAll(ru.tuples);
+		return new RunUpdate(tups);		
 	}
 	
 	public ArrayList<String> getAttributes() {

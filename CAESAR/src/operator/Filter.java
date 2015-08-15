@@ -28,23 +28,24 @@ public class Filter extends Operator {
 		return (neighbor instanceof Filter);		
 	}
 	
-	public Filter merge (Filter other, boolean optimized) {
+	public Operator merge (Operator other, boolean optimized) {
+		Filter fi = (Filter) other;
 		if (optimized) {
-			if (this.predicate.subsumedBy(other.predicate)) { // this is more specific
+			if (this.predicate.subsumedBy(fi.predicate)) { // this is more specific
 				return this;
 			} else {
-			if (other.predicate.subsumedBy(this.predicate)) { // other is more specific
+			if (fi.predicate.subsumedBy(this.predicate)) { // other is more specific
 				return other;
 		}}}
 		ArrayList<Disjunction> disjs = new ArrayList<Disjunction>();
-		disjs.add(other.predicate);
+		disjs.add(fi.predicate);
 		Disjunction predicate = this.predicate.getCNF(disjs);
 		Filter merged_filter = new Filter(predicate);
 		return merged_filter;		
 	}
 	
-	public static Filter mergeAll (ArrayList<Filter> list, boolean optimized) {
-		Filter result = list.get(0);
+	public static Operator mergeAll (ArrayList<Filter> list, boolean optimized) {
+		Operator result = list.get(0);
 		for (int i=1; i<list.size(); i++) {
 			result = result.merge(list.get(i), optimized);
 		}

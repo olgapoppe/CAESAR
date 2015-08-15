@@ -13,6 +13,10 @@ public abstract class Operator {
 	
 	public boolean mergable (Operator neighbor) {
 		return false;
+	}	
+	
+	public Operator merge (Operator other, boolean optimized) {
+		return this;
 	}
 	
 	public boolean lowerable (Operator neighbor, boolean optimized) {
