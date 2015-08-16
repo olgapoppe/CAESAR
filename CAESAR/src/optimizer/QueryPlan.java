@@ -7,9 +7,15 @@ import operator.*;
 public class QueryPlan {
 	
 	LinkedList<Operator> operators;
+	boolean omission_done;
+	boolean merge_done;
+	boolean permutation_done;
 	
 	public QueryPlan(LinkedList<Operator> ops) {
 		operators = ops;
+		omission_done = false;
+		merge_done = false;
+		permutation_done = false;
 	}
 	
 	public static QueryPlan parse(String s) {
@@ -20,8 +26,6 @@ public class QueryPlan {
 		for (String operator_string : allOperators) {
 			
 			operator_string = operator_string.trim();
-			
-			//System.out.println(operator_string);
 			
 			Operator operator;
 			if (operator_string.startsWith("RC")) { operator = RunCreation.parse(operator_string); } else {

@@ -46,8 +46,10 @@ public class Omittor implements Runnable {
 				//System.out.println("Result of omission: " + qp.toString() + " with cost " + qp.getCost());	
 				
 				// Recursive case: Omit operators in this query plan
-				exhaustive_search(exhaustive_omission(qp));	
-		}}				
+				if (!qp.omission_done) {
+					exhaustive_search(exhaustive_omission(qp));
+					qp.omission_done = true;
+		}}}				
 	}
 	
 	/**

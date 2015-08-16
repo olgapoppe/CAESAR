@@ -59,8 +59,10 @@ public class Merger implements Runnable {
 				//System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());
 				
 				// Recursive case: Merge operators in this query plan
-				exhaustive_search(exhaustive_merge(qp));								
-		}}				
+				if (!qp.merge_done) {
+					exhaustive_search(exhaustive_merge(qp));
+					qp.merge_done = true;
+		}}}				
 	}
 	
 	/**

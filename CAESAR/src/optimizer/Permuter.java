@@ -75,8 +75,10 @@ public class Permuter implements Runnable {
 				number_of_query_plans++;
 				
 				// Recursive case: Merge operators in this query plan
-				exhaustive_search(exhaustive_reordering(qp));
-		}}				
+				if (!qp.permutation_done) {
+					exhaustive_search(exhaustive_reordering(qp));
+					qp.permutation_done = true;
+		}}}				
 	}
 	
 	/**
