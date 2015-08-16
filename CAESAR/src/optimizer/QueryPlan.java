@@ -21,7 +21,7 @@ public class QueryPlan {
 			
 			operator_string = operator_string.trim();
 			
-			System.out.println(operator_string);
+			//System.out.println(operator_string);
 			
 			Operator operator;
 			if (operator_string.startsWith("RC")) { operator = RunCreation.parse(operator_string); } else {
