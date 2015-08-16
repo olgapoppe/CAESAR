@@ -19,6 +19,8 @@ public class QueryPlan {
 		
 		for (String operator_string : allOperators) {
 			
+			operator_string = operator_string.trim();
+			
 			Operator operator;
 			if (operator_string.startsWith("RC")) { operator = RunCreation.parse(operator_string); } else {
 			if (operator_string.startsWith("RU")) { operator = RunUpdate.parse(operator_string); } else {
