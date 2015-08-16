@@ -19,7 +19,9 @@ public class Main {
 		String query_plan_string = "";
 		for (int i=1; i<args.length; i++) {
 			query_plan_string += args[i] + " ";
-		}		
+		}
+		System.out.println("|" + query_plan_string + "|");
+		
 	    QueryPlan original_query_plan = QueryPlan.parse(query_plan_string);
 	    System.out.println("----------------------------------------\nOriginal query plan (" + original_query_plan.toString() + 
 	    		")\nhas " + original_query_plan.operators.size() +
