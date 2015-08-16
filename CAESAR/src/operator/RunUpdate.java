@@ -33,8 +33,10 @@ public class RunUpdate extends Operator {
 	public Operator merge (Operator other, boolean optimized) {
 		RunUpdate ru = (RunUpdate) other;
 		ArrayList<Tuple> tups = new ArrayList<Tuple>();
-		tups.addAll(this.tuples);
 		tups.addAll(ru.tuples);
+		for (Tuple t : tuples) {
+			if (!ru.containsValueFor(t.attribute)) tups.add(t);
+		}
 		return new RunUpdate(tups);		
 	}
 	
@@ -53,6 +55,13 @@ public class RunUpdate extends Operator {
 		}
 		return attributes;
 	}	
+	
+	public boolean containsValueFor (String attr) {
+		for (Tuple t : tuples) {
+			if (t.attribute.equals(attr)) return true;
+		}
+		return false;
+	}
 	
 	public double getCost() {
 		return tuples.size();
