@@ -121,15 +121,22 @@ public class Merger implements Runnable {
 				new_operators.add(query_plan.operators.get(i));
 				i++;
 			}
-			// Merged filters
-			ArrayList<Filter> filters2merge = new ArrayList<Filter>();
+			// Merged operators
+			ArrayList<Operator> mergeableOperators = new ArrayList<Operator>();
+			boolean filter = false;
 			while (i<=toMerge.to) {
-				Filter fi = (Filter) query_plan.operators.get(i);
-				filters2merge.add(fi);
+				Operator op = query_plan.operators.get(i);
+				filter = (op instanceof Filter);
+				mergeableOperators.add(op);
 				i++;
 			}
-			Operator mergedFilter = Filter.mergeAll(filters2merge,true);
-			new_operators.add(mergedFilter);			
+			Operator mergedOperator;
+			if (filter) {
+				mergedOperator = Filter.mergeAll(mergeableOperators,true);
+			} else {
+				mergedOperator = RunUpdate.mergeAll(mergeableOperators,true);
+			}			
+			new_operators.add(mergedOperator);			
 			
 			i = toMerge.to+1;			
 		}

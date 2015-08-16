@@ -38,6 +38,14 @@ public class RunUpdate extends Operator {
 		return new RunUpdate(tups);		
 	}
 	
+	public static Operator mergeAll (ArrayList<Operator> list, boolean optimized) {
+		Operator result = list.get(0);
+		for (int i=1; i<list.size(); i++) {
+			result = result.merge(list.get(i), optimized);
+		}
+		return result;
+	}
+	
 	public ArrayList<String> getAttributes() {
 		ArrayList<String> attributes = new ArrayList<String>();
 		for (Tuple t : tuples) {

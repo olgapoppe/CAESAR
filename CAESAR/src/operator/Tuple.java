@@ -17,6 +17,10 @@ public class Tuple {
 		return new Tuple(attribute, value);
 	}
 	
+	public boolean equals (Tuple other) {
+		return attribute.equals(other.attribute) && value == other.value;
+	}
+	
 	public String toString () {
 		return attribute + "=" + value;
 	}

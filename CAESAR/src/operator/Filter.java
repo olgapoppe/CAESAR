@@ -44,7 +44,7 @@ public class Filter extends Operator {
 		return merged_filter;		
 	}
 	
-	public static Operator mergeAll (ArrayList<Filter> list, boolean optimized) {
+	public static Operator mergeAll (ArrayList<Operator> list, boolean optimized) {
 		Operator result = list.get(0);
 		for (int i=1; i<list.size(); i++) {
 			result = result.merge(list.get(i), optimized);
