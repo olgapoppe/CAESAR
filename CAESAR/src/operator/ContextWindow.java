@@ -9,7 +9,6 @@ public class ContextWindow extends Operator {
 	}
 	
 	public static ContextWindow parse(String s) {		
-		
 		String context = s.substring(3); // Skip "CW "				
 		return new ContextWindow(context);
 	}
@@ -19,6 +18,9 @@ public class ContextWindow extends Operator {
 	}
 	
 	public boolean lowerable (Operator neighbor, boolean optimized) {
+		
+		if (neighbor instanceof ContextWindow) return false;
+		
 		return !((neighbor instanceof ContextInitiation) ||
 				(neighbor instanceof ContextSwitch) ||
 				(neighbor instanceof ContextTermination));
