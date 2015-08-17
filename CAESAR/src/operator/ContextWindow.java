@@ -19,7 +19,7 @@ public class ContextWindow extends Operator {
 	
 	public boolean lowerable (Operator neighbor, boolean optimized) {
 		
-		if (neighbor instanceof ContextWindow) return false;
+		if (optimized && (neighbor instanceof ContextWindow)) return false;
 		
 		return !((neighbor instanceof ContextInitiation) ||
 				(neighbor instanceof ContextSwitch) ||
