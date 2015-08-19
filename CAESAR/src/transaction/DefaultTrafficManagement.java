@@ -751,7 +751,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 								
-					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {
