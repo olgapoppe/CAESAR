@@ -679,7 +679,10 @@ public class DefaultTrafficManagement extends Transaction {
 	}*/
 	
 	/*** 
-	 * This method is same as run.trafficManagement but without optimization heuristics
+	 * This method is same as run.trafficManagement but without the follwoing optimization heuristics:
+	 * - Event derivation omission
+	 * - Early mandatory filters and projections
+	 * - Single optimal run-look-up
 	 ***/
 	public void defaultTrafficManagement (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
@@ -748,7 +751,7 @@ public class DefaultTrafficManagement extends Transaction {
 				double segWithAccAhead;
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 								
-					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
+					segWithAccAhead = run.default_getSegWithAccidentAhead(runs, event); // RL 13, FI
 					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
 					run.time.minOfLastUpdateOfAccidentAhead = event.min;
 				} else {

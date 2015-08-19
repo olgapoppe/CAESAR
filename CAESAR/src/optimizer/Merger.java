@@ -56,7 +56,7 @@ public class Merger implements Runnable {
 				// Base case: Add this query plan to the result
 				accumulator.add(qp);
 				output_query_plans.add(qp);
-				//System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());
+				System.out.println("Result of merge: " + qp.toString() + " with cost " + qp.getCost());
 				
 				// Recursive case: Merge operators in this query plan
 				if (!qp.merge_done) {
