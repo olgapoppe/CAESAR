@@ -68,7 +68,7 @@ public class Vehicle {
 		} else {
 			return -1;
 		}	
-	}	
+	}
 	
 	/**
 	 * Compute the average speed of this vehicle during the given minute 

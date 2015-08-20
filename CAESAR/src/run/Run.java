@@ -1,13 +1,11 @@
 package run;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-//import java.util.concurrent.atomic.AtomicInteger;
 import accident.*;
 import event.*;
 
@@ -382,9 +380,9 @@ public class Run {
 	 * @param event	incoming position report
 	 * @return segment with accident ahead or -1
 	 */
-	public double default_getSegWithAccidentAhead (HashMap<RunID,Run> runs, PositionReport event) {
+	/*public double default_getSegWithAccidentAhead (HashMap<RunID,Run> runs, PositionReport event) {
 		
-		/*** Get 4 runs ahead and read their accidents ***/
+		*//*** Get 4 runs ahead and read their accidents ***//*
 		
 		// find all road segments with accidents and remember their ids
 		ArrayList<RunID> runs_with_accidents = new ArrayList<RunID>();
@@ -403,7 +401,8 @@ public class Run {
 				return runid.seg;
 		}		
 		return -1;
-	}
+	}*/
+	
 	/************************************************* Garbage collection *************************************************/
 	/**
 	 * Vehicle counts for the current minute are kept.
