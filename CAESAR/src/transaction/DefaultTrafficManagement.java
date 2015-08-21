@@ -46,14 +46,38 @@ public class DefaultTrafficManagement extends Transaction {
 	 */	
 	public void run() {	
 		
+		double segWithAccAhead;
 		double max_exe_time_in_this_transaction = 0;
 			
 		for (PositionReport event : events) {
 			
+			if (event == null) System.out.println("NULL EVENT!!!");
+			
+			RunID runid = new RunID(event.xway, event.seg, event.dir);
+			Run run = runs.get(runid); // RL
+			if (run == null) System.out.println("NULL RUN!!!" + event.toString());
+			
+			// READ: If a new vehicle on a travel lane arrives, lookup accidents ahead
+			if (run.vehicles.get(event.vid) == null && event.lane < 4) { // FI
+								
+				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
+									
+					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
+					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
+					run.time.minOfLastUpdateOfAccidentAhead = event.min;
+				} else {
+					segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
+				}			
+			} else {
+				segWithAccAhead = -1;
+			}	
+			HashMap<Double,Double> accAhead = run.accidentsAhead; // optional PR
+			double min1 = event.min;
+			
 			// WRITE: Update the respective run and remove old data
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			
-			defaultTrafficManagement (event, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed);			
+			defaultTrafficManagement (event, segWithAccAhead, startOfSimulation, accidentWarningsFailed, tollNotificationsFailed);			
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
@@ -70,7 +94,8 @@ public class DefaultTrafficManagement extends Transaction {
 	 * This method is same as run.trafficManagement but without operator omission and reordering (FI, PR, RL, ED).
 	 * It is incremental and has optimal stream history access. 
 	 ***/
-	public void defaultTrafficManagement (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
+	public void defaultTrafficManagement (PositionReport event, double segWithAccAhead, long startOfSimulation, 
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
 		// Set auxiliary variables
 		double next_min = event.min+1;
@@ -132,20 +157,7 @@ public class DefaultTrafficManagement extends Transaction {
 					
 				projection(event); // optional PR	
 				event_derivation("NewTravelingCar",event); // optional ED
-					
-				// Accident ahead detection			
-				double segWithAccAhead;
-				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 								
-					segWithAccAhead = run.getSegWithAccidentAhead(runs, event); // RL 13, FI
-					if (segWithAccAhead!=-1) run.accidentsAhead.put(event.min, segWithAccAhead); // HU
-					run.time.minOfLastUpdateOfAccidentAhead = event.min;
-				} else {
-					segWithAccAhead = (run.accidentsAhead.containsKey(event.min)) ? run.accidentsAhead.get(event.min) : -1; // PR
-				}		
-				HashMap<Double,Double> accAhead = run.accidentsAhead; // optional PR
-				double min1 = event.min;
-				
 				// Context update
 				runLookUp(event); // RL 14
 				boolean accident = segWithAccAhead != -1; // FI
