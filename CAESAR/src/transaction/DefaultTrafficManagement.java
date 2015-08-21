@@ -67,9 +67,8 @@ public class DefaultTrafficManagement extends Transaction {
 	}	
 	
 	/*** 
-	 * This method is same as run.trafficManagement but without the following optimization heuristics:
-	 * - Operator omission and reordering
-	 * - Incremental stream history maintenance 
+	 * This method is same as run.trafficManagement but without operator omission and reordering (FI, PR, RL, ED).
+	 * It is incremental and has optimal stream history access. 
 	 ***/
 	public void defaultTrafficManagement (PositionReport event, long startOfSimulation, AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
@@ -364,12 +363,12 @@ public class DefaultTrafficManagement extends Transaction {
 		double result = 0;
 				
 		if (run.time.min < event.min) { // FI 
-			//if (run.avgSpds.containsKey(min)) {
-				//result = run.avgSpds.get(min); // PR
-			//} else {
+			if (run.avgSpds.containsKey(min)) {
+				result = run.avgSpds.get(min); // PR
+			} else {
 				result = default_getAvgSpd(run, event, min);
 				run.avgSpds.put(min,result); // HU
-			//}
+			}
 		}
 		return result;
 	}
