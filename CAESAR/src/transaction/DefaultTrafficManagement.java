@@ -53,7 +53,7 @@ public class DefaultTrafficManagement extends Transaction {
 			
 			if (event == null) System.out.println("NULL EVENT!!!");
 			
-			RunID runid = new RunID(event.xway, event.seg, event.dir);
+			RunID runid = new RunID(event.xway, event.dir, event.seg);
 			Run run = runs.get(runid); // RL
 			if (run == null) System.out.println("NULL RUN!!!" + event.toString());
 			
