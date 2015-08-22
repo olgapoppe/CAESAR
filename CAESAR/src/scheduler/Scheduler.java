@@ -2,12 +2,13 @@ package scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-//import java.util.Iterator;
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import event.*;
 import run.*;
 import transaction.*;
@@ -69,13 +70,13 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (double sec, boolean execute) {
+	public int all_queries_all_runs (double sec, boolean execute, boolean fake) {
 		
 		int number = 0;
 		
 		try {
 			// Get transactions to schedule
-			ArrayList<Transaction> transactions = one_query_all_runs(sec, execute);
+			ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, fake);
 			number = transactions.size();
 			
 			// Wait for executor
@@ -226,7 +227,7 @@ public abstract class Scheduler implements Runnable {
 	 * Iterate over all run task queues and schedule transactions in round-robin manner.
 	 * @param sec				transaction time stamp			
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute) {
+	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute, boolean fake) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -235,13 +236,13 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=0; seg<=99; seg++) {
 				
 				RunID runid0 = new RunID(xway,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0, execute);
+				Transaction t0 = one_query_one_run(sec, runid0, execute, fake);
 				if (t0!=null) transactions.add(t0);	
 								
 				if (xway != max_xway || both_dirs) {
 					
 					RunID runid1 = new RunID(xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1, execute);
+					Transaction t1 = one_query_one_run(sec, runid1, execute, fake);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -319,7 +320,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param sec				transaction time stamp
 	 * @param runid				identifier of the run the tasks of which are scheduled
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid, boolean execute) {
+	public Transaction one_query_one_run (double sec, RunID runid, boolean execute, boolean fake) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
@@ -330,19 +331,31 @@ public abstract class Scheduler implements Runnable {
 				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();		
 				
 				/*** Put all events with the same time stamp as this transaction into the event list ***/
-				PositionReport event = eventqueue.peek();					
-				while (event!=null && event.sec==sec) { 				
-					eventqueue.poll();
-					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-					event_list.add(event);				
+				PositionReport event;	
+				if (fake) {
+					
+					Iterator<PositionReport> iterator = eventqueue.iterator();
+					while (iterator.hasNext()) {						
+						event = iterator.next();
+						if (event.sec==sec) {
+							event_list.add(event);	
+						} else {
+							break;
+					}}					
+				} else {	
 					event = eventqueue.peek();
-				}					
+					while (event!=null && event.sec==sec) { 				
+						eventqueue.poll();
+						event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+						event_list.add(event);				
+						event = eventqueue.peek();
+				}}					
 				/*** If the event list is not empty, generate a transaction and submit it for execution ***/
 				if (!event_list.isEmpty() && execute) {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
-						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, fake);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
 					}

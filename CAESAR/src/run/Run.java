@@ -41,6 +41,19 @@ public class Run {
 	boolean count_and_rate;
 	public String context;
 	
+	/*** Fake data structures to be updated by replicated queries ***/
+	public Time fake_time;
+	public ConcurrentHashMap<Double,Vehicle> fake_vehicles;	
+	public HashMap<Double,Double> fake_vehCounts;
+	public HashMap<Double,Double> fake_avgSpds;
+	public double fake_avgSpd;
+	public HashMap<AccidentLocation,Vector<StoppedVehicle>> fake_stoppedVehicles;		
+	boolean fake_accident;
+	public AccidentLocation fake_currentAccidentLocation;
+	public LinkedBlockingQueue<Accident> fake_accidents;
+	public HashMap<Double,Double> fake_accidentsAhead;
+	public Output fake_output;
+	
 	public Run (RunID id, double s, double m, boolean cr) {
 		
 		runID = id;		
@@ -63,6 +76,19 @@ public class Run {
 		
 		count_and_rate = cr;
 		context = "clear";
+		
+		/*** Fake data structures to be updated by replicated queries ***/
+		fake_time = new Time(s,m);
+		fake_vehicles = new ConcurrentHashMap<Double,Vehicle>();
+		fake_vehCounts = new HashMap<Double,Double>();
+		fake_avgSpds = new HashMap<Double,Double>();
+		fake_avgSpd = -1;
+		fake_stoppedVehicles = new HashMap<AccidentLocation,Vector<StoppedVehicle>>();		
+		fake_accident = false;
+		fake_currentAccidentLocation = new AccidentLocation(-1,-1);
+		fake_accidents = new LinkedBlockingQueue<Accident>();
+		fake_accidentsAhead = new HashMap<Double,Double>();
+		fake_output = new Output();	
 	}
 	
 	/************************************************* Vehicle count *************************************************/
@@ -219,6 +245,16 @@ public class Run {
 		}}}		
 	}	
 	
+	public void fake_setRemovalTime (double vid, double removalTime) {	
+		
+		if (stoppedVehicles.containsKey(currentAccidentLocation)) {
+			Vector<StoppedVehicle> stopped_vehicles = stoppedVehicles.get(currentAccidentLocation);			
+			for (StoppedVehicle v : stopped_vehicles) {
+				if (v.vid == vid) {
+					v.removalSec = v.removalSec;		
+		}}}		
+	}	
+	
 	/**
 	 * Return the minute during which the accident at the current accident location was cleared
 	 * @return minute
@@ -278,6 +314,20 @@ public class Run {
 		}
 	}
 	
+	public void fake_toAccident (PositionReport event, long startOfSimulation, boolean run_priorization) { 
+		
+		if (!accident && getMaxStopVehNumber(event.sec) == 2) {	
+			
+			// Update accidents
+			fake_accident = true;
+			long currentSystemTime = System.currentTimeMillis() - startOfSimulation;
+			fake_writeAccidents(event, runID, event.min, currentSystemTime, -1, -1);		
+			
+			// Update current accident location
+			fake_currentAccidentLocation.reset(event.lane,event.pos);
+		}
+	}
+	
 	/**
 	 * If there is no accident on this road segment, 
 	 * update accidents, current accident location and first HP segment.
@@ -297,6 +347,21 @@ public class Run {
 		
 			// Update current accident location
 			currentAccidentLocation.reset(-1,-1);	
+		}
+	}	
+	
+	public void fake_fromAccident (PositionReport event, long startOfSimulation, boolean run_priorization) {
+		
+		if (accident && getStopVehNumber(event.sec) == 0) {		
+		
+			// Update accidents
+			fake_accident = false;
+			double clearAppMin = getAccClearMin();
+			long currentSystemTime = System.currentTimeMillis() - startOfSimulation;
+			fake_writeAccidents(event, runID, -1, -1, clearAppMin, currentSystemTime);	
+		
+			// Update current accident location
+			fake_currentAccidentLocation.reset(-1,-1);	
 		}
 	}	
 	
@@ -334,6 +399,17 @@ public class Run {
 	    	Accident a = getNotFinishedAccident();
 	    	a.clearAppMin = cam;	   
 	    	a.clearProcTime = cpt;	    		
+	    }    
+	}
+	
+	public void fake_writeAccidents (PositionReport event, RunID runid, double dam, double dpt, double cam, double cpt) {		
+	    if (dam!=-1) {
+	    	Accident a = new Accident(runid, event.lane, event.pos, dam, dpt);
+	    	if (!accidents.contains(a)) fake_accidents.add(a);	   	    		
+	    } else {
+	    	Accident a = getNotFinishedAccident();
+	    	a.clearAppMin = a.clearAppMin;	   
+	    	a.clearProcTime = a.clearProcTime;	    		
 	    }    
 	}
 	
@@ -422,6 +498,19 @@ public class Run {
 		} 	 
 	}
 	
+	public void fake_deleteVehCounts (double new_min) {
+		Set<Double> mins = fake_vehCounts.keySet();
+		/*** Get minutes to delete ***/
+		Vector<Double> mins2delete = new Vector<Double>();
+		for (Double m : mins) {
+			if (m < new_min) mins2delete.add(m);				
+		}
+		/*** Delete these minutes ***/
+		for (Double m : mins2delete) {
+			fake_vehCounts.remove(m);
+		} 	 
+	}
+	
 	/**
 	 * Average speeds for the last 5 minutes are kept.
 	 * All earlier average speeds are deleted.
@@ -437,6 +526,19 @@ public class Run {
 		/*** Delete these minutes ***/
 		for (Double m : mins2delete) {
 			avgSpds.remove(m);
+		}
+	}
+
+	public void fake_deleteAvgSpds (double new_min) {
+		Set<Double> mins = fake_avgSpds.keySet();
+		/*** Get minutes to delete ***/
+		Vector<Double> mins2delete = new Vector<Double>();
+		for (Double m : mins) {
+			if (m < new_min-5) mins2delete.add(m);				
+		}
+		/*** Delete these minutes ***/
+		for (Double m : mins2delete) {
+			fake_avgSpds.remove(m);
 		}
 	}
 	
@@ -459,6 +561,20 @@ public class Run {
 		}			
 	}
 	
+	public void fake_deleteVehicles (double new_min) {
+		Set<Double> vids = fake_vehicles.keySet();            			
+		/*** Get vehicles to delete ***/
+		Vector<Double> vehicles2delete = new Vector<Double>();
+		for (Double vid : vids) {
+			Vehicle vehicle = fake_vehicles.get(vid);				
+			if (vehicle.min < new_min-5) vehicles2delete.add(vid);				 
+		}
+		/*** Delete these vehicles ***/
+		for (Double vid : vehicles2delete) {
+			fake_vehicles.remove(vid);				
+		}			
+	}
+	
 	/**
 	 * Delete expired objects and values
 	 * @param new_min	current processing minute of this run 
@@ -475,6 +591,16 @@ public class Run {
 	 			
  			//long durationOfDeletion = System.currentTimeMillis() - beginOfDeletion;
  			//time.garbageCollectionTime += durationOfDeletion;		 			
+		}
+	}
+	
+	public void fake_collectGarbage (double new_min) {
+		if (time.minOfLastGarbageCollection < new_min-2) {
+	 			
+	 		fake_deleteVehCounts(new_min);
+ 			fake_deleteAvgSpds(new_min);
+ 			fake_deleteVehicles(new_min);
+ 			fake_time.minOfLastGarbageCollection = new_min;						 			
 		}
 	}
 	
@@ -623,6 +749,127 @@ public class Run {
 				existingVehicle.pos = event.pos;
 		}}		
 	}
+	
+	public void fake_trafficManagement (PositionReport event, double segWithAccAhead, long startOfSimulation, 
+			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes,
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
+		
+		// Set auxiliary variables
+		double next_min = event.min+1;
+		boolean isAccident = segWithAccAhead != -1;   
+		
+		// Update run data: avgSpd, time, numberOfProcessedEvents
+		if (time.min < event.min) {  
+
+			fake_avgSpd = getAvgSpdFor5Min(event.min);   		
+			fake_time.min = event.min;
+		}   
+		fake_time.sec = event.sec;
+				
+		/************************************************* If the vehicle is new in the segment *************************************************/
+		if (vehicles.get(event.vid) == null) {
+			
+			// Update vehicles, vehCounts
+			Vehicle newVehicle = new Vehicle (event);
+			Vector<Double> new_speeds_per_min = new Vector<Double>();
+			new_speeds_per_min.add(event.spd);
+			newVehicle.spds.put(event.min,new_speeds_per_min);
+			fake_vehicles.put(event.vid,newVehicle);    	   
+
+			double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
+			fake_vehCounts.put(next_min, new_count);
+			    
+			// Derive complex events
+			if (event.lane < 4) {    
+				
+				TollNotification tollNotification;
+				if 	(!isAccident && congested(event.min)) { 
+	
+					double vehCount = lookUpVehCount(event.min);
+					tollNotification = new TollNotification(event, avgSpd, vehCount, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed); 	
+					
+				} else {
+					tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
+				}
+				fake_output.tollNotifications.add(tollNotification);
+				
+				if (isAccident) {		
+					
+					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, distrFinishTimes, schedStartTimes, startOfSimulation, accidentWarningsFailed);
+					fake_output.accidentWarnings.add(accidentWarning);				
+			}}
+			/************************************************* If the vehicle was in the segment before *************************************************/
+		} else {
+			// Get previous info about the vehicle
+			Vehicle existingVehicle = fake_vehicles.get(event.vid);
+		
+			// Update vehCounts
+			// Update existingVehicle: time
+			existingVehicle.sec = event.sec;  		
+			
+			if (event.min > existingVehicle.min) {
+				
+				existingVehicle.min = event.min;
+				
+				double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
+				fake_vehCounts.put(next_min, new_count);			
+			}
+			// Update existingVehicle: spd, spds
+			existingVehicle.spd = event.spd;
+			if (existingVehicle.spds.containsKey(event.min)) {    
+
+				existingVehicle.spds.get(event.min).add(event.spd);    			
+ 				
+			} else {             					
+	
+				Vector<Double> new_speeds_per_min = new Vector<Double>();
+				new_speeds_per_min.add(event.spd);
+				existingVehicle.spds.put(event.min, new_speeds_per_min);			
+			}			
+			
+			// Accident detection and clearance	
+			// Update stoppedVehicles
+			// Update existingVehicle: count, lane, pos
+			if (existingVehicle.pos == event.pos && existingVehicle.lane == event.lane) { // Same position is reported      
+
+				existingVehicle.count++;
+
+				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
+				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
+
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+
+					if (stoppedVehicles.containsKey(accidentLocation)) {
+	
+						Vector<StoppedVehicle> stopped_vehicles = fake_stoppedVehicles.get(accidentLocation);
+						if (stopped_vehicles.size() < 2) { 
+							stopped_vehicles.add(stopped_vehicle);
+							fake_toAccident(event, startOfSimulation, false);
+						}    					
+					} else {
+						Vector<StoppedVehicle> stopped_vehicles = new Vector<StoppedVehicle>();
+						stopped_vehicles.add(stopped_vehicle);
+						fake_stoppedVehicles.put(accidentLocation,stopped_vehicles);
+					}}
+				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
+
+					StoppedVehicle stopped_vehicle = getStoppedVehicle(event.lane, event.pos, event.vid);
+					if (stopped_vehicle != null) stopped_vehicle.sec = stopped_vehicle.sec;
+				}
+			} else { // Other position is reported
+	      					
+				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) {     				
+					fake_setRemovalTime(event.vid, event.sec); 	
+					fake_fromAccident(event, startOfSimulation, false);
+				}  
+				existingVehicle.count = 1;    			
+				existingVehicle.lane = event.lane;
+				existingVehicle.pos = event.pos;
+		}}		
+	}
+	
+	
+	
 	/**
 	 * accidentManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings.   
 	 * @param event					incoming position report

@@ -33,8 +33,9 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;
-		boolean execute = true;
+		boolean execute = false;
 		double window_bound = window_length;
+		double window_count = 1;
 						
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
@@ -49,13 +50,22 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				/*** Schedule the current second or drop events with this time stamp ***/
 				if (curr_sec<=window_bound) {
 					
-					all_queries_all_runs(curr_sec, execute);
-															
+					for (int i=1; i<query_number; i++) {
+						all_queries_all_runs(curr_sec, execute, true);
+					}											
+					all_queries_all_runs(curr_sec, execute, false);
 				} else {
 					
-					window_bound = window_bound + window_length;
-					execute = !execute;	
-					System.out.println("Current second: " + curr_sec + " New window bound: " + window_bound + " Execute: " + execute);
+					window_bound += window_length;
+					window_count++;
+					
+					if (execute) {
+						execute = false;
+					} else {
+						if (window_count % window_number == 0) {
+							execute = true;
+					}}						
+					System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
 				}
 									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				

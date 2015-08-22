@@ -22,10 +22,12 @@ public class TrafficManagement extends Transaction {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
+	boolean fake;
+	
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
-			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf) {
+			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf, boolean f) {
 		
 		super(eventList,rs,start,met);
 		
@@ -35,7 +37,9 @@ public class TrafficManagement extends Transaction {
 		schedStartTimes = schedStartT;
 		
 		accidentWarningsFailed = awf;
-		tollNotificationsFailed = tnf;			
+		tollNotificationsFailed = tnf;	
+		
+		fake = f;
 	}
 		
 	/**
@@ -68,8 +72,15 @@ public class TrafficManagement extends Transaction {
 			// WRITE: Update this run and remove old data
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
-			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-			run.collectGarbage(event.min);
+			if (fake) {
+				
+				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				run.fake_collectGarbage(event.min);			
+				
+			} else {
+				run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				run.collectGarbage(event.min);
+			}
 			
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
