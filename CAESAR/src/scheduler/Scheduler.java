@@ -69,13 +69,13 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (double sec) {
+	public int all_queries_all_runs (double sec, boolean execute) {
 		
 		int number = 0;
 		
 		try {
 			// Get transactions to schedule
-			ArrayList<Transaction> transactions = one_query_all_runs(sec);
+			ArrayList<Transaction> transactions = one_query_all_runs(sec, execute);
 			number = transactions.size();
 			
 			// Wait for executor
@@ -226,7 +226,7 @@ public abstract class Scheduler implements Runnable {
 	 * Iterate over all run task queues and schedule transactions in round-robin manner.
 	 * @param sec				transaction time stamp			
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec) {
+	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -235,13 +235,13 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=0; seg<=99; seg++) {
 				
 				RunID runid0 = new RunID(xway,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0);
+				Transaction t0 = one_query_one_run(sec, runid0, execute);
 				if (t0!=null) transactions.add(t0);	
 								
 				if (xway != max_xway || both_dirs) {
 					
 					RunID runid1 = new RunID(xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1);
+					Transaction t1 = one_query_one_run(sec, runid1, execute);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -319,7 +319,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param sec				transaction time stamp
 	 * @param runid				identifier of the run the tasks of which are scheduled
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid) {
+	public Transaction one_query_one_run (double sec, RunID runid, boolean execute) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
@@ -338,7 +338,7 @@ public abstract class Scheduler implements Runnable {
 					event = eventqueue.peek();
 				}					
 				/*** If the event list is not empty, generate a transaction and submit it for execution ***/
-				if (!event_list.isEmpty()) {
+				if (!event_list.isEmpty() && execute) {
 						
 					Run run = runs.get(runid);
 					if (optimized) {

@@ -7,13 +7,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import distributor.EventDistributor;
-import distributor.EventQueues;
-import distributor.SingleQueueDistributor;
+import distributor.*;
 import run.*;
-import scheduler.Scheduler;
-import scheduler.TimeDrivenScheduler;
+import scheduler.*;
  
 public class Main {
 	
@@ -35,6 +31,11 @@ public class Main {
 	 * 5			input file names in first_xway-last_xway(dir) format				
 	 * 				for an event processor for each input file: xway:dir-xway:dir
 	 * 6			extension : .txt or .dat
+	 * 
+	 * 				EFFECT OF CONTEXT WINDOWS, all 0s if original benchmark is executed
+	 * 7			window length in seconds
+	 * 8			number of windows
+	 * 9			number of queries 
 	 */
 	public static void main (String[] args) { 
 		
@@ -44,8 +45,8 @@ public class Main {
 	    System.out.println("Current Date: " + ft.format(dNow));
 	    
 	    /*** Validate the number of input parameters ***/
-	    if (args.length < 7) {
-			System.out.println("At least 7 input parameters are expected.");
+	    if (args.length < 10) {
+			System.out.println("At least 10 input parameters are expected.");
 			return;
 		} 
 		
@@ -80,6 +81,11 @@ public class Main {
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
 		System.out.println("Max xway: " + max_xway + "\nLast xway is two-directional: " + both_dirs);
 		
+		/*** EFFECT OF CONTEXT WINDOWS ***/
+		int window_length =  Integer.parseInt(args[7]);
+		int window_number =  Integer.parseInt(args[8]);
+		int query_number =  Integer.parseInt(args[9]);
+		
 		/*** Create shared data structures ***/		
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
 		HashMap<Double,Double> distrFinishTimes = new HashMap<Double,Double>();
@@ -100,11 +106,21 @@ public class Main {
 				runs, eventqueues, 
 				startOfSimulation, distributorProgress, distrFinishTimes, count_and_rate);				
 				
-		Scheduler scheduler = new TimeDrivenScheduler(
-				max_xway, both_dirs, lastSec,
-				runs, eventqueues, executor, 
-				distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-				startOfSimulation, optimized, max_exe_time);
+		Scheduler scheduler;
+		if (window_length == 0 && window_number == 0 && query_number == 0) {
+			scheduler = new TimeDrivenScheduler(
+					max_xway, both_dirs, lastSec,
+					runs, eventqueues, executor, 
+					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
+					startOfSimulation, optimized, max_exe_time);
+		} else {
+			scheduler = new ExpensiveWindowScheduler(
+					max_xway, both_dirs, lastSec,
+					runs, eventqueues, executor, 
+					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
+					startOfSimulation, optimized, max_exe_time,
+					window_length, window_number, query_number);
+		}
 		
 		Thread prodThread = new Thread(distributor);
 		prodThread.setPriority(10);
