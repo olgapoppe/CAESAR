@@ -74,10 +74,15 @@ public class TrafficManagement extends Transaction {
 			
 			if (fake) {
 				
+				//System.out.println("Fake execute event " + event.toString());
+				
 				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				run.fake_collectGarbage(event.min);			
 				
 			} else {
+				
+				//System.out.println("Really execute event " + event.toString());
+				
 				run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				run.collectGarbage(event.min);
 			}

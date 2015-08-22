@@ -330,9 +330,9 @@ public abstract class Scheduler implements Runnable {
 				
 				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();		
 				
-				/*** Put all events with the same time stamp as this transaction into the event list ***/
+				/*** If this is a fake execution, copy events with time stamps sec into the event list ***/
 				PositionReport event;	
-				if (fake) {
+				if (execute && fake) {
 					
 					Iterator<PositionReport> iterator = eventqueue.iterator();
 					while (iterator.hasNext()) {						
@@ -341,8 +341,10 @@ public abstract class Scheduler implements Runnable {
 							event_list.add(event);	
 						} else {
 							break;
-					}}					
-				} else {	
+				}}}
+				/*** If this is a true execution, extract events with time stamps sec into the event list  ***/
+				if (execute && !fake) {
+					
 					event = eventqueue.peek();
 					while (event!=null && event.sec==sec) { 				
 						eventqueue.poll();
@@ -351,7 +353,7 @@ public abstract class Scheduler implements Runnable {
 						event = eventqueue.peek();
 				}}					
 				/*** If the event list is not empty, generate a transaction and submit it for execution ***/
-				if (!event_list.isEmpty() && execute) {
+				if (!event_list.isEmpty()) {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
