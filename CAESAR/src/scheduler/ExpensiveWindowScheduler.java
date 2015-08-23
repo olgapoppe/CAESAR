@@ -59,7 +59,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 						if (window_count % window_number == 0) {
 							execute = true;
 					}}						
-					System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
+					//System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
 				}
 				/*** Schedule the current second or drop events with this time stamp ***/
 				for (int i=1; i<query_number; i++) {
