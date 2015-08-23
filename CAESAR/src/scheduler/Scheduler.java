@@ -330,28 +330,33 @@ public abstract class Scheduler implements Runnable {
 				
 				ArrayList<PositionReport> event_list = new ArrayList<PositionReport>();		
 				
-				/*** If this is a fake execution, copy events with time stamps sec into the event list ***/
+				
 				PositionReport event;	
-				if (execute && fake) {
+				if (execute) {
 					
-					Iterator<PositionReport> iterator = eventqueue.iterator();
-					while (iterator.hasNext()) {						
-						event = iterator.next();
-						if (event.sec==sec) {
-							event_list.add(event);	
-						} else {
-							break;
-				}}}
-				/*** If this is a true execution, extract events with time stamps sec into the event list  ***/
-				if (execute && !fake) {
+					/*** If this is a fake execution, copy events with time stamps sec into the event list ***/
+					if (fake) {						
+						Iterator<PositionReport> iterator = eventqueue.iterator();
+						while (iterator.hasNext()) {						
+							event = iterator.next();
+							if (event.sec==sec) {
+								event_list.add(event);	
+							} else {
+								break;
+							}							
+						}
+					} else {
+					/*** If this is a true execution, extract events with time stamps sec into the event list  ***/			
 					
-					event = eventqueue.peek();
-					while (event!=null && event.sec==sec) { 				
-						eventqueue.poll();
-						event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-						event_list.add(event);				
 						event = eventqueue.peek();
-				}}					
+						while (event!=null && event.sec==sec) { 				
+							eventqueue.poll();
+							event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+							event_list.add(event);				
+							event = eventqueue.peek();
+						}
+					}
+				}					
 				/*** If the event list is not empty, generate a transaction and submit it for execution ***/
 				if (!event_list.isEmpty()) {
 						

@@ -85,6 +85,7 @@ public class Main {
 		int window_length =  Integer.parseInt(args[7]);
 		int window_number =  Integer.parseInt(args[8]);
 		int query_number =  Integer.parseInt(args[9]);
+		System.out.println("Window length: " + window_length + "\nWindow number: " + window_number + "\nQuery number: " + query_number);
 		
 		/*** Create shared data structures ***/		
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
