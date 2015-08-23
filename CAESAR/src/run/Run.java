@@ -866,9 +866,7 @@ public class Run {
 				existingVehicle.lane = event.lane;
 				existingVehicle.pos = event.pos;
 		}}		
-	}
-	
-	
+	}	
 	
 	/**
 	 * accidentManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings.   
