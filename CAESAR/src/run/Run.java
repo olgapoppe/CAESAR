@@ -128,9 +128,9 @@ public class Run {
 	 * @param min
 	 * @return average speed
 	 */
-	public double lookUpOrComputeAvgSpd (double min, boolean fake) {
+	public double lookUpOrComputeAvgSpd (double min) {
 		double result;
-		if (!fake && avgSpds.containsKey(min)) {
+		if (avgSpds.containsKey(min)) {
 			result = avgSpds.get(min);
 		} else {
 			result = getAvgSpd(min);
@@ -144,13 +144,13 @@ public class Run {
 	 * @param min
 	 * @return rolling average speed
 	 */
-	public double getAvgSpdFor5Min (double min, boolean fake) {
+	public double getAvgSpdFor5Min (double min) {
 		
 		double sum = 0;
 		double count = 0;
 		// Look-up or compute average speeds for 5 minutes before
 		for (int i=1; i<=5 && min-i>0; i++) {	
-			double avgSpdPerMin = lookUpOrComputeAvgSpd(min-i, fake);			
+			double avgSpdPerMin = lookUpOrComputeAvgSpd(min-i);			
 			if (avgSpdPerMin>-1) {
 				sum += avgSpdPerMin;	
 				count++;			
@@ -634,7 +634,7 @@ public class Run {
 		// Update run data: avgSpd, time, numberOfProcessedEvents
 		if (time.min < event.min) {  
 
-			avgSpd = getAvgSpdFor5Min(event.min, false);   		
+			avgSpd = getAvgSpdFor5Min(event.min);   		
 			time.min = event.min;
 		}   
 		time.sec = event.sec;
@@ -761,7 +761,7 @@ public class Run {
 		// Update run data: avgSpd, time, numberOfProcessedEvents
 		if (time.min < event.min) {  
 
-			fake_avgSpd = getAvgSpdFor5Min(event.min, true);   		
+			fake_avgSpd = getAvgSpdFor5Min(event.min);   		
 			fake_time.min = event.min;
 		}   
 		fake_time.sec = event.sec;
