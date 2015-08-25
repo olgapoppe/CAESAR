@@ -107,7 +107,7 @@ public class Run {
 	 * @param min
 	 * @return average speed
 	 */
-	public double getAvgSpd (double min, boolean fake) {
+	public double getAvgSpd (double min) {
 		
 		double sum = 0;
 		double count = 0;		
@@ -133,7 +133,7 @@ public class Run {
 		if (!fake && avgSpds.containsKey(min)) {
 			result = avgSpds.get(min);
 		} else {
-			result = getAvgSpd(min, fake);
+			result = getAvgSpd(min);
 			avgSpds.put(min,result);
 		}
 		return result;
@@ -595,7 +595,7 @@ public class Run {
 	}
 	
 	public void fake_collectGarbage (double new_min) {
-		if (time.minOfLastGarbageCollection < new_min-2) {
+		if (fake_time.minOfLastGarbageCollection < new_min-2) {
 	 			
 	 		fake_deleteVehCounts(new_min);
  			fake_deleteAvgSpds(new_min);

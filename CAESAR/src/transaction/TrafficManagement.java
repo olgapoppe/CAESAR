@@ -22,12 +22,13 @@ public class TrafficManagement extends Transaction {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
-	boolean fake;
+	int query_number;
 	
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
-			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf, boolean f) {
+			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf,
+			int qn) {
 		
 		super(eventList,rs,start,met);
 		
@@ -39,7 +40,7 @@ public class TrafficManagement extends Transaction {
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;	
 		
-		fake = f;
+		query_number = qn;
 	}
 		
 	/**
@@ -72,21 +73,17 @@ public class TrafficManagement extends Transaction {
 			// WRITE: Update this run and remove old data
 			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			
-			if (fake) {
+			//System.out.println("Fake execute event " + event.toString() + " " + (query_number-1) + " times and really execute it afterwards.");
 				
-				//System.out.println("Fake execute event " + event.toString());
-				
-				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				run.fake_collectGarbage(event.min);			
-				
-			} else {
-				
-				//System.out.println("Really execute event " + event.toString());
-				
-				run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				run.collectGarbage(event.min);
-			}
+			// query replication loop
+			for (int i=1; i<query_number; i++) {
 			
+				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
+			}				
+			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+			run.collectGarbage(event.min);
+						
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
 			if (max_exe_time_in_this_transaction < exe_time) max_exe_time_in_this_transaction = exe_time;			

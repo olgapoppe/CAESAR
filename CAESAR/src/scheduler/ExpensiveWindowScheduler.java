@@ -62,10 +62,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 					//System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
 				}
 				/*** Schedule the current second or drop events with this time stamp ***/
-				for (int i=1; i<query_number; i++) {
-					all_queries_all_runs(curr_sec, execute, true);
-				}											
-				all_queries_all_runs(curr_sec, execute, false);
+				all_queries_all_runs(curr_sec, execute, query_number);
 									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				
 				if (curr_sec == lastSec) {	

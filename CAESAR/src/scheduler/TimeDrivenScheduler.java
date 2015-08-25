@@ -41,7 +41,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
 				/*** Schedule the current second ***/
-				all_queries_all_runs(curr_sec, true, false);
+				all_queries_all_runs(curr_sec, true, 1);
 									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				
 				if (curr_sec == lastSec) {	
