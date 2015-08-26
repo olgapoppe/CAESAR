@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import transaction.*;
@@ -38,7 +37,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;
-		AtomicBoolean execute = new AtomicBoolean(false);
+		boolean execute = false;
 		double window_bound = window_length;
 		double window_count = 1;
 						
@@ -65,11 +64,11 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 					window_bound += window_length;
 					window_count++;
 					
-					if (execute.get()) {
-						execute.set(false);
+					if (execute) {
+						execute = false;
 					} else {
 						if (window_count % window_number == 0) {
-							execute.set(true);
+							execute = true;
 					}}						
 					//System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
 				}
@@ -95,7 +94,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 * @param query_number	number of query replications
 	 * @return				number of transactions submitted for execution
 	 */	
-	public int all_queries_all_runs (double sec, AtomicBoolean execute, int query_number) {
+	public int all_queries_all_runs (double sec, boolean execute, int query_number) {
 		
 		// Get transactions to schedule
 		ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
@@ -118,7 +117,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 * Iterate over all event queues and generate transactions with time stamp sec
 	 * @param sec	transaction time stamp			
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec, AtomicBoolean execute, int query_number) {
+	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute, int query_number) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -145,7 +144,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 * @param sec	transaction time stamp
 	 * @param runid	identifier of the run the events of which are scheduled
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid, AtomicBoolean execute, int query_number) {
+	public Transaction one_query_one_run (double sec, RunID runid, boolean execute, int query_number) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
@@ -159,7 +158,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				while (event!=null && event.sec==sec) { 				
 					eventqueue.poll();
 					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-					if (execute.get()) event_list.add(event);				
+					if (execute) event_list.add(event);				
 					event = eventqueue.peek();
 				}
 				

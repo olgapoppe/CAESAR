@@ -70,10 +70,8 @@ public abstract class Scheduler implements Runnable {
 	
 	/*** 
 	 * Get all transactions with time stamp sec and submit them for execution
-	 * @param sec			time stamp
-	 * @param execute		true if events are executed and false if they are dropped
-	 * @param query_number	number of query replications
-	 * @return				number of transactions submitted for execution
+	 * @param sec	time stamp
+	 * @return		number of transactions submitted for execution
 	 */	
 	public int all_queries_all_runs (double sec) {
 		
