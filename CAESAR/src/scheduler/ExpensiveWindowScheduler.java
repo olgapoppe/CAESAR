@@ -37,7 +37,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;
-		boolean execute = false;
+		boolean execute = (window_number > 1) ? false : true;
 		double window_bound = window_length;
 		double window_count = 1;
 						
@@ -50,8 +50,9 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				schedStartTimes.put(curr_sec, now);				
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
+				/*********************************************************************************************************************************************/
 				/*** Update window bound, window count and execute ***/
-				if (curr_sec>window_bound) {			
+				if (window_number > 1 && curr_sec > window_bound) {			
 					
 					window_bound += window_length;
 					window_count++;
@@ -64,6 +65,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 					}}						
 					//System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
 				}
+				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
 				all_queries_all_runs(curr_sec, execute, query_number);
 									
@@ -88,28 +90,36 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 */	
 	public int all_queries_all_runs (double sec, boolean execute, int query_number) {
 		
-		// Get transactions to schedule
-		ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
-		int number = transactions.size();
+		int number = 0;
 		
-		/*** Wait for the previous transactions to complete ***/
-		//System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
-		double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
-		try { transaction_number.await(); } catch (final InterruptedException e) { e.printStackTrace(); }
-		double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-		double durationOfWaiting = endOfWaiting - startOfWaiting;
-		if (durationOfWaiting>1) System.out.println("Scheduler waits from " + startOfWaiting + " to " + endOfWaiting + " for executor to processes second " + sec);
+		try { 		
+			// Get transactions to schedule
+			ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
+			number = transactions.size();
+		
+			/*** Wait for the previous transactions to complete ***/
+			//System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
+			double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
+			transaction_number.await(); 
+			double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			double durationOfWaiting = endOfWaiting - startOfWaiting;
+			if (durationOfWaiting>1) 
+				System.out.println(	"Scheduler waits from " + startOfWaiting + 
+									" to " + endOfWaiting + 
+									" for executor to processes second " + sec);
 					
-		// Print out scheduler progress
-		//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-		//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
+			// Print out scheduler progress
+			//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
 				
-		// Schedule all transactions at current second
-		transaction_number = new CountDownLatch(number);			
-		for (Transaction t : transactions) { 				
-			t.transaction_number = transaction_number;
-			executor.execute(t); 
-		}				
+			// Schedule all transactions at current second
+			transaction_number = new CountDownLatch(number);			
+			for (Transaction t : transactions) { 				
+				t.transaction_number = transaction_number;
+				executor.execute(t); 
+			}
+		} catch (final InterruptedException e) { e.printStackTrace(); }
+		
 		return number;
 	}
 	
@@ -158,7 +168,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				while (event!=null && event.sec==sec) { 				
 					eventqueue.poll();
 					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-					if (execute) event_list.add(event);				
+					if (execute) { event_list.add(event); }				
 					event = eventqueue.peek();
 				}
 				
