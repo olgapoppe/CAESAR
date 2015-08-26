@@ -94,7 +94,7 @@ public class TrafficManagement extends Transaction {
 		// Increase maximal execution time
 		if (max_exe_time.get() < max_exe_time_in_this_transaction) {
 			max_exe_time.set(max_exe_time_in_this_transaction);
-			System.out.println("Max exe time becomes " + max_exe_time.get());
+			//System.out.println("Max exe time becomes " + max_exe_time.get());
 		}
 		
 		// Count down the number of transactions
