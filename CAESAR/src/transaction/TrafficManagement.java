@@ -50,7 +50,7 @@ public class TrafficManagement extends Transaction {
 			
 		double segWithAccAhead;
 		double max_exe_time_in_this_transaction = 0;
-				
+						
 		for (PositionReport event : events) {
 				
 			if (event == null) System.out.println("NULL EVENT!!!");
@@ -88,7 +88,7 @@ public class TrafficManagement extends Transaction {
 			double exe_time = app_time_end - app_time_start;
 			if (max_exe_time_in_this_transaction < exe_time) {
 				max_exe_time_in_this_transaction = exe_time;	
-				System.out.println("Max exe time per transaction: " + exe_time);
+				System.out.println("Max exe time per transaction in second " + event.sec + " is " + exe_time);
 			}
 		}	
 		// Increase maximal execution time
@@ -98,6 +98,6 @@ public class TrafficManagement extends Transaction {
 		}
 		
 		// Count down the number of transactions
-		transaction_number.countDown();	
+		transaction_number.countDown();			
 	}
 }

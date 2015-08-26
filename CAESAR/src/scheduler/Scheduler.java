@@ -68,13 +68,13 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
-	public int all_queries_all_runs (double sec, boolean execute, int query_number) {
+	public int all_queries_all_runs (double sec) {
 		
 		int number = 0;
 		
 		try {
 			// Get transactions to schedule
-			ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
+			ArrayList<Transaction> transactions = one_query_all_runs(sec);
 			number = transactions.size();
 			
 			// Wait for executor
@@ -225,7 +225,7 @@ public abstract class Scheduler implements Runnable {
 	 * Iterate over all run task queues and schedule transactions in round-robin manner.
 	 * @param sec				transaction time stamp			
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute, int query_number) {
+	public ArrayList<Transaction> one_query_all_runs (double sec) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -234,13 +234,13 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=0; seg<=99; seg++) {
 				
 				RunID runid0 = new RunID(xway,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0, execute, query_number);
+				Transaction t0 = one_query_one_run(sec, runid0);
 				if (t0!=null) transactions.add(t0);	
 								
 				if (xway != max_xway || both_dirs) {
 					
 					RunID runid1 = new RunID(xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1, execute, query_number);
+					Transaction t1 = one_query_one_run(sec, runid1);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -318,7 +318,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param sec				transaction time stamp
 	 * @param runid				identifier of the run the tasks of which are scheduled
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid, boolean execute, int query_number) {
+	public Transaction one_query_one_run (double sec, RunID runid) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
@@ -332,7 +332,7 @@ public abstract class Scheduler implements Runnable {
 				while (event!=null && event.sec==sec) { 				
 					eventqueue.poll();
 					event.schedulerTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-					if (execute) event_list.add(event);				
+					event_list.add(event);				
 					event = eventqueue.peek();
 				}
 				
@@ -341,7 +341,7 @@ public abstract class Scheduler implements Runnable {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
-						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, 1);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
 				}}				
