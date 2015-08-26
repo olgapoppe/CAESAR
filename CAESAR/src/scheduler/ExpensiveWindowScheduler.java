@@ -50,14 +50,6 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				schedStartTimes.put(curr_sec, now);				
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
-				/*** Wait for the previous transactions to complete ***/
-				//System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
-				double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
-				transaction_number.await();			
-				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-				double durationOfWaiting = endOfWaiting - startOfWaiting;
-				if (durationOfWaiting>1) System.out.println("Scheduler waits from " + startOfWaiting + " to " + endOfWaiting + " for executor to processes second " + curr_sec);
-				
 				/*** Update window bound, window count and execute ***/
 				if (curr_sec>window_bound) {			
 					
@@ -99,7 +91,15 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 		// Get transactions to schedule
 		ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
 		int number = transactions.size();
-			
+		
+		/*** Wait for the previous transactions to complete ***/
+		//System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
+		double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
+		try { transaction_number.await(); } catch (final InterruptedException e) { e.printStackTrace(); }
+		double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+		double durationOfWaiting = endOfWaiting - startOfWaiting;
+		if (durationOfWaiting>1) System.out.println("Scheduler waits from " + startOfWaiting + " to " + endOfWaiting + " for executor to processes second " + sec);
+					
 		// Print out scheduler progress
 		//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
