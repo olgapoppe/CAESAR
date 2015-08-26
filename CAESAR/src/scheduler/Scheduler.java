@@ -68,6 +68,13 @@ public abstract class Scheduler implements Runnable {
 		tollNotificationsFailed = new AtomicBoolean(false);
 	}	
 	
+	/*** 
+	 * Get all transactions with time stamp sec and submit them for execution
+	 * @param sec			time stamp
+	 * @param execute		true if events are executed and false if they are dropped
+	 * @param query_number	number of query replications
+	 * @return				number of transactions submitted for execution
+	 */	
 	public int all_queries_all_runs (double sec) {
 		
 		int number = 0;
@@ -222,8 +229,8 @@ public abstract class Scheduler implements Runnable {
 	}*/
 	
 	/**
-	 * Iterate over all run task queues and schedule transactions in round-robin manner.
-	 * @param sec				transaction time stamp			
+	 * Iterate over all event queues and generate transactions with time stamp sec
+	 * @param sec	transaction time stamp			
 	 */
 	public ArrayList<Transaction> one_query_all_runs (double sec) {
 		
@@ -313,10 +320,10 @@ public abstract class Scheduler implements Runnable {
 	}*/
 	
 	/**
-	 * Wraps the processing of all events with the given time stamp and that 
-	 * are relevant for the same run into one transaction and submits this transaction for execution.
-	 * @param sec				transaction time stamp
-	 * @param runid				identifier of the run the tasks of which are scheduled
+	 * Wraps the processing of all events which have the given time stamp and  
+	 * are relevant for the same run into one transaction 
+	 * @param sec	transaction time stamp
+	 * @param runid	identifier of the run the events of which are scheduled
 	 */
 	public Transaction one_query_one_run (double sec, RunID runid) {
 		

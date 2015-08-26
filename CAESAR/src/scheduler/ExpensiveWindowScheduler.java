@@ -33,7 +33,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	}
 	
 	/**
-	 * As long as not all events are processed, iterate over all run task queues and pick tasks to execute in round-robin manner.
+	 * As long as not all events are processed, iterate over all event queues and pick transactions to execute in round-robin manner.
 	 */	
 	public void run() {	
 		
@@ -52,7 +52,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
 				/*** Wait for the previous transactions to complete ***/
-				System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
+				//System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
 				double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
 				transaction_number.await();			
 				double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
