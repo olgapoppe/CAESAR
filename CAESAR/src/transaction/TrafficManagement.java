@@ -86,7 +86,10 @@ public class TrafficManagement extends Transaction {
 						
 			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 			double exe_time = app_time_end - app_time_start;
-			if (max_exe_time_in_this_transaction < exe_time) max_exe_time_in_this_transaction = exe_time;			
+			if (max_exe_time_in_this_transaction < exe_time) {
+				max_exe_time_in_this_transaction = exe_time;	
+				System.out.println("Max exe time per transaction: " + exe_time);
+			}
 		}	
 		// Increase maximal execution time
 		if (max_exe_time.get() < max_exe_time_in_this_transaction) {
