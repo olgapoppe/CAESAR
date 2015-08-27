@@ -75,13 +75,11 @@ public abstract class Scheduler implements Runnable {
 	 */	
 	public int all_queries_all_runs (double sec) {
 		
-		int number = 0;
+		// Get transactions to schedule
+		ArrayList<Transaction> transactions = one_query_all_runs(sec);
+		int number = transactions.size();
 		
 		try {
-			// Get transactions to schedule
-			ArrayList<Transaction> transactions = one_query_all_runs(sec);
-			number = transactions.size();
-			
 			// Wait for executor
 			double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
 			transaction_number.await();			
@@ -91,19 +89,18 @@ public abstract class Scheduler implements Runnable {
 				System.out.println(	"Scheduler waits from " + startOfWaiting + 
 									" to " + endOfWaiting + 
 									" for executor to processes second " + sec);
-			
-			// Print out scheduler progress
-			//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-			//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
-				
-			// Schedule all transactions at current second
-			transaction_number = new CountDownLatch(number);			
-			for (Transaction t : transactions) { 				
-				t.transaction_number = transaction_number;
-				executor.execute(t); 
-			}				
 		} catch (final InterruptedException ex) { ex.printStackTrace(); }
-		
+			
+		// Print out scheduler progress
+		//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+		//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
+				
+		// Schedule all transactions at current second
+		transaction_number = new CountDownLatch(number);			
+		for (Transaction t : transactions) { 				
+			t.transaction_number = transaction_number;
+			executor.execute(t); 
+		}				
 		return number;
 	}
 	
