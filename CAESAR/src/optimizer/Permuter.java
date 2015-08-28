@@ -3,49 +3,30 @@ package optimizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import operator.*;
 
 public class Permuter implements Runnable {
 	
-	LinkedBlockingQueue<QueryPlan> input_query_plans;
-	LinkedBlockingQueue<QueryPlan> output_query_plans;
-	AtomicBoolean previous_done;
+	ArrayList<QueryPlan> input_query_plans;
+	ArrayList<QueryPlan> output_query_plans;
 	AtomicBoolean permuter_done;
 	
 	ArrayList<QueryPlan> accumulator;
-	double min_cost;
-	public QueryPlan cheapest_query_plan;
-	int number_of_query_plans;
 	
-	public Permuter (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean prd, AtomicBoolean pd) {
+	
+	public Permuter (ArrayList<QueryPlan> input, ArrayList<QueryPlan> output, AtomicBoolean pd) {
 	
 		input_query_plans = input;
 		output_query_plans = output;
-		previous_done = prd;
 		permuter_done = pd;
 		
-		accumulator = new ArrayList<QueryPlan>();
-		min_cost = Double.MAX_VALUE;
-		cheapest_query_plan = new QueryPlan(new LinkedList<Operator>());
-		number_of_query_plans = 0;
+		accumulator = new ArrayList<QueryPlan>();		
 	}
 	
 	public void run () {
 		
-		while (!(previous_done.get() && input_query_plans.isEmpty())) {			
-			if (input_query_plans.peek()!=null) {
-				
-				QueryPlan qp = input_query_plans.poll();
-				ArrayList<QueryPlan> qps = new ArrayList<QueryPlan>();
-				qps.add(qp);
-				exhaustive_search(qps);				
-	    		
-	    	} else {
-	    		try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
-	    	}		
-		}	    	
+		exhaustive_search(input_query_plans);    	    	
 		permuter_done.set(true);
 		System.out.println("Permuter is done.");
 	}
@@ -67,12 +48,6 @@ public class Permuter implements Runnable {
 				output_query_plans.add(qp);
 				double cost = qp.getCost();
 				System.out.println("Result of reordering: " + qp.toString() + " with cost " + cost);	
-				
-				if (cost<min_cost) {
-		    		min_cost = cost;
-		    		cheapest_query_plan = qp;
-		    	}
-				number_of_query_plans++;
 				
 				// Recursive case: Merge operators in this query plan
 				if (!qp.permutation_done) {

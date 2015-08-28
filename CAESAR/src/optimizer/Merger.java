@@ -2,24 +2,21 @@ package optimizer;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import operator.*;
 
 public class Merger implements Runnable {
 	
-	LinkedBlockingQueue<QueryPlan> input_query_plans;
-	LinkedBlockingQueue<QueryPlan> output_query_plans;
-	AtomicBoolean previous_done;
+	ArrayList<QueryPlan> input_query_plans;
+	ArrayList<QueryPlan> output_query_plans;
 	AtomicBoolean merger_done;
 	
 	ArrayList<QueryPlan> accumulator;
 	
-	public Merger (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean pd, AtomicBoolean md) {
+	public Merger (ArrayList<QueryPlan> input, ArrayList<QueryPlan> output, AtomicBoolean md) {
 		
 		input_query_plans = input;
 		output_query_plans = output;
-		previous_done = pd;
 		merger_done = md;
 		
 		accumulator = new ArrayList<QueryPlan>();
@@ -27,18 +24,7 @@ public class Merger implements Runnable {
 	
 	public void run () {
 		
-		while (!(previous_done.get() && input_query_plans.isEmpty())) {			
-			if (input_query_plans.peek()!=null) {
-				
-				QueryPlan qp = input_query_plans.poll();
-				ArrayList<QueryPlan> qps = new ArrayList<QueryPlan>();
-				qps.add(qp);				
-				exhaustive_search(qps);				
-	    		
-	    	} else {
-	    		try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
-	    	}		
-		}	
+		exhaustive_search(input_query_plans);    	
 		merger_done.set(true);
 		System.out.println("Merger is done.");
 	}

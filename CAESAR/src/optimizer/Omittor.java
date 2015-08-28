@@ -2,19 +2,18 @@ package optimizer;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import operator.Operator;
 
 public class Omittor implements Runnable {
 	
-	LinkedBlockingQueue<QueryPlan> input_query_plans;
-	LinkedBlockingQueue<QueryPlan> output_query_plans;
+	ArrayList<QueryPlan> input_query_plans;
+	ArrayList<QueryPlan> output_query_plans;
 	AtomicBoolean omittor_done;	
 	
 	ArrayList<QueryPlan> accumulator;
 	
-	public Omittor (LinkedBlockingQueue<QueryPlan> input, LinkedBlockingQueue<QueryPlan> output, AtomicBoolean od) {
+	public Omittor (ArrayList<QueryPlan> input, ArrayList<QueryPlan> output, AtomicBoolean od) {
 		
 		input_query_plans = input;
 		output_query_plans = output;
@@ -35,7 +34,7 @@ public class Omittor implements Runnable {
 	 * adds them to the accumulator and the output.
 	 * @param qps			input query plans
 	 */
-	void exhaustive_search (LinkedBlockingQueue<QueryPlan> qps) {		
+	void exhaustive_search (ArrayList<QueryPlan> qps) {		
 				
 		for (QueryPlan qp : qps) {			
 			if (!qp.contained(accumulator,false)) {
@@ -59,9 +58,9 @@ public class Omittor implements Runnable {
 	 * @param query_plan input query plan
 	 * @return resulting query plans
 	 */
-	LinkedBlockingQueue<QueryPlan> exhaustive_omission (QueryPlan query_plan) {
+	ArrayList<QueryPlan> exhaustive_omission (QueryPlan query_plan) {
 		
-		LinkedBlockingQueue<QueryPlan> new_query_plans = new LinkedBlockingQueue<QueryPlan>();
+		ArrayList<QueryPlan> new_query_plans = new ArrayList<QueryPlan>();
 		
 		for (int i=0; i<query_plan.operators.size(); i++) {
 			
