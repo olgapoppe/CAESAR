@@ -56,9 +56,12 @@ public class GreedySearch {
 			considered.removeAll(chosen);
 			
 			// Get children with minimal cost			
-			chosen.clear();			
+			chosen.clear();		
+			
 			for (QueryPlan new_qp : considered) {
+				
 				double cost = new_qp.getCost();
+				
 				if (cost < min_cost && !new_qp.contained(chosen, false)) {
 					
 					min_cost = cost;
