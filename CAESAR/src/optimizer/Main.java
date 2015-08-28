@@ -6,8 +6,7 @@ public class Main {
 	 * Input parameters:
 	 * 1) 0 for exhaustive search, 1 for optimized search
 	 * 2) original query plan
-	 */
-	
+	 */	
 	 public static void main(String[] args) {
 		 
 		/*** Optimized or exhaustive search ***/
@@ -21,10 +20,10 @@ public class Main {
 			query_plan_string += args[i] + " ";
 		}
 				
-	    QueryPlan original_query_plan = QueryPlan.parse(query_plan_string);
-	    System.out.println("----------------------------------------\nOriginal query plan (" + original_query_plan.toString() + 
-	    		")\nhas " + original_query_plan.operators.size() +
-	    		" operators and cost " + original_query_plan.getCost() +
+	    QueryPlan solution = QueryPlan.parse(query_plan_string);
+	    System.out.println("----------------------------------------\nOriginal query plan (" + solution.toString() + 
+	    		")\nhas " + solution.operators.size() +
+	    		" operators and cost " + solution.getCost() +
 	    		"\n----------------------------------------");
 	    
 	    /*** Start the timer ***/
@@ -32,9 +31,9 @@ public class Main {
 	    
 	    /*** Search ***/
 	    if (!optimized) {	    	    	
-	    	ExhaustiveSearch.search(original_query_plan); 	    
+	    	ExhaustiveSearch.search(solution); 	    
 	    } else {	    	
-	    	GreedySearch.search(original_query_plan);    	   		    	
+	    	GreedySearch.search(solution);    	   		    	
 	    }
 	    
 	    /*** Duration of search ***/
