@@ -34,7 +34,7 @@ public class Main {
 	    if (!optimized) {	    	    	
 	    	ExhaustiveSearch.search(original_query_plan); 	    
 	    } else {	    	
-	    	OptimizedSearch.search(original_query_plan);    	   		    	
+	    	GreedySearch.search(original_query_plan);    	   		    	
 	    }
 	    
 	    /*** Duration of search ***/
