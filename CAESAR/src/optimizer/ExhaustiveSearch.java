@@ -13,10 +13,8 @@ public class ExhaustiveSearch {
 		Double min_cost = solution.getCost();
 		
 		ArrayList<QueryPlan> results_of_permutation = new ArrayList<QueryPlan>();
-		ArrayList<QueryPlan> results_of_merge = new ArrayList<QueryPlan>();
 		ArrayList<QueryPlan> results_of_omission = new ArrayList<QueryPlan>();
     	AtomicBoolean permuter_done = new AtomicBoolean(false);
-    	AtomicBoolean merger_done = new AtomicBoolean(false);
     	AtomicBoolean omittor_done = new AtomicBoolean(false);
     	
     	// Counters
@@ -33,17 +31,13 @@ public class ExhaustiveSearch {
 			Thread omittor_thread = new Thread(omittor);
 			omittor_thread.start();
     	
-			Merger merger = new Merger(chosen, results_of_merge, merger_done);
-			Thread merger_thread = new Thread(merger);
-			merger_thread.start();
-    	
 			Permuter permuter = new Permuter(chosen, results_of_permutation, permuter_done);
 			Thread permuter_thread = new Thread(permuter);
 			permuter_thread.start(); 				
     	
 			// Wait till all operations are completed 
 			while (true) {
-				if (omittor_done.get() && merger_done.get() && permuter_done.get()) {						
+				if (omittor_done.get() && permuter_done.get()) {						
 					break;			    
 				} else {
 					try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
@@ -52,7 +46,6 @@ public class ExhaustiveSearch {
 			// Get all children
 			ArrayList<QueryPlan> considered = new ArrayList<QueryPlan> ();
 			considered.addAll(results_of_omission);
-			considered.addAll(results_of_merge);
 			considered.addAll(results_of_permutation);
 			
 			// Add all non-duplicate results and compute the best query plan seen so far
@@ -75,8 +68,6 @@ public class ExhaustiveSearch {
 			}					
 			results_of_omission.clear();
 			omittor_done.set(false);
-			results_of_merge.clear();
-			merger_done.set(false);
 			results_of_permutation.clear();
 			permuter_done.set(false);
 			iteration++;	
