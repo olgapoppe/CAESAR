@@ -10,6 +10,7 @@ public class ExhaustiveSearch {
 	public static void search (QueryPlan original_query_plan) {
 		
 		// Shared data structures
+		int prev_number_of_query_plans = 0;
 		ArrayList<QueryPlan> initial_query_plans = new ArrayList<QueryPlan>();
 		initial_query_plans.add(original_query_plan);
 		ArrayList<QueryPlan> results_of_permutation = new ArrayList<QueryPlan>();
@@ -19,8 +20,7 @@ public class ExhaustiveSearch {
     	AtomicBoolean merger_done = new AtomicBoolean(false);
     	AtomicBoolean omittor_done = new AtomicBoolean(false);
     	
-    	int iteration = 1;
-		int prev_number_of_query_plans = 0;
+    	int iteration = 1;	
 				
 		while (prev_number_of_query_plans < initial_query_plans.size()) {
 			
