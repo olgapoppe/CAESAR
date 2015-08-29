@@ -8,7 +8,7 @@ public class Main {
 	 * 2) original query plan
 	 */	
 	 public static void main(String[] args) {
-		 
+		
 		/*** Optimized or exhaustive search ***/
 		boolean optimized = (Integer.parseInt(args[0])==1);		
 		String s = optimized ? "Optimized search." : "Exhaustive search.";

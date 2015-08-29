@@ -3,6 +3,7 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import run.*;
 import event.*;
 import iogenerator.*;
@@ -76,14 +77,14 @@ public class TrafficManagement extends Transaction {
 			//System.out.println("Fake execute event " + event.toString() + " " + (query_number-1) + " times and really execute it afterwards.");
 				
 			// Query replication loop
-			for (int i=1; i<query_number; i++) {
+			//for (int i=1; i<query_number; i++) {
 				
-				int count = 0;
-				while (count<10000) { count++; }
+			try { Thread.sleep(query_number*1000); } 
+			catch (InterruptedException e) { e.printStackTrace(); }
 			
 				//run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				//run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
-			}				
+			//}				
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);
 						
