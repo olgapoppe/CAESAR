@@ -77,9 +77,12 @@ public class TrafficManagement extends Transaction {
 				
 			// Query replication loop
 			for (int i=1; i<query_number; i++) {
+				
+				int count = 0;
+				while (count<10000) { count++; }
 			
-				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
+				//run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				//run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
 			}				
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);
