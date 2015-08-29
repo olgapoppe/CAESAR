@@ -19,7 +19,8 @@ public class Main {
 		for (int i=1; i<args.length; i++) {
 			query_plan_string += args[i] + " ";
 		}
-				
+		System.out.println(query_plan_string);		
+		
 	    QueryPlan solution = QueryPlan.parse(query_plan_string);
 	    System.out.println("----------------------------------------\nOriginal query plan (" + solution.toString() + 
 	    		")\nhas " + solution.operators.size() +
