@@ -15,12 +15,12 @@ import iogenerator.*;
  */
 public class TimeDrivenScheduler extends Scheduler implements Runnable {	
 			
-	public TimeDrivenScheduler (int max_xway, boolean both_dirs, int lastSec,
+	public TimeDrivenScheduler (int max_xway, boolean both_dirs, int firstSec, int lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
 			long start, boolean opt, AtomicDouble max_exe_time) {	
 		
-		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);			
+		super(max_xway, both_dirs, firstSec, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);			
 	}
 	
 	/**

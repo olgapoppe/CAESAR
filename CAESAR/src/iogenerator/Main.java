@@ -26,16 +26,17 @@ public class Main {
 	 * 2			count and rate computation: 1 for yes, 0 for no
 	 * 
 	 *  			INPUT
-	 * 3			last second : 10784
-	 * 4			path : src/input/ or ../../input/
-	 * 5			input file names in first_xway-last_xway(dir) format				
+	 * 3			first second
+	 * 4			last second : 10784
+	 * 5			path : src/input/ or ../../input/
+	 * 6			input file names in first_xway-last_xway(dir) format				
 	 * 				for an event processor for each input file: xway:dir-xway:dir
-	 * 6			extension : .txt or .dat
+	 * 7			extension : .txt or .dat
 	 * 
 	 * 				EFFECT OF CONTEXT WINDOWS, all 0s if original benchmark is executed
-	 * 7			window length in seconds
-	 * 8			number of windows
-	 * 9			number of queries 
+	 * 8			window length in seconds
+	 * 9			number of windows
+	 * 10			number of queries 
 	 */
 	public static void main (String[] args) { 
 		
@@ -45,8 +46,8 @@ public class Main {
 	    System.out.println("Current Date: " + ft.format(dNow));
 	    
 	    /*** Validate the number of input parameters ***/
-	    if (args.length < 10) {
-			System.out.println("At least 10 input parameters are expected.");
+	    if (args.length < 11) {
+			System.out.println("At least 11 input parameters are expected.");
 			return;
 		} 
 		
@@ -63,11 +64,12 @@ public class Main {
 		AtomicDouble max_exe_time = new AtomicDouble(0);
 		
 		/*** INPUT ***/
-		int lastSec = Integer.parseInt(args[3]);
+		int firstSec = Integer.parseInt(args[3]);
+		int lastSec = Integer.parseInt(args[4]);
 		
-		String path = args[4];
-		String file = args[5];
-		String extension = args[6];			
+		String path = args[5];
+		String file = args[6];
+		String extension = args[7];			
 		String filename = path + file + extension;
 		
 		String[] last_xway_dir;
@@ -82,9 +84,9 @@ public class Main {
 		System.out.println("Max xway: " + max_xway + "\nLast xway is two-directional: " + both_dirs);
 		
 		/*** EFFECT OF CONTEXT WINDOWS ***/
-		int window_length =  Integer.parseInt(args[7]);
-		int window_number =  Integer.parseInt(args[8]);
-		int query_number =  Integer.parseInt(args[9]);
+		int window_length =  Integer.parseInt(args[8]);
+		int window_number =  Integer.parseInt(args[9]);
+		int query_number =  Integer.parseInt(args[10]);
 		System.out.println("Window length: " + window_length + "\nWindow number: " + window_number + "\nQuery replications: " + query_number);
 		
 		/*** Create shared data structures ***/		
@@ -103,20 +105,20 @@ public class Main {
 		 *   Distributor reads from the file and writes into runs and event queues.
 		 *   Scheduler reads from runs and run queues and submits tasks to executor. ***/
 		EventDistributor distributor = new SingleQueueDistributor(
-				filename, lastSec, 
+				filename, firstSec, lastSec, 
 				runs, eventqueues, 
 				startOfSimulation, distributorProgress, distrFinishTimes, count_and_rate);				
 				
 		Scheduler scheduler;
 		if (window_length == 0 && window_number == 0 && query_number == 0) {
 			scheduler = new TimeDrivenScheduler(
-					max_xway, both_dirs, lastSec,
+					max_xway, both_dirs, 0, lastSec,
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
 					startOfSimulation, optimized, max_exe_time);
 		} else {
 			scheduler = new ExpensiveWindowScheduler(
-					max_xway, both_dirs, lastSec,
+					max_xway, both_dirs, firstSec, lastSec,
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
 					startOfSimulation, optimized, max_exe_time,
