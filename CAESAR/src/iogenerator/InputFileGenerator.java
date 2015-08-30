@@ -15,12 +15,17 @@ public class InputFileGenerator {
 	
 	/***
 	 * Generate input files
-	 * @param args: action: 1 for clean file, 2 for merge files, 3 for select tuples with direction, 4 for copy n tuples
+	 * @param args: action: 1 for clean file, 
+	 * 						2 for merge files, 
+	 * 						3 for select tuples with direction, 
+	 * 						4 for copy n tuples, 
+	 * 						5 for copy tuples from second
 	 * 				path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
 	 * 				if clean file: input file, output file, xway
 	 * 				if merge files: first input file, second input file, output file
 	 * 				if select tuples: input file, output file, direction
-	 * 				if copy tuples: input file, output file, n
+	 * 				if copy n tuples: input file, output file, n
+	 * 				if copy tuples from second: input file, output file, second
 	 */
 	public static void main (String[] args) {
 		
@@ -69,6 +74,15 @@ public class InputFileGenerator {
 			int n = Integer.parseInt(args[4]);
 			System.out.println(n + " events from the file " + inputfile + " are copied to the file" + outputfile);
 			getTuples(2,inputfile,outputfile,n);
+		}	
+		/*** Copy tuples from second ***/
+		if (action == 5) {
+			
+			String inputfile = path + args[2];
+			String outputfile = path + args[3];
+			int sec = Integer.parseInt(args[4]);
+			System.out.println("Events from second " + sec + " from the file " + inputfile + " are copied to the file" + outputfile);
+			getTuples(3,inputfile,outputfile,sec);
 		}	
 		System.out.println("Done!");
 	}
@@ -237,8 +251,11 @@ public class InputFileGenerator {
             if (choice==1) {
             	selectTuples(input,output,n);
             } else {
-            	copyTuples(input,output,n);
-            }	            
+            if (choice==2) {
+            	copyNTuples(input,output,n);
+            } else {
+            	copyTuplesFromSec(input,output,n);
+            }}
 	        /*** Close the files ***/       		
 	       	input.close();       		       		
 	       	output.close();
@@ -278,7 +295,7 @@ public class InputFileGenerator {
 	 * @param output
 	 * @param tuple number
 	 */
-	public static void copyTuples (Scanner input, BufferedWriter output, int tupleNumber) {
+	public static void copyNTuples (Scanner input, BufferedWriter output, int tupleNumber) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -290,5 +307,31 @@ public class InputFileGenerator {
 				output.write(eventString + "\n");            	            	            	         	
 			}   
 		} catch (IOException e) { System.err.println(e); }				
-	}	
+	}
+	
+	/**
+	 * Select position reports that have the time stamp greater or equals to second from input to output
+	 * @param input
+	 * @param output
+	 * @param sec
+	 */
+	public static void copyTuplesFromSec (Scanner input, BufferedWriter output, int sec) {
+		
+		String eventString = "";
+		int count = 0; 
+		try {
+			while (input.hasNextLine()) {         	
+        			
+				eventString = input.nextLine();
+				PositionReport event = PositionReport.parse(eventString);
+				
+				if (event.correctPositionReport() && event.sec >= sec) {
+					
+					count++;
+					output.write(eventString + "\n");            	            	            	         	
+				}
+			}   
+		} catch (IOException e) { System.err.println(e); }	
+		System.out.println("Count: " + count + " Last event: " + eventString);
+	}
 }

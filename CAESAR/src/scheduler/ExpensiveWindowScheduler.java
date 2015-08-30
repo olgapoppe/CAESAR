@@ -37,9 +37,9 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;
-		boolean execute = (window_number > 1) ? false : true;
+		boolean execute = true;
 		double window_bound = window_length;
-		double window_count = 1;
+		double window_count = 0;
 						
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
@@ -63,7 +63,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 						if (window_count % window_number == 0) {
 							execute = true;
 					}}						
-					//System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
+					System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
