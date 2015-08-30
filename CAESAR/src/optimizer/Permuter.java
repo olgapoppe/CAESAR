@@ -46,7 +46,7 @@ public class Permuter implements Runnable {
 				// Base case: Add this query plan to the result
 				accumulator.add(qp);
 				output_query_plans.add(qp);
-				double cost = qp.getCost();
+				//double cost = qp.getCost();
 				//System.out.println("Result of reordering: " + qp.toString() + " with cost " + cost);	
 				
 				// Recursive case: Merge operators in this query plan
@@ -100,17 +100,17 @@ public class Permuter implements Runnable {
 	 * @param query_plan input query plan
 	 * @return resulting query plan
 	 */
-	static OutputOfOptimizedSearch greedy_permutation (QueryPlan query_plan) {
+	static QueryPlan greedy_permutation (QueryPlan query_plan) {
 		
-		boolean change = false;
+		//boolean change = false;
 		
 		for(int i = 0; i < query_plan.operators.size(); i++) {
 			int j = i;
 			while (j-1>=0 && query_plan.operators.get(j).lowerable(query_plan.operators.get(j-1),true)) {
 				Collections.swap(query_plan.operators, j, j-1);
 				j--;
-				change = true;
+				//change = true;
 		}}
-		return new OutputOfOptimizedSearch(query_plan, change);	
+		return query_plan;	
 	}
 }

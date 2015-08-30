@@ -96,11 +96,11 @@ public class Omittor implements Runnable {
 	 * @param query_plan input query plan
 	 * @return resulting query plan
 	 */
-	static OutputOfOptimizedSearch greedy_omission (QueryPlan query_plan) {
+	static QueryPlan greedy_omission (QueryPlan query_plan) {
 		
 		LinkedList<Operator> new_ops = new LinkedList<Operator>();
 		QueryPlan new_query_plan = new QueryPlan(new_ops);
-		boolean change = false;
+		//boolean change = false;
 				
 		for (int i=0; i<query_plan.operators.size(); i++) {
 			
@@ -121,10 +121,10 @@ public class Omittor implements Runnable {
 			}			
 			if (!b && !a) {
 				new_ops.add(operator);			
-			} else {
+			}/* else {
 				change = true;
-			}
+			}*/
 		}
-		return new OutputOfOptimizedSearch(new_query_plan,change);
+		return new_query_plan;
 	}		
 }

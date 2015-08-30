@@ -6,6 +6,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class GreedySearch {
 	
 	public static void search (QueryPlan solution) {
+		
+		// Heuristics determine the start query plan for gready search
+		solution = Omittor.greedy_omission(solution);
+		solution = Permuter.greedy_permutation(solution);		
+		System.out.println(	"----------------------------------------\nStart query plan (" + solution.toString() + 
+	    					")\nhas " + solution.operators.size() +
+	    					" operators and cost " + solution.getCost() +
+	    					"\n----------------------------------------");		
 	
 		// Data structures
 		ArrayList<QueryPlan> chosen = new ArrayList<QueryPlan>();
