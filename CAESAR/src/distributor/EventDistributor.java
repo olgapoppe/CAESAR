@@ -12,7 +12,6 @@ import run.*;
 public abstract class EventDistributor implements Runnable {
 	
 	String filename;
-	int firstSec;
 	int lastSec;
 	
 	HashMap<RunID,Run> runs;
@@ -24,13 +23,12 @@ public abstract class EventDistributor implements Runnable {
 	
 	boolean count_and_rate;
 		
-	public EventDistributor (String f, int first, int last, 
+	public EventDistributor (String f, int last, 
 			HashMap<RunID,Run> rs, EventQueues rq, 
 			long start, AtomicInteger dp, HashMap<Double,Double> dFTimes,
 			boolean cr) {
 		
 		filename = f;
-		firstSec = first;
 		lastSec = last;
 		
 		runs = rs;

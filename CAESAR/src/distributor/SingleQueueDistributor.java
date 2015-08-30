@@ -12,11 +12,11 @@ import event.*;
 
 public class SingleQueueDistributor extends EventDistributor {	
 		
-	public SingleQueueDistributor (String filename, int firstSec, int lastSec, 
+	public SingleQueueDistributor (String filename, int lastSec, 
 			HashMap<RunID,Run> runs, EventQueues eventqueues, 
 			long start, AtomicInteger distrProgress, HashMap<Double,Double> distrFinishTimes, boolean cr) {
 		
-		super(filename, firstSec, lastSec, runs, eventqueues, start, distrProgress, distrFinishTimes, cr);		 
+		super(filename, lastSec, runs, eventqueues, start, distrProgress, distrFinishTimes, cr);		 
 	}
 
 	/** 
@@ -34,7 +34,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			// Time
 			double prev_batch_limit = -1;
 			double now = 0;
-			double curr_sec = firstSec-1;
+			double curr_sec = -1;
 						
 			Random random = new Random();
 			int min = 6;

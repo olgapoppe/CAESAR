@@ -94,12 +94,28 @@ public class PositionReport extends Event {
 	 * Print this position report to file and change the xway to the given value.
 	 * @param new xway
 	 */
-	public String toString(int newXway) {
+	public String toStringChangeXway(int newXway) {
 		return new Double(type).intValue() + ","
 				+ new Double(sec).intValue() + ","				
 				+ new Double(vid).intValue() + ","
 				+ new Double(spd).intValue() + ","
 				+ newXway + ","
+				+ new Double(lane).intValue() + ","
+				+ new Double(dir).intValue() + ","
+				+ new Double(seg).intValue() + ","
+				+ new Double(pos).intValue();		
+	}	
+	
+	/** 
+	 * Print this position report to file and decrease the sec by the given value.
+	 * @param new xway
+	 */
+	public String toStringChangeSec(int s) {
+		return new Double(type).intValue() + ","
+				+ (new Double(sec).intValue()-s) + ","				
+				+ new Double(vid).intValue() + ","
+				+ new Double(spd).intValue() + ","
+				+ new Double(xway).intValue() + ","
 				+ new Double(lane).intValue() + ","
 				+ new Double(dir).intValue() + ","
 				+ new Double(seg).intValue() + ","

@@ -18,13 +18,13 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	int window_number;
 	int query_number;
 	
-	public ExpensiveWindowScheduler (int max_xway, boolean both_dirs, int firstSec, int lastSec,
+	public ExpensiveWindowScheduler (int max_xway, boolean both_dirs, int lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
 			long start, boolean opt, AtomicDouble max_exe_time,
 			int wl, int wn, int qn) {	
 		
-		super(max_xway, both_dirs, firstSec, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);
+		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);
 		
 		window_length = wl;
 		window_number = wn;
@@ -36,7 +36,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 */	
 	public void run() {	
 		
-		double curr_sec = firstSec-1;
+		double curr_sec = -1;
 		boolean execute = true;
 		double window_bound = window_length;
 		double window_count = 0;
@@ -101,10 +101,10 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 			transaction_number.await(); 
 			double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 			double durationOfWaiting = endOfWaiting - startOfWaiting;
-			if (durationOfWaiting>1) 
+			/*if (durationOfWaiting>1) 
 				System.out.println(	"Scheduler waits from " + startOfWaiting + 
 									" to " + endOfWaiting + 
-									" for executor to processes second " + sec);
+									" for executor to processes second " + sec);*/
 		} catch (final InterruptedException e) { e.printStackTrace(); }
 					
 		// Print out scheduler progress

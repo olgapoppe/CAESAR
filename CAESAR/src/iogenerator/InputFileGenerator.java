@@ -134,7 +134,7 @@ public class InputFileGenerator {
 				if (event.correctPositionReport()) {
 					
 					count++;
-					output.write(event.toString(newXway) + "\n");            	            	            	         	
+					output.write(event.toStringChangeXway(newXway) + "\n");            	            	            	         	
 			}}			
 		} catch (IOException e) { System.err.println(e); }
 		System.out.println("Count: " + count + " Last event: " + eventString);
@@ -328,7 +328,7 @@ public class InputFileGenerator {
 				if (event.correctPositionReport() && event.sec >= sec) {
 					
 					count++;
-					output.write(eventString + "\n");            	            	            	         	
+					output.write(event.toStringChangeSec(sec) + "\n");            	            	            	         	
 				}
 			}   
 		} catch (IOException e) { System.err.println(e); }	

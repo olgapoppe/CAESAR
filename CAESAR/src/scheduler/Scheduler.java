@@ -42,14 +42,13 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
-	Scheduler (int max_x, boolean both_d, int firstS, int lastS,
+	Scheduler (int max_x, boolean both_d, int lastS,
 			HashMap<RunID,Run> rs, EventQueues evqueues, ExecutorService exe, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch d,  
 			long start, boolean opt, AtomicDouble max_exe) {
 		
 		max_xway = max_x;
 		both_dirs = both_d;
-		firstSec = firstS;
 		lastSec = lastS;	
 				
 		runs = rs;

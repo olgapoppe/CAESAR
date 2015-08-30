@@ -46,8 +46,8 @@ public class Main {
 	    System.out.println("Current Date: " + ft.format(dNow));
 	    
 	    /*** Validate the number of input parameters ***/
-	    if (args.length < 11) {
-			System.out.println("At least 11 input parameters are expected.");
+	    if (args.length < 10) {
+			System.out.println("At least 10 input parameters are expected.");
 			return;
 		} 
 		
@@ -64,12 +64,11 @@ public class Main {
 		AtomicDouble max_exe_time = new AtomicDouble(0);
 		
 		/*** INPUT ***/
-		int firstSec = Integer.parseInt(args[3]);
-		int lastSec = Integer.parseInt(args[4]);
+		int lastSec = Integer.parseInt(args[3]);
 		
-		String path = args[5];
-		String file = args[6];
-		String extension = args[7];			
+		String path = args[4];
+		String file = args[5];
+		String extension = args[6];			
 		String filename = path + file + extension;
 		
 		String[] last_xway_dir;
@@ -84,9 +83,9 @@ public class Main {
 		System.out.println("Max xway: " + max_xway + "\nLast xway is two-directional: " + both_dirs);
 		
 		/*** EFFECT OF CONTEXT WINDOWS ***/
-		int window_length =  Integer.parseInt(args[8]);
-		int window_number =  Integer.parseInt(args[9]);
-		int query_number =  Integer.parseInt(args[10]);
+		int window_length =  Integer.parseInt(args[7]);
+		int window_number =  Integer.parseInt(args[8]);
+		int query_number =  Integer.parseInt(args[9]);
 		System.out.println("Window length: " + window_length + "\nWindow number: " + window_number + "\nQuery replications: " + query_number);
 		
 		/*** Create shared data structures ***/		
@@ -105,20 +104,20 @@ public class Main {
 		 *   Distributor reads from the file and writes into runs and event queues.
 		 *   Scheduler reads from runs and run queues and submits tasks to executor. ***/
 		EventDistributor distributor = new SingleQueueDistributor(
-				filename, firstSec, lastSec, 
+				filename,  lastSec, 
 				runs, eventqueues, 
 				startOfSimulation, distributorProgress, distrFinishTimes, count_and_rate);				
 				
 		Scheduler scheduler;
 		if (window_length == 0 && window_number == 0 && query_number == 0) {
 			scheduler = new TimeDrivenScheduler(
-					max_xway, both_dirs, 0, lastSec,
+					max_xway, both_dirs, lastSec,
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
 					startOfSimulation, optimized, max_exe_time);
 		} else {
 			scheduler = new ExpensiveWindowScheduler(
-					max_xway, both_dirs, firstSec, lastSec,
+					max_xway, both_dirs, lastSec,
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
 					startOfSimulation, optimized, max_exe_time,
