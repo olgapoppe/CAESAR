@@ -46,8 +46,8 @@ public abstract class Event {
 		
 		if (!failed.get() && totalProcessingTime > 5) {
 			
-			System.err.println(	s + " FAILED!!!\n" + 
-								p.timesToString() + "triggered " + this.toString());
+			/*System.err.println(	s + " FAILED!!!\n" + 
+								p.timesToString() + "triggered " + this.toString());*/
 			failed.compareAndSet(false, true);
 		}	
 	}
