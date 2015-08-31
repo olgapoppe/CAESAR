@@ -14,7 +14,7 @@ import iogenerator.*;
 
 public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	
-	int window_length;
+	int expensive_window_length;
 	int window_number;
 	int query_number;
 	
@@ -26,7 +26,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 		
 		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);
 		
-		window_length = wl;
+		expensive_window_length = wl;
 		window_number = wn;
 		query_number = qn;
 	}
@@ -37,9 +37,11 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;
-		boolean execute = true;
-		double window_bound = window_length;
-		double window_count = 0;
+		boolean execute = false;
+		double cheap_window_length = Math.ceil(lastSec/(window_number+1) - expensive_window_length);
+		double window_bound = cheap_window_length;
+		//double total_window_count = 0;
+		double expensive_window_count = 0;
 						
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
@@ -54,16 +56,18 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				/*** Update window bound, window count and execute ***/
 				if (window_number > 1 && curr_sec > window_bound) {			
 					
-					window_bound += window_length;
-					window_count++;
+					//total_window_count++;
 					
-					if (execute) {
+					if (execute || expensive_window_count == window_number) {
 						execute = false;
+						window_bound += cheap_window_length;
 					} else {
-						if (window_count % window_number == 0) {
+						//if (total_window_count % window_number == 0) {
 							execute = true;
-					}}						
-					System.out.println("Current second: " + curr_sec + " Window " + window_count + " with bound: " + window_bound + " Execute: " + execute);
+							window_bound += expensive_window_length;
+							expensive_window_count++;
+					}//}						
+					System.out.println("Window: " + curr_sec + "-"  + window_bound + " Execute: " + execute);
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
@@ -90,28 +94,15 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 */	
 	public int all_queries_all_runs (double sec, boolean execute, int query_number) {
 		
-		// Get transactions to schedule
+		/*** Get transactions to schedule ***/
 		ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
 		int number = transactions.size();
 		
-		try { 		
-			/*** Wait for the previous transactions to complete ***/
-			//System.out.println("Transaction number in second " + (curr_sec-1) + " is " + transaction_number.getCount());
-			double startOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);					
-			transaction_number.await(); 
-			double endOfWaiting = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-			double durationOfWaiting = endOfWaiting - startOfWaiting;
-			/*if (durationOfWaiting>1) 
-				System.out.println(	"Scheduler waits from " + startOfWaiting + 
-									" to " + endOfWaiting + 
-									" for executor to processes second " + sec);*/
-		} catch (final InterruptedException e) { e.printStackTrace(); }
+		/*** Wait for the previous transactions to complete ***/
+		try { transaction_number.await(); } 
+		catch (final InterruptedException e) { e.printStackTrace(); }
 					
-		// Print out scheduler progress
-		//double now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-		//if (sec % 10 == 0) System.out.println("Scheduling time of second " + sec + " is " + now);
-				
-		// Schedule all transactions at current second
+		/*** Schedule all transactions at current second ***/
 		transaction_number = new CountDownLatch(number);			
 		for (Transaction t : transactions) { 				
 			t.transaction_number = transaction_number;
