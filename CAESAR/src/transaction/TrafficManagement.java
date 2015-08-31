@@ -79,7 +79,7 @@ public class TrafficManagement extends Transaction {
 			// Query replication loop
 			//for (int i=1; i<query_number; i++) {
 				
-			try { Thread.sleep(query_number*100); } 
+			try { Thread.sleep(query_number*10); } 
 			catch (InterruptedException e) { e.printStackTrace(); }
 			
 				//run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
