@@ -83,6 +83,8 @@ public class OutputFileGenerator {
 			
 			// Events processed and stored by runs
 			double max_latency = 0;
+			double sum = 0;
+			double count = 0;
 			
 			Set<RunID> runids = runs.keySet();
 				
@@ -99,7 +101,10 @@ public class OutputFileGenerator {
 						run.output.writeStreamRates2File(pr_rates_output, rtn_rates_output, ztn_rates_output, aw_rates_output, lastMin);
 				}
 				max_latency = run.output.writeTollNotifications2File(tollalerts_output, max_latency);
-				max_latency = run.output.writeAccidentWarnings2File(accidentalerts_output, max_latency);					
+				max_latency = run.output.writeAccidentWarnings2File(accidentalerts_output, max_latency);	
+				
+				sum += run.output.sum;
+				count += run.output.count;
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
 	     		run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -108,7 +113,10 @@ public class OutputFileGenerator {
 	     		total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
-			System.out.println("Max execution time: " + max_exe_time.get() + "\nMax latency: " + max_latency);
+			double avg_latency = new Double(sum)/new Double(count);
+			System.out.println(	"Max execution time: " + max_exe_time.get() + 
+								"\nMax latency: " + max_latency +
+								"\nAvg latency: " + avg_latency);
 			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 

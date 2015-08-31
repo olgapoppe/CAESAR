@@ -28,6 +28,9 @@ public class Output {
 	HashMap<Double,Integer> zero_toll_notification_rates;
 	HashMap<Double,Integer> accident_warning_rates;
 	
+	public double count;
+	public double sum;
+	
 	public Output () {
 		
 		//positionReports  = new ArrayList<PositionReport>();
@@ -43,6 +46,9 @@ public class Output {
 		real_toll_notification_rates = new HashMap<Double,Integer>();
 		zero_toll_notification_rates = new HashMap<Double,Integer>();
 		accident_warning_rates = new HashMap<Double,Integer>();
+		
+		count = 0;
+		sum = 0;
 	}
 	
 	/**
@@ -158,6 +164,8 @@ public class Output {
 		for (TollNotification t : tollNotifications) {
 			try { 
 				if (max_latency < t.totalProcessingTime) max_latency = t.totalProcessingTime;
+				sum += t.totalProcessingTime;
+				count++;
 				file.write(t.toString()); 
 			} catch (IOException e) { e.printStackTrace(); }
 		}  
@@ -172,6 +180,8 @@ public class Output {
 		for (AccidentWarning a : accidentWarnings) {			
 			try { 
 				if (max_latency < a.totalProcessingTime) max_latency = a.totalProcessingTime;
+				sum += a.totalProcessingTime;
+				count++;
 				file.write(a.toString()); 
 			} catch (IOException e) { e.printStackTrace(); }
 		}
