@@ -37,7 +37,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;
-		boolean execute = false;
+		boolean execute = (window_number > 1) ? false : true;
 		double cheap_window_length = Math.ceil(lastSec/(window_number+1) - expensive_window_length);
 		double window_bound = cheap_window_length;
 		//double total_window_count = 0;
