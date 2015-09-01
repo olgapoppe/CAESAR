@@ -8,13 +8,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import transaction.*;
+import window.WindowDistribution;
 import distributor.*;
 import event.*;
 import iogenerator.*;
 
 public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	
-	int expensive_window_length;
+	int lambda;
+	int window_distribution;
+	int window_length;
 	int window_number;
 	int query_number;
 	
@@ -22,11 +25,13 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
 			long start, boolean opt, AtomicDouble max_exe_time,
-			int wl, int wn, int qn) {	
+			int l, int wd, int wl, int wn, int qn) {	
 		
 		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, max_exe_time);
 		
-		expensive_window_length = wl;
+		lambda = l;
+		window_distribution = wd;
+		window_length = wl;
 		window_number = wn;
 		query_number = qn;
 	}
@@ -36,12 +41,13 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 */	
 	public void run() {	
 		
-		double curr_sec = -1;
-		boolean execute = (window_number > 1) ? false : true;
-		double cheap_window_length = Math.ceil(lastSec/(window_number+1) - expensive_window_length);
-		double window_bound = cheap_window_length;
-		//double total_window_count = 0;
-		double expensive_window_count = 0;
+		double curr_sec = -1;		
+		int window_count = -1;
+		int window_bound = -1;
+		
+		ArrayList<Integer> expensive_windows = (window_distribution == 0) ? WindowDistribution.getUniformNumbers(query_number, window_number, window_length) : WindowDistribution.getPoissonNumbers(lambda, window_number);
+		System.out.println("Expensive windows: " + expensive_windows.toString());		
+		boolean execute = (window_number > 1) ? false : true;		
 						
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
@@ -53,21 +59,13 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
 				/*********************************************************************************************************************************************/
-				/*** Update window bound, window count and execute ***/
+				/*** Update window count, window bound and execute ***/
 				if (window_number > 1 && curr_sec > window_bound) {			
 					
-					//total_window_count++;
-					
-					if (execute || expensive_window_count == window_number) {
-						execute = false;
-						window_bound += cheap_window_length;
-					} else {
-						//if (total_window_count % window_number == 0) {
-							execute = true;
-							window_bound += expensive_window_length;
-							expensive_window_count++;
-					}//}						
-					System.out.println("Window: " + curr_sec + "-"  + window_bound + " Execute: " + execute);
+					window_count++;
+					window_bound += window_length;
+					execute = expensive_windows.contains(window_count);				
+					System.out.println("Window: " + window_count + " from " + curr_sec + " to "  + window_bound + " Execute: " + execute);
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
