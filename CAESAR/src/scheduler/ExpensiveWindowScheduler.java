@@ -46,10 +46,20 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 		int window_bound = 0;
 		boolean execute = false;
 		
-		int window_center = lambda/window_length + 1;
+		/*** Get expensive windows ***/
+		int window_center = lambda/window_length + 1;		
+		ArrayList<Integer> expensive_windows = (window_distribution == 0) ? 
+				WindowDistribution.getUniformNumbers(query_number, window_number, window_length) : 
+				WindowDistribution.getPoissonNumbers(lastSec,window_length,window_center, window_number);
+		System.out.println("Window center: " + window_center + " Expensive windows: " + expensive_windows.toString());
 		
-		ArrayList<Integer> expensive_windows = (window_distribution == 0) ? WindowDistribution.getUniformNumbers(query_number, window_number, window_length) : WindowDistribution.getPoissonNumbers(window_center, window_number);
-		System.out.println("Window center: " + window_center + " Expensive windows: " + expensive_windows.toString());		
+		/*** Reset last second if the last expensive window ends before ***/
+		int max_expensive_window = -1;
+		for (int w : expensive_windows) {
+			if (max_expensive_window < w) max_expensive_window = w;
+		}
+		int new_lastSec = (max_expensive_window+1)*window_length;
+		if (lastSec > new_lastSec) lastSec = new_lastSec;
 								
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {

@@ -33,7 +33,7 @@ public class Main {
 	 * 6			extension : .txt or .dat
 	 * 
 	 * 				CONTEXT WINDOWS, all 0s if original benchmark is executed
-	 * 7			lambda for Poisson distribution
+	 * 7			lambda in seconds for Poisson distribution
 	 * 8			window distribution: 0 for uniform, 1 for Poisson
 	 * 9			window length in seconds
 	 * 10			number of windows
