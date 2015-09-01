@@ -77,14 +77,14 @@ public class TrafficManagement extends Transaction {
 			//System.out.println("Fake execute event " + event.toString() + " " + (query_number-1) + " times and really execute it afterwards.");
 				
 			// Query replication loop
-			//for (int i=1; i<query_number; i++) {
+			for (int i=1; i<query_number; i++) {
 				
-			try { Thread.sleep(query_number*10); } 
-			catch (InterruptedException e) { e.printStackTrace(); }
+			/*try { Thread.sleep(query_number*10); } 
+			catch (InterruptedException e) { e.printStackTrace(); }*/
 			
-				//run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				//run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
-			//}				
+				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
+			}				
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);
 						
