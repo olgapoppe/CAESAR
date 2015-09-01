@@ -43,12 +43,14 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 		
 		double curr_sec = -1;		
 		int window_count = -1;
-		int window_bound = -1;
+		int window_bound = 0;
+		boolean execute = false;
 		
-		ArrayList<Integer> expensive_windows = (window_distribution == 0) ? WindowDistribution.getUniformNumbers(query_number, window_number, window_length) : WindowDistribution.getPoissonNumbers(lambda, window_number);
-		System.out.println("Expensive windows: " + expensive_windows.toString());		
-		boolean execute = (window_number > 1) ? false : true;		
-						
+		int window_center = lambda/window_length + 1;
+		
+		ArrayList<Integer> expensive_windows = (window_distribution == 0) ? WindowDistribution.getUniformNumbers(query_number, window_number, window_length) : WindowDistribution.getPoissonNumbers(window_center, window_number);
+		System.out.println("Window center: " + window_center + " Expensive windows: " + expensive_windows.toString());		
+								
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
 		
@@ -60,12 +62,16 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				
 				/*********************************************************************************************************************************************/
 				/*** Update window count, window bound and execute ***/
-				if (window_number > 1 && curr_sec > window_bound) {			
-					
-					window_count++;
-					window_bound += window_length;
-					execute = expensive_windows.contains(window_count);				
-					System.out.println("Window: " + window_count + " from " + curr_sec + " to "  + window_bound + " Execute: " + execute);
+				if (window_number == 1) {
+					execute = true;					
+				} else {
+					if (curr_sec == 0 || curr_sec > window_bound) {			
+						
+						window_count++;
+						window_bound += window_length;
+						execute = expensive_windows.contains(window_count);				
+						System.out.println("Window: " + window_count + " from " + curr_sec + " to "  + window_bound + " Execute: " + execute);
+					}
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
