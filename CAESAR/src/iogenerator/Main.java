@@ -1,6 +1,7 @@
 package iogenerator;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -10,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import distributor.*;
 import run.*;
 import scheduler.*;
+import window.WindowDistribution;
  
 public class Main {
 	
@@ -106,7 +108,29 @@ public class Main {
 				
 		CountDownLatch transaction_number = new CountDownLatch(0);	
 		CountDownLatch done = new CountDownLatch(1);
-		long startOfSimulation = System.currentTimeMillis();		
+		long startOfSimulation = System.currentTimeMillis();	
+		
+		/*** Get expensive windows and reset last second ***/
+		ArrayList<Integer> expensive_windows = new ArrayList<Integer>();
+		if (window_number > 0) {
+			
+			/*** Get expensive windows ***/
+			int window_center = lambda/window_length + 1;		
+			expensive_windows = (window_distribution == 0) ? 
+					WindowDistribution.getUniformNumbers(lastSec, window_length, window_number) : 
+					WindowDistribution.getPoissonNumbers(lastSec, window_length, window_number, window_center);
+			String s = "";
+			if (window_distribution == 1) s = "Window center: " + window_center + " ";			
+			System.out.println(s + "Expensive windows: " + expensive_windows.toString());
+		
+			/*** Reset last second if the last expensive window ends before ***/
+			int max_expensive_window = -1;
+			for (int w : expensive_windows) {
+				if (max_expensive_window < w) max_expensive_window = w;
+			}
+			int new_lastSec = (max_expensive_window+1)*window_length;
+			if (lastSec > new_lastSec) lastSec = new_lastSec;
+		}
 		
 		/*** Create and start event distributing and query scheduling threads.
 		 *   Distributor reads from the file and writes into runs and event queues.
@@ -129,7 +153,7 @@ public class Main {
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
 					startOfSimulation, optimized, total_exe_time,
-					lambda, window_distribution, window_length, window_number, query_number);
+					window_length, window_number, query_number, expensive_windows);
 		}
 		
 		Thread prodThread = new Thread(distributor);

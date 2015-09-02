@@ -8,32 +8,29 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import transaction.*;
-import window.WindowDistribution;
 import distributor.*;
 import event.*;
 import iogenerator.*;
 
 public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	
-	int lambda;
-	int window_distribution;
 	int window_length;
 	int window_number;
 	int query_number;
+	ArrayList<Integer> expensive_windows;
 	
 	public ExpensiveWindowScheduler (int max_xway, boolean both_dirs, int lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
 			long start, boolean opt, AtomicDouble total_exe_time,
-			int l, int wd, int wl, int wn, int qn) {	
+			int wl, int wn, int qn, ArrayList<Integer> exp_windows) {	
 		
 		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, total_exe_time);
 		
-		lambda = l;
-		window_distribution = wd;
 		window_length = wl;
 		window_number = wn;
 		query_number = qn;
+		expensive_windows = exp_windows;
 	}
 	
 	/**
@@ -45,28 +42,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 		int window_count = -1;
 		int window_bound = 0;
 		boolean execute = false;
-		ArrayList<Integer> expensive_windows = new ArrayList<Integer>();
-		
-		if (window_number > 0) {
-		
-			/*** Get expensive windows ***/
-			int window_center = lambda/window_length + 1;		
-			expensive_windows = (window_distribution == 0) ? 
-					WindowDistribution.getUniformNumbers(lastSec, window_length, window_number) : 
-					WindowDistribution.getPoissonNumbers(lastSec, window_length, window_number, window_center);
-			String s = "";
-			if (window_distribution == 1) s = "Window center: " + window_center + " ";			
-			System.out.println(s + "Expensive windows: " + expensive_windows.toString());
-		
-			/*** Reset last second if the last expensive window ends before ***/
-			int max_expensive_window = -1;
-			for (int w : expensive_windows) {
-				if (max_expensive_window < w) max_expensive_window = w;
-			}
-			int new_lastSec = (max_expensive_window+1)*window_length;
-			if (lastSec > new_lastSec) lastSec = new_lastSec;
-		}
-								
+										
 		/*** Get the permission to schedule current second ***/
 		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
 		
