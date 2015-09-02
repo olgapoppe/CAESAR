@@ -25,7 +25,7 @@ public class WindowDistribution {
 		}
 	}
 	
-	public static ArrayList<Integer> getPoissonNumbers (int lastSec, int window_length, double lambda, int expensive_window_number) {
+	public static ArrayList<Integer> getPoissonNumbers (int lastSec, int window_length, int expensive_window_number, double lambda) {
 		
 		ArrayList<Integer> results = new ArrayList<Integer> ();
 		int total_window_number = lastSec/window_length;
@@ -52,7 +52,7 @@ public class WindowDistribution {
 		return k - 1;
 	}
 	
-	public static ArrayList<Integer> getUniformNumbers (int lastSec, int expensive_window_number, int window_length) {
+	public static ArrayList<Integer> getUniformNumbers (int lastSec, int window_length, int expensive_window_number) {
 		  
 		ArrayList<Integer> results = new ArrayList<Integer>();
 		

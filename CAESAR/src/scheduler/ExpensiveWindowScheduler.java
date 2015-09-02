@@ -52,8 +52,8 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 			/*** Get expensive windows ***/
 			int window_center = lambda/window_length + 1;		
 			expensive_windows = (window_distribution == 0) ? 
-					WindowDistribution.getUniformNumbers(lastSec, window_number, window_length) : 
-					WindowDistribution.getPoissonNumbers(lastSec, window_length, window_center, window_number);
+					WindowDistribution.getUniformNumbers(lastSec, window_length, window_number) : 
+					WindowDistribution.getPoissonNumbers(lastSec, window_length, window_number, window_center);
 			String s = "";
 			if (window_distribution == 1) s = "Window center: " + window_center + " ";			
 			System.out.println(s + "Expensive windows: " + expensive_windows.toString());

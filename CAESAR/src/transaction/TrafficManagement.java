@@ -49,8 +49,7 @@ public class TrafficManagement extends Transaction {
 	 */	
 	public void run() {	
 			
-		double segWithAccAhead;
-				
+		double segWithAccAhead;				
 		double start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 						
 		for (PositionReport event : events) {
@@ -74,7 +73,6 @@ public class TrafficManagement extends Transaction {
 			}
 			// WRITE: Update this run and remove old data
 			
-			
 			//System.out.println("Fake execute event " + event.toString() + " " + (query_number-1) + " times and really execute it afterwards.");
 				
 			// Query replication loop
@@ -91,7 +89,7 @@ public class TrafficManagement extends Transaction {
 		}	
 		double end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
 		double duration = end - start;		
-		total_exe_time.set(total_exe_time.get()+duration);		
+		total_exe_time.set(total_exe_time.get() + duration);		
 		
 		// Count down the number of transactions
 		transaction_number.countDown();			
