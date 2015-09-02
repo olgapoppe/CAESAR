@@ -20,7 +20,7 @@ public class OutputFileGenerator {
 	 * @param HP_frequency
 	 * @param LP_frequency
 	 */
-	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicDouble max_exe_time) { 
+	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicDouble total_exe_time) { 
 		
 		try {
 			/*
@@ -114,7 +114,7 @@ public class OutputFileGenerator {
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
 			double avg_latency = new Double(sum)/new Double(count);
-			System.out.println(	"Max execution time: " + max_exe_time.get() + 
+			System.out.println(	"Total execution time: " + total_exe_time.get() + 
 								"\nMax latency: " + max_latency +
 								"\nAvg latency: " + avg_latency);
 			

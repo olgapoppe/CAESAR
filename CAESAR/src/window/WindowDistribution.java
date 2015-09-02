@@ -14,7 +14,7 @@ public class WindowDistribution {
 		
 		int count = 0;
 		
-		while (count < 10) {
+		while (count < 100) {
 			System.out.println(expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + getPoissonNumbers(lastSec,window_length,lambda,expensive_window_number));
 			count++;
 		}
@@ -22,7 +22,7 @@ public class WindowDistribution {
 		while (count < 10) {
 			System.out.println(expensive_window_number + " uniform numbers are: " + getUniformNumbers(lastSec,expensive_window_number,window_length));
 			count++;
-		}	
+		}
 	}
 	
 	public static ArrayList<Integer> getPoissonNumbers (int lastSec, int window_length, double lambda, int expensive_window_number) {

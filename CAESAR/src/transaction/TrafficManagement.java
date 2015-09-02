@@ -50,7 +50,8 @@ public class TrafficManagement extends Transaction {
 	public void run() {	
 			
 		double segWithAccAhead;
-		double max_exe_time_in_this_transaction = 0;
+				
+		double start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 						
 		for (PositionReport event : events) {
 				
@@ -72,34 +73,25 @@ public class TrafficManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run and remove old data
-			double app_time_start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			
 			
 			//System.out.println("Fake execute event " + event.toString() + " " + (query_number-1) + " times and really execute it afterwards.");
 				
 			// Query replication loop
-			for (int i=1; i<query_number; i++) {
+			//for (int i=1; i<query_number; i++) {
 				
-			/*try { Thread.sleep(query_number*10); } 
-			catch (InterruptedException e) { e.printStackTrace(); }*/
+			try { Thread.sleep(query_number*5); } 
+			catch (InterruptedException e) { e.printStackTrace(); }
 			
-				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
-			}				
+				//run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				//run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
+			//}				
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-			run.collectGarbage(event.min);
-						
-			double app_time_end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
-			double exe_time = app_time_end - app_time_start;
-			if (max_exe_time_in_this_transaction < exe_time) {
-				max_exe_time_in_this_transaction = exe_time;	
-				//System.out.println("Max exe time per transaction in second " + event.sec + " is " + exe_time);
-			}
+			run.collectGarbage(event.min);			
 		}	
-		// Increase maximal execution time
-		if (max_exe_time.get() < max_exe_time_in_this_transaction) {
-			max_exe_time.set(max_exe_time_in_this_transaction);
-			//System.out.println("Max exe time becomes " + max_exe_time.get());
-		}
+		double end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
+		double duration = end - start;		
+		total_exe_time.set(total_exe_time.get()+duration);		
 		
 		// Count down the number of transactions
 		transaction_number.countDown();			

@@ -62,7 +62,7 @@ public class Main {
 				
 		/*** STATISTICS ***/
 		boolean count_and_rate = args[2].equals("1");
-		AtomicDouble max_exe_time = new AtomicDouble(0);
+		AtomicDouble total_exe_time = new AtomicDouble(0);
 		
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[3]);
@@ -121,13 +121,13 @@ public class Main {
 					max_xway, both_dirs, lastSec,
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-					startOfSimulation, optimized, max_exe_time);
+					startOfSimulation, optimized, total_exe_time);
 		} else {
 			scheduler = new ExpensiveWindowScheduler(
 					max_xway, both_dirs, lastSec,
 					runs, eventqueues, executor, 
 					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-					startOfSimulation, optimized, max_exe_time,
+					startOfSimulation, optimized, total_exe_time,
 					lambda, window_distribution, window_length, window_number, query_number);
 		}
 		
@@ -146,7 +146,7 @@ public class Main {
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runs, lastSec, count_and_rate, max_exe_time);  			
+			OutputFileGenerator.write2File (runs, lastSec, count_and_rate, total_exe_time);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }

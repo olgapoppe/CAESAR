@@ -37,7 +37,7 @@ public abstract class Scheduler implements Runnable {
 	
 	long startOfSimulation;
 	boolean optimized;
-	AtomicDouble max_exe_time;
+	AtomicDouble total_exe_time;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
@@ -63,7 +63,7 @@ public abstract class Scheduler implements Runnable {
 		
 		startOfSimulation = start;
 		optimized = opt;
-		max_exe_time = max_exe;
+		total_exe_time = max_exe;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);
@@ -344,9 +344,9 @@ public abstract class Scheduler implements Runnable {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
-						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed, 1);
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, 1);
 					} else {
-						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, max_exe_time, accidentWarningsFailed, tollNotificationsFailed);
+						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed);
 				}}				
 		}}
 		return null;

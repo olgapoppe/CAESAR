@@ -84,7 +84,7 @@ public class DefaultTrafficManagement extends Transaction {
 			if (max_exe_time_in_this_transaction < exe_time) max_exe_time_in_this_transaction = exe_time;
 		}	
 		// Increase maximal execution time
-		if (max_exe_time.get() < max_exe_time_in_this_transaction) max_exe_time.set(max_exe_time_in_this_transaction);
+		if (total_exe_time.get() < max_exe_time_in_this_transaction) total_exe_time.set(max_exe_time_in_this_transaction);
 				
 		// Count down the number of transactions
 		transaction_number.countDown();
