@@ -54,7 +54,7 @@ public class Main {
 		
 		/*** EXECUTORS ***/
 		int number_of_executors = Integer.parseInt(args[0]);
-		System.out.println("Number of executors: " + number_of_executors);
+		//System.out.println("Number of executors: " + number_of_executors);
 		ExecutorService executor = Executors.newFixedThreadPool(number_of_executors);
 		
 		/*** OPTIMIZATION ***/
@@ -81,7 +81,8 @@ public class Main {
 		}
 		int max_xway = Integer.parseInt(last_xway_dir[0]);
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
-		System.out.println("Max xway: " + max_xway + "\nLast xway is two-directional: " + both_dirs);
+		System.out.println(	"Max xway: " + max_xway + 
+							"\nLast xway is two-directional: " + both_dirs);
 		
 		/*** CONTEXT WINDOWS ***/
 		int lambda = Integer.parseInt(args[7]);

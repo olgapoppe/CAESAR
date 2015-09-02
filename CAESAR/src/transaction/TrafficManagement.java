@@ -71,10 +71,8 @@ public class TrafficManagement extends Transaction {
 			} else {
 				segWithAccAhead = -1;
 			}
-			// WRITE: Update this run and remove old data
-			
-			//System.out.println("Fake execute event " + event.toString() + " " + (query_number-1) + " times and really execute it afterwards.");
-				
+			// WRITE: Update this run and remove old data			
+			//System.out.println("Execute event " + event.toString());				
 			// Query replication loop
 			//for (int i=1; i<query_number; i++) {
 				
