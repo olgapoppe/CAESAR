@@ -124,7 +124,7 @@ public class SingleQueueDistributor extends EventDistributor {
 	 				/*** Sleep if now is smaller than batch_limit ms ***/
 	 				now = System.currentTimeMillis() - startOfSimulation;
  					
- 					if (now < batch.end*1000 && batch.isContained(expensive_windows)) {
+ 					if (now < batch.end*1000 && batch.contains(expensive_windows)) {
 		 			
  						int sleep_time = new Double(batch.end*1000 - now).intValue();		 			
  						//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			

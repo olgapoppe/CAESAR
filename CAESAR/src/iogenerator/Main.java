@@ -116,13 +116,16 @@ public class Main {
 			
 			/*** Get expensive windows ***/
 			int window_center = lambda/window_length + 1;		
-			expensive_windows = WindowDistribution.getTimeIntervals(window_distribution, lastSec, window_length, window_center, window_number);
+			expensive_windows = WindowDistribution.getTimeIntervals(window_distribution, lastSec, window_length, window_number, window_center);
 			String s = "";
 			if (window_distribution == 1) s = "Window center: " + window_center + " ";			
 			System.out.println(s + "Expensive windows: " + expensive_windows.toString());
 		
 			/*** Reset last second if the last expensive window ends before ***/
-			double new_lastSec = expensive_windows.get(expensive_windows.size()-1).end;
+			double new_lastSec = 0;
+			for (TimeInterval i : expensive_windows) {
+				if (new_lastSec < i.end) new_lastSec = i.end;
+			}
 			if (lastSec > new_lastSec) lastSec = new_lastSec;
 		}
 		

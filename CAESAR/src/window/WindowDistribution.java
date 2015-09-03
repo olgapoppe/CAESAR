@@ -6,11 +6,14 @@ public class WindowDistribution {
 	
 	public static void main (String args[]) {
 		
-		int lambda = 10;
-		int expensive_window_number = 5;
+		int window_center = 160;
+		int expensive_window_number = 2;
 		
-		int lastSec = 20;
-		int window_length = 2;	
+		int lastSec = 180;
+		int window_length = 10;	
+		
+		int lambda = window_center/window_length + 1;
+		System.out.println("Central window is: " + lambda);
 		
 		/* int count = 0;
 		 * while (count < 100) {
@@ -18,17 +21,17 @@ public class WindowDistribution {
 			count++;
 		}*/
 		
-		System.out.println(expensive_window_number + " uniform numbers are: " + getUniformNumbers(lastSec,window_length,expensive_window_number) +
-				"\nTheir respective time intervals are: " + getTimeIntervals(0,lastSec,window_length,lambda,expensive_window_number).toString());
+		System.out.println(expensive_window_number + " expensive windows are: " + getPoissonNumbers(lastSec, window_length, expensive_window_number, lambda) +
+				"\nTheir respective time intervals are: " + getTimeIntervals(1, lastSec, window_length, expensive_window_number, lambda).toString());
 	}
 	
-	public static ArrayList<TimeInterval> getTimeIntervals (int distribution, double lastSec, int window_length, int lambda, int expensive_window_number) {
+	public static ArrayList<TimeInterval> getTimeIntervals (int distribution, double lastSec, int window_length, int expensive_window_number, int lambda) {
 		
 		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
 		
 		ArrayList<Integer> expensive_windows = (distribution == 0) ? 
-				getUniformNumbers(lastSec,window_length,expensive_window_number) :
-				getPoissonNumbers(lastSec,window_length,lambda,expensive_window_number);
+				getUniformNumbers(lastSec, window_length, expensive_window_number) :
+				getPoissonNumbers(lastSec, window_length, expensive_window_number, lambda);
 		
 		for (Integer expensive_window : expensive_windows) {
 			

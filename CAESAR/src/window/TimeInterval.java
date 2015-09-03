@@ -16,7 +16,7 @@ public class TimeInterval {
 		return start <= n && n <= end;
 	}
 	
-	public boolean isContained (ArrayList<TimeInterval> expensive_windows) {
+	public boolean contains (ArrayList<TimeInterval> expensive_windows) {
 		for (TimeInterval i : expensive_windows) {
 			if ((start <= i.start && i.start <= end) || (start <= i.end && i.end <= end)) {
 				return true;
