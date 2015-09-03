@@ -3,9 +3,10 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 import run.*;
 import event.*;
-import iogenerator.*;
+
 
 /** 
  * A transaction has a sequence of events with the same time stamp and belonging to the same run,
@@ -18,11 +19,11 @@ public abstract class Transaction implements Runnable {
 	HashMap<RunID,Run> runs;
 	
 	long startOfSimulation;
-	AtomicDouble total_exe_time;
+	AtomicLong total_exe_time;
 	
 	public CountDownLatch transaction_number;
 				
-	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicDouble tet) {
+	public Transaction (ArrayList<PositionReport> eventList, HashMap<RunID,Run> rs, long start, AtomicLong tet) {
 		
 		events = eventList;		
 		runs = rs;

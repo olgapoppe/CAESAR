@@ -8,6 +8,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import distributor.*;
 import run.*;
 import scheduler.*;
@@ -64,7 +66,7 @@ public class Main {
 				
 		/*** STATISTICS ***/
 		boolean count_and_rate = args[2].equals("1");
-		AtomicDouble total_exe_time = new AtomicDouble(0);
+		AtomicLong total_exe_time = new AtomicLong(0);
 		
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[3]);

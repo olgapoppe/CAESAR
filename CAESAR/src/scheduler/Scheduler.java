@@ -7,11 +7,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import event.*;
 import run.*;
 import transaction.*;
 import distributor.*;
-import iogenerator.*;
+
 
 /**
  * A scheduler iterates over run task queues, picks events from them and 
@@ -37,7 +38,7 @@ public abstract class Scheduler implements Runnable {
 	
 	long startOfSimulation;
 	boolean optimized;
-	AtomicDouble total_exe_time;
+	AtomicLong total_exe_time;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
@@ -45,7 +46,7 @@ public abstract class Scheduler implements Runnable {
 	Scheduler (int max_x, boolean both_d, int lastS,
 			HashMap<RunID,Run> rs, EventQueues evqueues, ExecutorService exe, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch d,  
-			long start, boolean opt, AtomicDouble max_exe) {
+			long start, boolean opt, AtomicLong total_exe) {
 		
 		max_xway = max_x;
 		both_dirs = both_d;
@@ -63,7 +64,7 @@ public abstract class Scheduler implements Runnable {
 		
 		startOfSimulation = start;
 		optimized = opt;
-		total_exe_time = max_exe;
+		total_exe_time = total_exe;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);

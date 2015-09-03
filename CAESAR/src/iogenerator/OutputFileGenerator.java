@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
 import run.*;
 
 /**
@@ -20,7 +22,7 @@ public class OutputFileGenerator {
 	 * @param HP_frequency
 	 * @param LP_frequency
 	 */
-	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicDouble total_exe_time) { 
+	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicLong total_exe_time) { 
 		
 		try {
 			/*

@@ -3,10 +3,10 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.util.concurrent.atomic.AtomicLong;
 import run.*;
 import event.*;
-import iogenerator.*;
+
 
 /** 
  * A traffic managing transaction processes all events in the event sequence by their respective run
@@ -28,10 +28,10 @@ public class TrafficManagement extends Transaction {
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
-			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf,
+			AtomicLong tet, AtomicBoolean awf, AtomicBoolean tnf,
 			int qn) {
 		
-		super(eventList,rs,start,met);
+		super(eventList,rs,start,tet);
 		
 		run = r;
 		
@@ -50,7 +50,7 @@ public class TrafficManagement extends Transaction {
 	public void run() {	
 			
 		double segWithAccAhead;				
-		double start = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+		long start = System.currentTimeMillis() - startOfSimulation;
 						
 		for (PositionReport event : events) {
 				
@@ -85,8 +85,8 @@ public class TrafficManagement extends Transaction {
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);			
 		}	
-		double end = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);			
-		double duration = end - start;		
+		long end = System.currentTimeMillis() - startOfSimulation;			
+		long duration = (end - start)/new Long(1000); // convert ms to sec		
 		total_exe_time.set(total_exe_time.get() + duration);		
 		
 		// Count down the number of transactions

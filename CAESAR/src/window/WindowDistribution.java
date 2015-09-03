@@ -7,10 +7,10 @@ public class WindowDistribution {
 	public static void main (String args[]) {
 		
 		int lambda = 10;
-		int expensive_window_number = 3;
+		int expensive_window_number = 11;
 		
 		int lastSec = 180;
-		int window_length = 70;	
+		int window_length = 10;	
 		
 		/* int count = 0;
 		 * while (count < 100) {

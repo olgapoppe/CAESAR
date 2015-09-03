@@ -6,11 +6,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import run.*;
 import transaction.*;
 import distributor.*;
 import event.*;
-import iogenerator.*;
+
 
 public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	
@@ -22,7 +23,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public ExpensiveWindowScheduler (int max_xway, boolean both_dirs, int lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
-			long start, boolean opt, AtomicDouble total_exe_time,
+			long start, boolean opt, AtomicLong total_exe_time,
 			int wl, int wn, int qn, ArrayList<Integer> exp_windows) {	
 		
 		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, total_exe_time);

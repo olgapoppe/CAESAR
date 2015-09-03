@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.LinkedBlockingQueue;
 import accident.*;
 import run.*;
@@ -30,9 +31,9 @@ public class DefaultTrafficManagement extends Transaction {
 	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
-			AtomicDouble met, AtomicBoolean awf, AtomicBoolean tnf) {
+			AtomicLong tet, AtomicBoolean awf, AtomicBoolean tnf) {
 		
-		super(eventList,rs,start,met);
+		super(eventList,rs,start,tet);
 		
 		distrFinishTimes = distrFinishT;
 		schedStartTimes = schedStartT;
@@ -84,7 +85,7 @@ public class DefaultTrafficManagement extends Transaction {
 			if (max_exe_time_in_this_transaction < exe_time) max_exe_time_in_this_transaction = exe_time;
 		}	
 		// Increase maximal execution time
-		if (total_exe_time.get() < max_exe_time_in_this_transaction) total_exe_time.set(max_exe_time_in_this_transaction);
+		//if (total_exe_time.get() < max_exe_time_in_this_transaction) total_exe_time.set(max_exe_time_in_this_transaction);
 				
 		// Count down the number of transactions
 		transaction_number.countDown();
