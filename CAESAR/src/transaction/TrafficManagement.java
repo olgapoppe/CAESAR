@@ -86,7 +86,7 @@ public class TrafficManagement extends Transaction {
 			run.collectGarbage(event.min);			
 		}	
 		long end = System.currentTimeMillis() - startOfSimulation;			
-		long duration = (end - start)/new Long(1000); // convert ms to sec		
+		long duration = end - start;		
 		total_exe_time.addAndGet(duration);		
 		
 		// Count down the number of transactions
