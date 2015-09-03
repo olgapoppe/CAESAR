@@ -1,14 +1,12 @@
 package transaction;
 
-import iogenerator.AtomicDouble;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.LinkedBlockingQueue;
 import accident.*;
 import run.*;
@@ -31,7 +29,7 @@ public class DefaultTrafficManagement extends Transaction {
 	public DefaultTrafficManagement (ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
-			AtomicLong tet, AtomicBoolean awf, AtomicBoolean tnf) {
+			AtomicInteger tet, AtomicBoolean awf, AtomicBoolean tnf) {
 		
 		super(eventList,rs,start,tet);
 		

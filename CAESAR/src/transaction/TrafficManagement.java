@@ -3,7 +3,7 @@ package transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import event.*;
 
@@ -28,7 +28,7 @@ public class TrafficManagement extends Transaction {
 	public TrafficManagement (Run r, ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
-			AtomicLong tet, AtomicBoolean awf, AtomicBoolean tnf,
+			AtomicInteger tet, AtomicBoolean awf, AtomicBoolean tnf,
 			int qn) {
 		
 		super(eventList,rs,start,tet);
@@ -50,7 +50,7 @@ public class TrafficManagement extends Transaction {
 	public void run() {	
 			
 		double segWithAccAhead;				
-		long start = System.currentTimeMillis() - startOfSimulation;
+		double start = System.currentTimeMillis() - startOfSimulation;
 						
 		for (PositionReport event : events) {
 				
@@ -83,12 +83,12 @@ public class TrafficManagement extends Transaction {
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);			
 		}	
-		long end = System.currentTimeMillis() - startOfSimulation;			
-		long duration = end - start + (events.size()*query_number*5); // simulate replicated query execution
+		double end = System.currentTimeMillis() - startOfSimulation;			
+		Double duration = end - start + (events.size()*query_number*5); // simulate replicated query execution
 		
 		//System.out.println(run.runID + " " + duration + " " + total_exe_time.addAndGet(duration));
 		
-		total_exe_time.addAndGet(duration);		
+		total_exe_time.addAndGet(duration.intValue());		
 		
 		// Count down the number of transactions
 		transaction_number.countDown();			

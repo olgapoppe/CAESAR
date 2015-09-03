@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import run.*;
 
@@ -22,7 +22,7 @@ public class OutputFileGenerator {
 	 * @param HP_frequency
 	 * @param LP_frequency
 	 */
-	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicLong total_exe_time) { 
+	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicInteger total_exe_time) { 
 		
 		try {
 			/*
@@ -116,7 +116,7 @@ public class OutputFileGenerator {
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
 			//double avg_latency = new Double(sum)/new Double(count);
-			System.out.println(	"Total execution time: " + total_exe_time.toString()); 
+			System.out.println(	"Total execution time in seconds: " + (total_exe_time.get()/new Double(1000))); 
 								//"\nMax latency: " + max_latency +
 								//"\nAvg latency: " + avg_latency);
 			

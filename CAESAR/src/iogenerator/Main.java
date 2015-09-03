@@ -66,7 +66,7 @@ public class Main {
 				
 		/*** STATISTICS ***/
 		boolean count_and_rate = args[2].equals("1");
-		AtomicLong total_exe_time = new AtomicLong(0);
+		AtomicInteger total_exe_time = new AtomicInteger(0);
 		
 		/*** INPUT ***/
 		int lastSec = Integer.parseInt(args[3]);
