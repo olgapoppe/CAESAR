@@ -72,21 +72,22 @@ public class TrafficManagement extends Transaction {
 				segWithAccAhead = -1;
 			}
 			// WRITE: Update this run and remove old data			
-			//System.out.println("Execute event " + event.toString());				
-			// Query replication loop
-			//for (int i=1; i<query_number; i++) {
-				
-			try { Thread.sleep(query_number*5); } 
-			catch (InterruptedException e) { e.printStackTrace(); }
+			//System.out.println("Execute event " + event.toString());	
 			
-				//run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				//run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
-			//}				
+			// Query replication
+			/*try { Thread.sleep(query_number*5); } catch (InterruptedException e) { e.printStackTrace(); }
+			for (int i=1; i<query_number; i++) {			
+				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
+			}*/				
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);			
 		}	
 		long end = System.currentTimeMillis() - startOfSimulation;			
-		long duration = end - start;		
+		long duration = end - start + (events.size()*query_number*5); // simulate replicated query execution
+		
+		//System.out.println(run.runID + " " + duration + " " + total_exe_time.addAndGet(duration));
+		
 		total_exe_time.addAndGet(duration);		
 		
 		// Count down the number of transactions
