@@ -85,7 +85,7 @@ public class TrafficManagement extends Transaction {
 			run.collectGarbage(event.min);			
 		}	
 		double end = System.currentTimeMillis() - startOfSimulation;			
-		Double duration = end - start + (events.size()*query_number*5); // simulate replicated query execution
+		Double duration = end - start + (events.size()*query_number); // simulate replicated query execution
 		
 		total_exe_time.addAndGet(duration.intValue());
 		
