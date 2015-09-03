@@ -87,12 +87,12 @@ public class Main {
 							"\nLast xway is two-directional: " + both_dirs);
 		
 		/*** CONTEXT WINDOWS ***/
-		int lambda = Integer.parseInt(args[7]);
+		int center = Integer.parseInt(args[7]);
 		int window_distribution = Integer.parseInt(args[8]);
 		int window_length =  Integer.parseInt(args[9]);
 		int window_number =  Integer.parseInt(args[10]);
 		int query_number =  Integer.parseInt(args[11]);
-		System.out.println(	"Lambda: " + lambda +
+		System.out.println(	"Center: " + center +
 							"\nWindow distribution: " + window_distribution +
 							"\nWindow length: " + window_length + 
 							"\nWindow number: " + window_number + 
@@ -115,10 +115,10 @@ public class Main {
 		if (window_number > 0) {
 			
 			/*** Get expensive windows ***/
-			int window_center = lambda/window_length + 1;		
-			expensive_windows = WindowDistribution.getTimeIntervals(window_distribution, lastSec, window_length, window_number, window_center);
+			int lambda = center/window_length + 1;		
+			expensive_windows = WindowDistribution.getTimeIntervals(window_distribution, lastSec, window_length, window_number, lambda);
 			String s = "";
-			if (window_distribution == 1) s = "Window center: " + window_center + " ";			
+			if (window_distribution == 1) s = "Lambda: " + lambda + " ";			
 			System.out.println(s + "Expensive windows: " + expensive_windows.toString());
 		
 			/*** Reset last second if the last expensive window ends before ***/
