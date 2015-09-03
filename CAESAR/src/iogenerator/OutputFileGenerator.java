@@ -22,7 +22,7 @@ public class OutputFileGenerator {
 	 * @param HP_frequency
 	 * @param LP_frequency
 	 */
-	public static void write2File (HashMap<RunID,Run> runs, int lastSec, boolean count_and_rate, AtomicInteger total_exe_time) { 
+	public static void write2File (HashMap<RunID,Run> runs, double lastSec, boolean count_and_rate, AtomicInteger total_exe_time) { 
 		
 		try {
 			/*

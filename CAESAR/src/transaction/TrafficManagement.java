@@ -71,7 +71,7 @@ public class TrafficManagement extends Transaction {
 			} else {
 				segWithAccAhead = -1;
 			}						
-			//System.out.println("Execute event " + event.toString());	
+			// System.out.println("Execute event " + event.toString());	
 			
 			// Query replication
 			/*try { Thread.sleep(query_number*5); } catch (InterruptedException e) { e.printStackTrace(); }

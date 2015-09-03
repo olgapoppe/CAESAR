@@ -67,7 +67,7 @@ public class Main {
 		AtomicInteger total_exe_time = new AtomicInteger(0);
 		
 		/*** INPUT ***/
-		int lastSec = Integer.parseInt(args[3]);
+		double lastSec = Integer.parseInt(args[3]);
 		
 		String path = args[4];
 		String file = args[5];
@@ -111,24 +111,18 @@ public class Main {
 		long startOfSimulation = System.currentTimeMillis();	
 		
 		/*** Get expensive windows and reset last second ***/
-		ArrayList<Integer> expensive_windows = new ArrayList<Integer>();
+		ArrayList<TimeInterval> expensive_windows = new ArrayList<TimeInterval>();
 		if (window_number > 0) {
 			
 			/*** Get expensive windows ***/
 			int window_center = lambda/window_length + 1;		
-			expensive_windows = (window_distribution == 0) ? 
-					WindowDistribution.getUniformNumbers(lastSec, window_length, window_number) : 
-					WindowDistribution.getPoissonNumbers(lastSec, window_length, window_number, window_center);
+			expensive_windows = WindowDistribution.getTimeIntervals(window_distribution, lastSec, window_length, window_center, window_number);
 			String s = "";
 			if (window_distribution == 1) s = "Window center: " + window_center + " ";			
 			System.out.println(s + "Expensive windows: " + expensive_windows.toString());
 		
 			/*** Reset last second if the last expensive window ends before ***/
-			int max_expensive_window = -1;
-			for (int w : expensive_windows) {
-				if (max_expensive_window < w) max_expensive_window = w;
-			}
-			int new_lastSec = (max_expensive_window+1)*window_length;
+			double new_lastSec = expensive_windows.get(expensive_windows.size()-1).end;
 			if (lastSec > new_lastSec) lastSec = new_lastSec;
 		}
 		
@@ -138,7 +132,7 @@ public class Main {
 		EventDistributor distributor = new SingleQueueDistributor(
 				filename,  lastSec, 
 				runs, eventqueues, 
-				startOfSimulation, distributorProgress, distrFinishTimes, count_and_rate);				
+				startOfSimulation, distributorProgress, distrFinishTimes, count_and_rate, expensive_windows);				
 				
 		Scheduler scheduler;
 		if (window_length == 0 && window_number == 0 && query_number == 0) {

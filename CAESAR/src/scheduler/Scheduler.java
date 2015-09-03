@@ -23,7 +23,7 @@ public abstract class Scheduler implements Runnable {
 	int max_xway;
 	boolean both_dirs;
 	int firstSec;
-	int lastSec;
+	double lastSec;
 		
 	HashMap<RunID,Run> runs;
 	public final EventQueues eventqueues;		
@@ -42,7 +42,7 @@ public abstract class Scheduler implements Runnable {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 		
-	Scheduler (int max_x, boolean both_d, int lastS,
+	Scheduler (int max_x, boolean both_d, double lastS,
 			HashMap<RunID,Run> rs, EventQueues evqueues, ExecutorService exe, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch d,  
 			long start, boolean opt, AtomicInteger total_exe) {

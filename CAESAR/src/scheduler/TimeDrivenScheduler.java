@@ -15,7 +15,7 @@ import distributor.*;
  */
 public class TimeDrivenScheduler extends Scheduler implements Runnable {	
 			
-	public TimeDrivenScheduler (int max_xway, boolean both_dirs, int lastSec,
+	public TimeDrivenScheduler (int max_xway, boolean both_dirs, double lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
 			long start, boolean opt, AtomicInteger total_exe_time) {	

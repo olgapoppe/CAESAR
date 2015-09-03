@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import run.*;
 import transaction.*;
+import window.*;
 import distributor.*;
 import event.*;
 
@@ -16,13 +17,13 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	int window_length;
 	int window_number;
 	int query_number;
-	ArrayList<Integer> expensive_windows;
+	ArrayList<TimeInterval> expensive_windows;
 	
-	public ExpensiveWindowScheduler (int max_xway, boolean both_dirs, int lastSec,
+	public ExpensiveWindowScheduler (int max_xway, boolean both_dirs, double lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
 			long start, boolean opt, AtomicInteger total_exe_time,
-			int wl, int wn, int qn, ArrayList<Integer> exp_windows) {	
+			int wl, int wn, int qn, ArrayList<TimeInterval> exp_windows) {	
 		
 		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, total_exe_time);
 		
@@ -38,8 +39,6 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	public void run() {	
 		
 		double curr_sec = -1;		
-		int window_count = -1;
-		int window_bound = 0;
 		boolean execute = false;
 										
 		/*** Get the permission to schedule current second ***/
@@ -52,17 +51,19 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
 				/*********************************************************************************************************************************************/
-				/*** Update window count, window bound and execute ***/
+				/*** Update execute ***/
 				if (window_number == 0) {
 					execute = true;					
 				} else {
-					if (curr_sec == 0 || curr_sec > window_bound) {			
-						
-						window_count++;
-						window_bound += window_length;
-						execute = expensive_windows.contains(window_count);				
-						if (execute) System.out.println("Window: " + window_count + " from " + curr_sec + " to "  + window_bound + " Execute: " + execute);
-					}
+					execute = false;
+					TimeInterval interval = new TimeInterval(-2,-2);
+					for (TimeInterval i : expensive_windows) {
+						if (i.contains(curr_sec)) {
+							execute = true;
+							interval = i;
+							break;
+					}}
+					if (execute) System.out.println("Curr sec: " + curr_sec + " Window: " + interval.toString() + " Execute: " + execute);					
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/

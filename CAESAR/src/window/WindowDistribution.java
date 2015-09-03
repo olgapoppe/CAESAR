@@ -7,10 +7,10 @@ public class WindowDistribution {
 	public static void main (String args[]) {
 		
 		int lambda = 10;
-		int expensive_window_number = 11;
+		int expensive_window_number = 5;
 		
-		int lastSec = 180;
-		int window_length = 10;	
+		int lastSec = 20;
+		int window_length = 2;	
 		
 		/* int count = 0;
 		 * while (count < 100) {
@@ -18,13 +18,33 @@ public class WindowDistribution {
 			count++;
 		}*/
 		
-		System.out.println(expensive_window_number + " uniform numbers are: " + getUniformNumbers(lastSec,window_length,expensive_window_number));
+		System.out.println(expensive_window_number + " uniform numbers are: " + getUniformNumbers(lastSec,window_length,expensive_window_number) +
+				"\nTheir respective time intervals are: " + getTimeIntervals(0,lastSec,window_length,lambda,expensive_window_number).toString());
 	}
 	
-	public static ArrayList<Integer> getPoissonNumbers (int lastSec, int window_length, int expensive_window_number, double lambda) {
+	public static ArrayList<TimeInterval> getTimeIntervals (int distribution, double lastSec, int window_length, int lambda, int expensive_window_number) {
+		
+		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
+		
+		ArrayList<Integer> expensive_windows = (distribution == 0) ? 
+				getUniformNumbers(lastSec,window_length,expensive_window_number) :
+				getPoissonNumbers(lastSec,window_length,lambda,expensive_window_number);
+		
+		for (Integer expensive_window : expensive_windows) {
+			
+			double start = expensive_window * window_length + 1;
+			double end = (expensive_window + 1) * window_length;
+			
+			TimeInterval i = new TimeInterval(start,end);
+			results.add(i);			
+		}		
+		return results;
+	}
+	
+	public static ArrayList<Integer> getPoissonNumbers (double lastSec, int window_length, int expensive_window_number, double lambda) {
 		
 		ArrayList<Integer> results = new ArrayList<Integer> ();
-		int total_window_number = lastSec/window_length;
+		double total_window_number = lastSec/window_length;
 			
 		while (results.size() < expensive_window_number) {
 			
@@ -48,12 +68,12 @@ public class WindowDistribution {
 		return k - 1;
 	}
 	
-	public static ArrayList<Integer> getUniformNumbers (int lastSec, int window_length, int expensive_window_number) {
+	public static ArrayList<Integer> getUniformNumbers (double lastSec, int window_length, int expensive_window_number) {
 		  
 		ArrayList<Integer> results = new ArrayList<Integer>();
 		
 		/*** Get total window number ***/
-		int total_window_number = lastSec/window_length;
+		int total_window_number = new Double(lastSec).intValue()/window_length;
 		// Not enough windows
 		if (total_window_number < expensive_window_number) {
 			System.err.println(	"Total window number is: " + total_window_number + 
