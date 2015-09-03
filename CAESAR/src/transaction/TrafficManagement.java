@@ -70,8 +70,7 @@ public class TrafficManagement extends Transaction {
 				}			
 			} else {
 				segWithAccAhead = -1;
-			}
-			// WRITE: Update this run and remove old data			
+			}						
 			//System.out.println("Execute event " + event.toString());	
 			
 			// Query replication
@@ -79,16 +78,18 @@ public class TrafficManagement extends Transaction {
 			for (int i=1; i<query_number; i++) {			
 				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
-			}*/				
+			}*/	
+			
+			// WRITE: Update this run and remove old data
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);			
 		}	
 		double end = System.currentTimeMillis() - startOfSimulation;			
 		Double duration = end - start + (events.size()*query_number*5); // simulate replicated query execution
 		
-		//System.out.println(run.runID + " " + duration + " " + total_exe_time.addAndGet(duration));
+		total_exe_time.addAndGet(duration.intValue());
 		
-		total_exe_time.addAndGet(duration.intValue());		
+		//System.out.println("Run id: " + run.runID + " Duration: " + duration + " Total execution time: " + total_exe_time.toString());			
 		
 		// Count down the number of transactions
 		transaction_number.countDown();			

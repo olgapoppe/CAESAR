@@ -344,7 +344,7 @@ public abstract class Scheduler implements Runnable {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
-						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, 1);
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, 0);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed);
 				}}				

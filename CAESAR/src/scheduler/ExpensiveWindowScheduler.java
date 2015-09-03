@@ -66,7 +66,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
-				all_queries_all_runs(curr_sec, execute, query_number);
+				all_queries_all_runs(curr_sec, execute);
 									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				
 				if (curr_sec == lastSec) {	
@@ -87,10 +87,10 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 * @param query_number	number of query replications
 	 * @return				number of transactions submitted for execution
 	 */	
-	public int all_queries_all_runs (double sec, boolean execute, int query_number) {
+	public int all_queries_all_runs (double sec, boolean execute) {
 		
 		/*** Get transactions to schedule ***/
-		ArrayList<Transaction> transactions = one_query_all_runs(sec, execute, query_number);
+		ArrayList<Transaction> transactions = one_query_all_runs(sec, execute);
 		int number = transactions.size();
 		
 		/*** Wait for the previous transactions to complete ***/
@@ -110,7 +110,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 * Iterate over all event queues and generate transactions with time stamp sec
 	 * @param sec	transaction time stamp			
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute, int query_number) {
+	public ArrayList<Transaction> one_query_all_runs (double sec, boolean execute) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -119,13 +119,13 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 			for (double seg=0; seg<=99; seg++) {
 				
 				RunID runid0 = new RunID(xway,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0, execute, query_number);
+				Transaction t0 = one_query_one_run(sec, runid0, execute);
 				if (t0!=null) transactions.add(t0);	
 								
 				if (xway != max_xway || both_dirs) {
 					
 					RunID runid1 = new RunID(xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1, execute, query_number);
+					Transaction t1 = one_query_one_run(sec, runid1, execute);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -137,7 +137,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 	 * @param sec	transaction time stamp
 	 * @param runid	identifier of the run the events of which are scheduled
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid, boolean execute, int query_number) {
+	public Transaction one_query_one_run (double sec, RunID runid, boolean execute) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
