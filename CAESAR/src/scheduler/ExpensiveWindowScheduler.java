@@ -61,7 +61,7 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 						window_count++;
 						window_bound += window_length;
 						execute = expensive_windows.contains(window_count);				
-						System.out.println("Window: " + window_count + " from " + curr_sec + " to "  + window_bound + " Execute: " + execute);
+						if (execute) System.out.println("Window: " + window_count + " from " + curr_sec + " to "  + window_bound + " Execute: " + execute);
 					}
 				}
 				/*********************************************************************************************************************************************/
