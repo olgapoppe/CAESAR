@@ -116,7 +116,7 @@ public class OutputFileGenerator {
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
 			//double avg_latency = new Double(sum)/new Double(count);
-			System.out.println(	"Total execution time: " + (total_exe_time.get()/new Long(1000))); // convert ms to sec
+			System.out.println(	"Total execution time: " + total_exe_time.get()); 
 								//"\nMax latency: " + max_latency +
 								//"\nAvg latency: " + avg_latency);
 			
