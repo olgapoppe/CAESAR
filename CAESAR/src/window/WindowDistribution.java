@@ -15,14 +15,11 @@ public class WindowDistribution {
 		int lambda = window_center/window_length + 1;
 		System.out.println("Central window is: " + lambda);
 		
-		/* int count = 0;
-		 * while (count < 100) {
-			System.out.println(expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + getPoissonNumbers(lastSec,window_length,lambda,expensive_window_number));
+		 int count = 0;
+		 while (count < 100) {
+			System.out.println(expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + getTimeIntervals(1, lastSec, window_length, expensive_window_number, lambda));
 			count++;
-		}*/
-		
-		System.out.println(expensive_window_number + " expensive windows are: " + getPoissonNumbers(lastSec, window_length, expensive_window_number, lambda) +
-				"\nTheir respective time intervals are: " + getTimeIntervals(1, lastSec, window_length, expensive_window_number, lambda).toString());
+		 }
 	}
 	
 	public static ArrayList<TimeInterval> getTimeIntervals (int distribution, double lastSec, int window_length, int expensive_window_number, int lambda) {
@@ -47,12 +44,12 @@ public class WindowDistribution {
 	public static ArrayList<Integer> getPoissonNumbers (double lastSec, int window_length, int expensive_window_number, double lambda) {
 		
 		ArrayList<Integer> results = new ArrayList<Integer> ();
-		double total_window_number = lastSec/window_length;
+		int total_window_number = new Double(lastSec).intValue()/window_length - 1;
 			
 		while (results.size() < expensive_window_number) {
 			
 			int result = getPoisson(lambda);
-			if (!results.contains(result) && result <= total_window_number) results.add(result);	
+			if (!results.contains(result) && result <= total_window_number) results.add(result);
 		}
 		return results;
 	}
