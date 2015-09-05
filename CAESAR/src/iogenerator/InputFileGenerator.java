@@ -25,13 +25,13 @@ public class InputFileGenerator {
 	 * 				if merge files: first input file, second input file, output file
 	 * 				if select tuples: input file, output file, direction
 	 * 				if copy n tuples: input file, output file, n
-	 * 				if copy tuples from second: input file, output file, second
+	 * 				if copy tuples from second: input file, output file, second from, second to
 	 */
 	public static void main (String[] args) {
 		
 		/*** Validate the input parameter ***/
-		if (args.length != 5) {
-			System.out.println("5 input parameters are expected.");
+		if (args.length < 5) {
+			System.out.println("At least 5 input parameters are expected.");
 			return;
 		}	
 		
@@ -64,7 +64,7 @@ public class InputFileGenerator {
 			String outputfile = path + args[3];
 			int dir = Integer.parseInt(args[4]);
 			System.out.println("All events with direction " + dir + " from the file " + inputfile + " are copied to the file" + outputfile);
-			getTuples(1,inputfile,outputfile,dir);
+			getTuples(1,inputfile,outputfile,dir,0);
 		}	
 		/*** Copy n tuples ***/
 		if (action == 4) {
@@ -73,16 +73,17 @@ public class InputFileGenerator {
 			String outputfile = path + args[3];
 			int n = Integer.parseInt(args[4]);
 			System.out.println(n + " events from the file " + inputfile + " are copied to the file" + outputfile);
-			getTuples(2,inputfile,outputfile,n);
+			getTuples(2,inputfile,outputfile,n,0);
 		}	
 		/*** Copy tuples from second ***/
 		if (action == 5) {
 			
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
-			int sec = Integer.parseInt(args[4]);
-			System.out.println("Events from second " + sec + " from the file " + inputfile + " are copied to the file" + outputfile);
-			getTuples(3,inputfile,outputfile,sec);
+			int from = Integer.parseInt(args[4]);
+			int to = Integer.parseInt(args[5]);
+			System.out.println("Events from second " + from + " to sec " + to + " from the file " + inputfile + " are copied to the file" + outputfile);
+			getTuples(3,inputfile,outputfile,from,to);
 		}	
 		System.out.println("Done!");
 	}
@@ -235,7 +236,7 @@ public class InputFileGenerator {
 	 * @param outputfilename
 	 * @param dir or n
 	 */
-	public static void getTuples (int choice, String inputfilename, String outputfilename, int n) {
+	public static void getTuples (int choice, String inputfilename, String outputfilename, int n, int to) {
 		
 		Scanner input = null;
 		try {		
@@ -254,7 +255,7 @@ public class InputFileGenerator {
             if (choice==2) {
             	copyNTuples(input,output,n);
             } else {
-            	copyTuplesFromSec(input,output,n);
+            	copyTuplesFromSec(input,output,n,to);
             }}
 	        /*** Close the files ***/       		
 	       	input.close();       		       		
@@ -315,7 +316,7 @@ public class InputFileGenerator {
 	 * @param output
 	 * @param sec
 	 */
-	public static void copyTuplesFromSec (Scanner input, BufferedWriter output, int sec) {
+	public static void copyTuplesFromSec (Scanner input, BufferedWriter output, int from, int to) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -325,10 +326,10 @@ public class InputFileGenerator {
 				eventString = input.nextLine();
 				PositionReport event = PositionReport.parse(eventString);
 				
-				if (event.correctPositionReport() && event.sec >= sec) {
+				if (event.correctPositionReport() && event.sec >= from && event.sec <= to) {
 					
 					count++;
-					output.write(event.toStringChangeSec(sec) + "\n");            	            	            	         	
+					output.write(event.toStringChangeSec(from) + "\n");            	            	            	         	
 				}
 			}   
 		} catch (IOException e) { System.err.println(e); }	
