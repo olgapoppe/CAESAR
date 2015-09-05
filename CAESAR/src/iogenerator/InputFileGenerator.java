@@ -82,7 +82,7 @@ public class InputFileGenerator {
 			String outputfile = path + args[3];
 			int from = Integer.parseInt(args[4]);
 			int to = Integer.parseInt(args[5]);
-			System.out.println("Events from second " + from + " to sec " + to + " from the file " + inputfile + " are copied to the file" + outputfile);
+			System.out.println("Events from second " + from + " to second " + to + " from the file " + inputfile + " are copied to the file" + outputfile);
 			getTuples(3,inputfile,outputfile,from,to);
 		}	
 		System.out.println("Done!");

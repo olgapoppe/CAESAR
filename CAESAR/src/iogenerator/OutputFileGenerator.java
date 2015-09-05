@@ -115,10 +115,10 @@ public class OutputFileGenerator {
 	     		total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
-			//double avg_latency = new Double(sum)/new Double(count);
-			System.out.println(	"Total execution time in seconds: " + (total_exe_time.get()/new Double(1000))); 
-								//"\nMax latency: " + max_latency +
-								//"\nAvg latency: " + avg_latency);
+			double avg_latency = new Double(sum)/new Double(count);
+			System.out.println(	"Total execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
+								"\nMax latency: " + max_latency +
+								"\nAvg latency: " + avg_latency);
 			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 
