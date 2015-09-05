@@ -6,7 +6,7 @@ public class WindowDistribution {
 	
 	public static void main (String args[]) {
 		
-		int window_center = 1200;
+		int window_center = 10784;
 		int expensive_window_number = 2;
 		
 		int lastSec = 10784;
@@ -16,8 +16,9 @@ public class WindowDistribution {
 		System.out.println("Central window is: " + lambda);
 		
 		 int count = 0;
-		 while (count < 100) {
-			System.out.println(expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + getTimeIntervals(0, lastSec, window_length, expensive_window_number, lambda));
+		 while (count < 1) {
+			System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
+								getTimeIntervals(0, lastSec, window_length, expensive_window_number, lambda));
 			count++;
 		 }
 	}
