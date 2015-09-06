@@ -116,7 +116,9 @@ public class Main {
 			
 			/*** Get expensive windows ***/
 			int lambda = center/window_length + 1;		
-			expensive_windows = WindowDistribution.getTimeIntervals(window_distribution, lastSec, window_length, window_number, lambda);
+			expensive_windows = (window_distribution == 0) ?
+									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number) :
+									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda);
 			String s = "";
 			if (window_distribution == 1) s = "Lambda: " + lambda + " ";			
 			System.out.println(s + "Expensive windows: " + expensive_windows.toString());

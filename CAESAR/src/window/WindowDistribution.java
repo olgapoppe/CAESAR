@@ -6,31 +6,34 @@ public class WindowDistribution {
 	
 	public static void main (String args[]) {
 		
-		int window_center = 0;
-		int expensive_window_number = 4;
-		
+		/*** Input parameters ***/	
 		int lastSec = 180;
-		int window_length = 10;	
+		int window_length = 50;	
+		int expensive_window_number = 2;
 		
+		int window_center = 80;
 		int lambda = window_center/window_length + 1;
 		System.out.println("Central window is: " + lambda);
 		
-		 int count = 0;
-		 while (count < 1) {
+		/*** Uniform window distribution ***/
+		System.out.println(getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number));
+		
+		/*** Poisson window distribution ***/
+		int count = 0;
+		while (count < 5) {
 			System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
-								getTimeIntervals(0, lastSec, window_length, expensive_window_number, lambda));
+								getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
 			count++;
-		 }
+		}
 	}
 	
-	public static ArrayList<TimeInterval> getTimeIntervals (int distribution, double lastSec, int window_length, int expensive_window_number, int lambda) {
+	public static ArrayList<TimeInterval> getTimeIntervalsForPoissonDistribution (double lastSec, int window_length, int expensive_window_number, int lambda) {
 		
+		/*** Get expensive windows ***/
+		ArrayList<Integer> expensive_windows = getPoissonNumbers(lastSec, window_length, expensive_window_number, lambda);
+		
+		/*** Get expensive time intervals ***/
 		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
-		
-		ArrayList<Integer> expensive_windows = (distribution == 0) ? 
-				getUniformNumbers(lastSec, window_length, expensive_window_number) :
-				getPoissonNumbers(lastSec, window_length, expensive_window_number, lambda);
-		
 		for (Integer expensive_window : expensive_windows) {
 			
 			double start = expensive_window * window_length + 1;
@@ -69,59 +72,25 @@ public class WindowDistribution {
 		return k - 1;
 	}
 	
-	public static ArrayList<Integer> getUniformNumbers (double lastSec, int window_length, int expensive_window_number) {
-		  
-		ArrayList<Integer> results = new ArrayList<Integer>();
+	public static ArrayList<TimeInterval> getTimeIntervalsForUniformDistribution (double lastSec, int window_length, int expensive_window_number) {
+		 	
+		/*** Get cheap window length ***/
+		double expensive_time = expensive_window_number * window_length;
+		double cheap_time = lastSec - expensive_time;
+		double cheap_window_length = cheap_time/(expensive_window_number + 1); 
 		
-		/*** Get total window number ***/
-		int total_window_number = new Double(lastSec).intValue()/window_length;
-		// Not enough windows
-		if (total_window_number < expensive_window_number) {
-			System.err.println(	"Total window number is: " + total_window_number + 
-								" Expensive window number: " + expensive_window_number + "\n");			
-		} else {
-			// Exact number of windows
-			if (total_window_number == expensive_window_number) {
-				int result = 0;		
-				while (result < expensive_window_number) {
-					results.add(result);
-					result++;
-				}
-			} else {			
-				int cheap_window_number_inbetween = total_window_number/(expensive_window_number+1) - 1;				
-				if (cheap_window_number_inbetween == 0) {					
-					if (expensive_window_number*2-1 > total_window_number) {
-						// Without cheap windows in-between
-						int count = 0;
-						int result = 0;		
-						while (count < expensive_window_number) {
-							results.add(result);
-							result++;
-							count++;
-						}
-					} else {
-						// With 1 cheap window in-between
-						int count = 0;
-						int result = 0;		
-						while (count < expensive_window_number) {			
-							results.add(result);
-							result += 2;
-							count++;
-						}
-					}
-				} else {
-					// With cheap windows in-between
-					int current_window = cheap_window_number_inbetween;
-					
-					int count = 0;		
-					while (count < expensive_window_number) {	
-						int result = current_window + 1;
-						results.add(result);
-						current_window = result + cheap_window_number_inbetween;
-						count++;
-					}
-				}
-			}
+		/*** Get expensive time intervals ***/
+		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
+		double window_bound = cheap_window_length;
+		while (results.size() < expensive_window_number) {
+			
+			double start = window_bound;
+			double end = window_bound + window_length;
+			
+			TimeInterval i = new TimeInterval(start,end);
+			results.add(i);
+			
+			window_bound += window_length + cheap_window_length;
 		}			
 		return results;
 	}
