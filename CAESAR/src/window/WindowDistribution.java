@@ -36,8 +36,8 @@ public class WindowDistribution {
 		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
 		for (Integer expensive_window : expensive_windows) {
 			
-			double start = expensive_window * window_length + 1;
-			double end = (expensive_window + 1) * window_length;
+			double start = new Double(expensive_window * window_length + 1).intValue();
+			double end = new Double((expensive_window + 1) * window_length).intValue();
 			
 			TimeInterval i = new TimeInterval(start,end);
 			results.add(i);			
@@ -84,8 +84,8 @@ public class WindowDistribution {
 		double window_bound = cheap_window_length;
 		while (results.size() < expensive_window_number) {
 			
-			double start = window_bound;
-			double end = window_bound + window_length;
+			double start = new Double(window_bound).intValue();
+			double end = new Double(window_bound + window_length).intValue();
 			
 			TimeInterval i = new TimeInterval(start,end);
 			results.add(i);

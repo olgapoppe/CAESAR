@@ -128,7 +128,10 @@ public class Main {
 			for (TimeInterval i : expensive_windows) {
 				if (new_lastSec < i.end) new_lastSec = i.end;
 			}
-			if (lastSec > new_lastSec) lastSec = new_lastSec;
+			if (lastSec > new_lastSec) {
+				lastSec = new_lastSec;
+				System.out.println("Last second: " + lastSec);
+			}
 		}
 		
 		/*** Create and start event distributing and query scheduling threads.

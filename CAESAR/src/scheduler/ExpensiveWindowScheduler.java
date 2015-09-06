@@ -56,14 +56,14 @@ public class ExpensiveWindowScheduler extends Scheduler implements Runnable {
 					execute = true;					
 				} else {
 					execute = false;
-					//TimeInterval interval = new TimeInterval(-2,-2);
+					TimeInterval interval = new TimeInterval(-2,-2);
 					for (TimeInterval i : expensive_windows) {
 						if (i.contains(curr_sec)) {
 							execute = true;
-							//interval = i;
+							interval = i;
 							break;
 					}}
-					//if (execute) System.out.println("Curr sec: " + curr_sec + " Window: " + interval.toString() + " Execute: " + execute);					
+					if (execute) System.out.println("Curr sec: " + curr_sec + " Window: " + interval.toString() + " Execute: " + execute);					
 				}
 				/*********************************************************************************************************************************************/
 				/*** Schedule the current second or drop events with this time stamp ***/
