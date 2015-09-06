@@ -791,12 +791,14 @@ public class Run {
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
 				}
-				if (!tollNotification.isContained(fake_output.tollNotifications)) fake_output.tollNotifications.add(tollNotification);
+				//if (!tollNotification.isContained(fake_output.tollNotifications)) 
+					fake_output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		
 					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, distrFinishTimes, schedStartTimes, startOfSimulation, accidentWarningsFailed);
-					if (!accidentWarning.isContained(fake_output.accidentWarnings)) fake_output.accidentWarnings.add(accidentWarning);				
+					//if (!accidentWarning.isContained(fake_output.accidentWarnings)) 
+						fake_output.accidentWarnings.add(accidentWarning);				
 				}
 			}
 			/************************************************* If the vehicle was in the segment before *************************************************/

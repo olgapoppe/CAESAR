@@ -6,11 +6,11 @@ public class WindowDistribution {
 	
 	public static void main (String args[]) {
 		
-		int window_center = 10784;
-		int expensive_window_number = 2;
+		int window_center = 0;
+		int expensive_window_number = 4;
 		
-		int lastSec = 10784;
-		int window_length = 600;	
+		int lastSec = 180;
+		int window_length = 10;	
 		
 		int lambda = window_center/window_length + 1;
 		System.out.println("Central window is: " + lambda);

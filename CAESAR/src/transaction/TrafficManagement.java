@@ -80,11 +80,15 @@ public class TrafficManagement extends Transaction {
 				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
 			}
+			// Avoid multiple storage of complex events due to replicated queries
+			run.fake_output.tollNotifications.clear();
+			run.fake_output.accidentWarnings.clear();
 			
 			// WRITE: Update this run and remove old data
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.collectGarbage(event.min);			
-		}	
+		}
+			
 		double end = System.currentTimeMillis() - startOfSimulation;			
 		Double duration = end - start; // + (events.size()*query_number); // simulate replicated query execution
 		

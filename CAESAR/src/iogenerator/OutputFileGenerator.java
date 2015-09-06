@@ -88,10 +88,10 @@ public class OutputFileGenerator {
 			double sum = 0;
 			double count = 0;
 			
-			/*int real_size = 0;
+			int real_size = 0;
 			int fake_size = 0;
 			int real_complex_event_number = 0;
-			int fake_complex_event_number = 0;*/
+			int fake_complex_event_number = 0;
 			
 			Set<RunID> runids = runs.keySet();
 				
@@ -113,10 +113,10 @@ public class OutputFileGenerator {
 				sum += run.output.sum;
 				count += run.output.count;
 				
-				/*real_size += run.getRealSize();
+				real_size += run.getRealSize();
 				fake_size += run.getFakeSize();
 				real_complex_event_number += run.output.getSize();
-				fake_complex_event_number += run.fake_output.getSize();*/
+				fake_complex_event_number += run.fake_output.getSize();
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
 	     		run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -128,11 +128,11 @@ public class OutputFileGenerator {
 			double avg_latency = new Double(sum)/new Double(count);
 			System.out.println(	"Total execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
 								"\nAvg latency: " + avg_latency +
-								"\nMax latency: " + max_latency);							
-								/*"\nReal size: " + real_size +
+								"\nMax latency: " + max_latency +							
+								"\nReal size: " + real_size +
 								"\nFake size: " + fake_size +
 								"\nReal complex event number: " + real_complex_event_number +
-								"\nFake complex event number: " + fake_complex_event_number);*/
+								"\nFake complex event number: " + fake_complex_event_number);
 			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 
