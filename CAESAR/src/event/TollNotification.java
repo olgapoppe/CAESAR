@@ -1,5 +1,6 @@
 package event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -53,6 +54,32 @@ public class TollNotification extends Event {
 		toll = 0;	
 		
 		printError (p, emit, distrFinishTimes, schedStartTimes, tnf, "TOLL NOTIFICATIONS");			
+	}
+	
+	/**
+	 * Return true if the given list of toll notifications contains this toll notification
+	 * @param list
+	 * @return
+	 */
+	public boolean isContained (ArrayList<TollNotification> list) {
+		for (TollNotification other : list) {
+			if (this.equals(other)) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Return true if this toll notification is equals to other toll notification
+	 * @param other
+	 * @return
+	 */
+	public boolean equals (TollNotification other) {
+		return 	type == other.type &&
+				sec == other.sec &&
+				vid == other.vid &&
+				emit == other.emit &&
+				avgSpd == other.avgSpd &&
+				toll == other.toll;
 	}
 	
 	/** 

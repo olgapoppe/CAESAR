@@ -1,5 +1,6 @@
 package event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -31,6 +32,31 @@ public class AccidentWarning extends Event {
 		
 		printError (p, emit, distrFinishTimes, schedStartTimes, awf, "ACCIDENT WARNINGS");			
 	}	
+	
+	/**
+	 * Return true if the given list of accident warnings contains this accident warning
+	 * @param list
+	 * @return
+	 */
+	public boolean isContained (ArrayList<AccidentWarning> list) {
+		for (AccidentWarning other : list) {
+			if (this.equals(other)) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Return true if this accident warning is equals to other accident warning
+	 * @param other
+	 * @return
+	 */
+	public boolean equals (AccidentWarning other) {
+		return 	type == other.type &&
+				sec == other.sec &&
+				vid == other.vid &&
+				emit == other.emit &&
+				seg == other.seg;
+	}
 
 	/** 
 	 * Print this accident warning.

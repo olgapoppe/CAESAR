@@ -79,7 +79,7 @@ public class TrafficManagement extends Transaction {
 			for (int i=1; i<query_number; i++) {			
 				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
-			}	
+			}
 			
 			// WRITE: Update this run and remove old data
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	

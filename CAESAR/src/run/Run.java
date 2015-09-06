@@ -791,13 +791,14 @@ public class Run {
 				} else {
 					tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
 				}
-				fake_output.tollNotifications.add(tollNotification);
+				if (!tollNotification.isContained(fake_output.tollNotifications)) fake_output.tollNotifications.add(tollNotification);
 				
 				if (isAccident) {		
 					
 					AccidentWarning accidentWarning = new AccidentWarning(event, segWithAccAhead, distrFinishTimes, schedStartTimes, startOfSimulation, accidentWarningsFailed);
-					fake_output.accidentWarnings.add(accidentWarning);				
-			}}
+					if (!accidentWarning.isContained(fake_output.accidentWarnings)) fake_output.accidentWarnings.add(accidentWarning);				
+				}
+			}
 			/************************************************* If the vehicle was in the segment before *************************************************/
 		} else {
 			// Get previous info about the vehicle
@@ -1088,9 +1089,7 @@ public class Run {
 				avgSpds.size() +
 				stoppedVehicles.size() +
 				accidents.size() +
-				accidentsAhead.size() +
-				output.getSize();
-		
+				accidentsAhead.size();		
 	}	
 	
 	public int getFakeSize() {
@@ -1099,8 +1098,7 @@ public class Run {
 				fake_avgSpds.size() +
 				fake_stoppedVehicles.size() +
 				fake_accidents.size() +
-				fake_accidentsAhead.size() +
-				fake_output.getSize();
+				fake_accidentsAhead.size();
 	}	
 	
 	/** 
