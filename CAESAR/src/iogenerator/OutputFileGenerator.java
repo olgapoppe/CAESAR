@@ -88,10 +88,10 @@ public class OutputFileGenerator {
 			double sum = 0;
 			double count = 0;
 			
-			int real_size = 0;
+			/*int real_size = 0;
 			int fake_size = 0;
 			int real_complex_event_number = 0;
-			int fake_complex_event_number = 0;
+			int fake_complex_event_number = 0;*/
 			
 			Set<RunID> runids = runs.keySet();
 				
@@ -113,10 +113,10 @@ public class OutputFileGenerator {
 				sum += run.output.sum;
 				count += run.output.count;
 				
-				real_size += run.getRealSize();
+				/*real_size += run.getRealSize();
 				fake_size += run.getFakeSize();
 				real_complex_event_number += run.output.getSize();
-				fake_complex_event_number += run.fake_output.getSize();
+				fake_complex_event_number += run.fake_output.getSize();*/
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
 	     		run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
