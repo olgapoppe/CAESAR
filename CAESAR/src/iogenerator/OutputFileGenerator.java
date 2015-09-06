@@ -88,6 +88,9 @@ public class OutputFileGenerator {
 			double sum = 0;
 			double count = 0;
 			
+			int real_size = 0;
+			int fake_size = 0;
+			
 			Set<RunID> runids = runs.keySet();
 				
 			for (RunID runid : runids) {
@@ -107,6 +110,9 @@ public class OutputFileGenerator {
 				
 				sum += run.output.sum;
 				count += run.output.count;
+				
+				real_size += run.getRealSize();
+				fake_size += run.getFakeSize();
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
 	     		run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -117,8 +123,10 @@ public class OutputFileGenerator {
 	     	}
 			double avg_latency = new Double(sum)/new Double(count);
 			System.out.println(	"Total execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
-								"\nMax latency: " + max_latency +
-								"\nAvg latency: " + avg_latency);
+								"\nAvg latency: " + avg_latency +
+								"\nMax latency: " + max_latency +								
+								"\nReal size: " + real_size +
+								"\nFake size: " + fake_size);
 			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 

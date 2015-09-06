@@ -187,4 +187,13 @@ public class Output {
 		}
 		return max_latency;
 	}
+	
+	public int getSize() {
+		return 	tollNotifications.size() + 
+				accidentWarnings.size() + 
+				position_report_rates.size() +
+				real_toll_notification_rates.size() +
+				zero_toll_notification_rates.size() +
+				accident_warning_rates.size();
+	}
 }

@@ -1062,6 +1062,48 @@ public class Run {
 	}*/
 	
 	/** 
+	 * Print the size of this run.
+	 */
+	public String sizeToString() {
+		int real_size = vehicles.size() +
+						vehCounts.size() +
+						avgSpds.size() +
+						stoppedVehicles.size() +
+						accidents.size() +
+						accidentsAhead.size() +
+						output.getSize();
+		int fake_size = fake_vehicles.size() +
+						fake_vehCounts.size() +
+						fake_avgSpds.size() +
+						fake_stoppedVehicles.size() +
+						fake_accidents.size() +
+						fake_accidentsAhead.size() +
+						fake_output.getSize();
+		return "Real size: " + real_size + " Fake size: " + fake_size + " Total size: " + (real_size+fake_size);
+	}	
+	
+	public int getRealSize() {
+		return 	vehicles.size() +
+				vehCounts.size() +
+				avgSpds.size() +
+				stoppedVehicles.size() +
+				accidents.size() +
+				accidentsAhead.size() +
+				output.getSize();
+		
+	}	
+	
+	public int getFakeSize() {
+		return  fake_vehicles.size() +
+				fake_vehCounts.size() +
+				fake_avgSpds.size() +
+				fake_stoppedVehicles.size() +
+				fake_accidents.size() +
+				fake_accidentsAhead.size() +
+				fake_output.getSize();
+	}	
+	
+	/** 
 	 * Print this run.
 	 */
 	public String toString() {
