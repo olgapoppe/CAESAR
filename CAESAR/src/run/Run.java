@@ -759,7 +759,7 @@ public class Run {
 		boolean isAccident = segWithAccAhead != -1;   
 		
 		// Update run data: avgSpd, time, numberOfProcessedEvents
-		if (fake_time.min < event.min) {  
+		if (time.min < event.min) {  
 
 			fake_avgSpd = getAvgSpdFor5Min(event.min, true);   		
 			fake_time.min = event.min;
