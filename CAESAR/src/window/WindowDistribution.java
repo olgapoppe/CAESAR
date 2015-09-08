@@ -8,13 +8,11 @@ public class WindowDistribution {
 		
 		/*** Input parameters ***/	
 		int lastSec = 180;
-		int window_length = 70;	// 1, 20, 45, 70, default: 3
+		int window_length = 5;	// 1, 20, 45, 70, default: 3
 		int expensive_window_number = 2; // 1, 15, 30, 45, default: 2
 		
-		int window_center = 80;
-		int lambda = window_center/window_length + 1;
-		System.out.println("Central window is: " + lambda);
-		
+		int window_center = 0;		
+				
 		/*** Uniform window distribution ***/
 		ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number);
 		int count = 1;
@@ -24,14 +22,17 @@ public class WindowDistribution {
 			System.out.print(s);
 			count++;
 		}
+		System.out.println("\n");
 		
 		/*** Poisson window distribution ***/
-		/*int count = 0;
-		while (count < 5) {
+		int lambda = window_center/window_length + 1;
+		System.out.println("Central window is: " + lambda);
+		int count_1 = 0;
+		while (count_1 < 5) {
 			System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
 								getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
-			count++;
-		}*/
+			count_1++;
+		}
 	}
 	
 	public static ArrayList<TimeInterval> getTimeIntervalsForPoissonDistribution (double lastSec, int window_length, int expensive_window_number, int lambda) {
