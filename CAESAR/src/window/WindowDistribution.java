@@ -8,23 +8,30 @@ public class WindowDistribution {
 		
 		/*** Input parameters ***/	
 		int lastSec = 180;
-		int window_length = 50;	
-		int expensive_window_number = 2;
+		int window_length = 70;	// 1, 20, 45, 70, default: 3
+		int expensive_window_number = 2; // 1, 15, 30, 45, default: 2
 		
 		int window_center = 80;
 		int lambda = window_center/window_length + 1;
 		System.out.println("Central window is: " + lambda);
 		
 		/*** Uniform window distribution ***/
-		System.out.println(getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number));
+		ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number);
+		int count = 1;
+		for (TimeInterval i : timeIntervals) {
+			String s = i.toString();
+			if (count % 5 == 0) s+="\n";
+			System.out.print(s);
+			count++;
+		}
 		
 		/*** Poisson window distribution ***/
-		int count = 0;
+		/*int count = 0;
 		while (count < 5) {
 			System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
 								getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
 			count++;
-		}
+		}*/
 	}
 	
 	public static ArrayList<TimeInterval> getTimeIntervalsForPoissonDistribution (double lastSec, int window_length, int expensive_window_number, int lambda) {
@@ -77,7 +84,9 @@ public class WindowDistribution {
 		/*** Get cheap window length ***/
 		double expensive_time = expensive_window_number * window_length;
 		double cheap_time = lastSec - expensive_time;
-		double cheap_window_length = cheap_time/(expensive_window_number + 1); 
+		double cheap_window_length_double = cheap_time/(expensive_window_number + 1); 
+		int cheap_window_length = new Double(cheap_window_length_double).intValue();
+		if (cheap_window_length_double - cheap_window_length > 0.5) cheap_window_length++;
 		
 		/*** Get expensive time intervals ***/
 		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
@@ -85,12 +94,16 @@ public class WindowDistribution {
 		while (results.size() < expensive_window_number) {
 			
 			double start = new Double(window_bound).intValue();
-			double end = new Double(window_bound + window_length).intValue();
+			double end = new Double(window_bound + window_length - 1).intValue();
 			
-			TimeInterval i = new TimeInterval(start,end);
-			results.add(i);
-			
-			window_bound += window_length + cheap_window_length;
+			if (start < 0 || end > lastSec) {
+				System.err.println("Data bounds are exceeded by the time interval [" + start + "," + end + "]!");
+				break;
+			} else {
+				TimeInterval i = new TimeInterval(start,end);
+				results.add(i);
+			}		
+			window_bound = end + 1 + cheap_window_length;
 		}			
 		return results;
 	}
