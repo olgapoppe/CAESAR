@@ -7,31 +7,35 @@ public class WindowDistribution {
 	public static void main (String args[]) {
 		
 		/*** Input parameters ***/	
-		int lastSec = 180;
-		int window_length = 5;	// 1, 20, 45, 70, default: 3
-		int expensive_window_number = 2; // 1, 15, 30, 45, default: 2
+		int lastSec = 10784;
+		int window_length = 300;	
+		int expensive_window_number = 2;
 		
-		int window_center = 0;
+		int window_distribution = 1; // 0 for uniform, 1 for Poisson
+		int window_center = 10784;
 		
-		/*** Uniform window distribution ***/
-		ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number);
-		int count = 1;
-		for (TimeInterval i : timeIntervals) {
-			String s = i.toString();
-			if (count % 5 == 0) s+="\n";
-			System.out.print(s);
-			count++;
-		}
-		System.out.println("\n");
+		if (window_distribution == 0) {			
 		
-		/*** Poisson window distribution ***/
-		int lambda = window_center/window_length + 1;
-		System.out.println("Central window is: " + lambda);
-		int count_1 = 0;
-		while (count_1 < 5) {
-			System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
-								getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
-			count_1++;
+			/*** Uniform window distribution ***/
+			ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number);
+			int count = 1;
+			for (TimeInterval i : timeIntervals) {
+				String s = i.toString();
+				if (count % 5 == 0) s+="\n";
+				System.out.print(s);
+				count++;
+			}
+		} else { 
+		
+			/*** Poisson window distribution ***/
+			int lambda = window_center/window_length + 1;
+			System.out.println("Central window is: " + lambda);
+			int count_1 = 0;
+			while (count_1 < 5) {
+				System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
+									getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
+				count_1++;
+			}
 		}
 	}
 	
