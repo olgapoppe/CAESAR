@@ -11,8 +11,8 @@ public class WindowDistribution {
 		int window_length = 5;	// 1, 20, 45, 70, default: 3
 		int expensive_window_number = 2; // 1, 15, 30, 45, default: 2
 		
-		int window_center = 0;		
-				
+		int window_center = 0;
+		
 		/*** Uniform window distribution ***/
 		ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, expensive_window_number);
 		int count = 1;
