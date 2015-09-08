@@ -32,8 +32,7 @@ public class WindowDistribution {
 			System.out.println("Central window is: " + lambda);
 			int count_1 = 0;
 			while (count_1 < 5) {
-				System.out.println(	expensive_window_number + " poisson numbers with lambda " + lambda + " are: " + 
-									getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
+				System.out.println(getTimeIntervalsForPoissonDistribution(lastSec, window_length, expensive_window_number, lambda));
 				count_1++;
 			}
 		}
