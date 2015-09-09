@@ -31,44 +31,66 @@ public class SingleQueueDistributor extends EventDistributor {
 	 * distribute events into run task queues.
 	 */	
 	public void run() {	
-		
-		if (expensive_windows.isEmpty()) {
-			distribute_all_events();
-		} else {
-			
-		}		
-	}
-	
-	void distribute_all_events () {
-		
-		Scanner scanner;
 		try {
 			// Input file
-			scanner = new Scanner(new File(filename));
-			
-			// Time
+			Scanner scanner = new Scanner(new File(filename));
+		
+			/*** The input file is processed completely ***/
+			if (expensive_windows.isEmpty()) {
+				
+				// First event
+				String line = scanner.nextLine();
+		 		PositionReport event = PositionReport.parse(line);
+				distribute_all_events(scanner, event, -1, lastSec);
+				
+			} else { 
+				
+				/*** Only expensive windows are processed ***/		
+				// First event
+				String line = scanner.nextLine();
+		 		PositionReport event = PositionReport.parse(line);	
+		 		
+				for (TimeInterval window : expensive_windows) {
+					
+					// Skip all events before the beginning of the window
+					int count = 0;
+					while (event.sec < window.start) {						
+						line = scanner.nextLine();
+				 		event = PositionReport.parse(line);
+				 		count++;
+					}
+					System.out.println((count-1) + " events skipped before second " + window.start);
+					
+					// Distribute all events in the window 					
+					distribute_all_events(scanner, event, window.start, window.end);
+				}			
+			}	
+			/*** Clean-up ***/		
+			scanner.close();				
+			System.out.println("Distributor is done.");	
+ 		
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+	}
+	
+	void distribute_all_events (Scanner scanner, PositionReport event, double curr_sec, double last_sec) {	
+		
+		try {	
+			// Local variables
 			double now = 0;
-			double curr_sec = -1;
-						
+			double distributor_wakeup_time = 0;
+			
+			// First batch			
 			Random random = new Random();
 			int min = 6;
-			int max = 14;
+			int max = 14;	
 			
-			double start = 0;
-			double end = random.nextInt(max - min + 1) + min;
-			TimeInterval batch = new TimeInterval(start, end);
+			double end = curr_sec + random.nextInt(max - min + 1) + min;
+			TimeInterval batch = new TimeInterval(curr_sec, end);
 			
- 			if (batch.end > lastSec) batch.end = lastSec;	
+ 			if (batch.end > last_sec) batch.end = last_sec;	
  			//System.out.println("Batch limit: " + batch_limit);
  			
- 			double distributor_wakeup_time = 0;
-			
-			// First event
-			String line = scanner.nextLine();
-	 		PositionReport event = PositionReport.parse(line);	
-	 								
-			/*** Put events within the current batch into the run queue ***/ 
-		
+ 			/*** Put events within the current batch into the run queue ***/		
 	 		while (true) { 
 	 		
 	 			/*** Put events within the current batch into the run queue ***/ 		
@@ -116,7 +138,7 @@ public class SingleQueueDistributor extends EventDistributor {
 	 			
 	 				/*** Reset event ***/
 	 				if (scanner.hasNextLine()) {		 				
-	 					line = scanner.nextLine();   
+	 					String line = scanner.nextLine();   
 	 					event = PositionReport.parse(line);		 				
 	 				} else {
 	 					event = null;		 				
@@ -129,7 +151,7 @@ public class SingleQueueDistributor extends EventDistributor {
 				distrFinishTimes.put(batch.end, now);
 				curr_sec = batch.end;
 	 			
-				if (batch.end < lastSec) { 			
+				if (batch.end < last_sec) { 			
  				
 					/*** Sleep if now is smaller than batch_limit ms ***/
 					now = System.currentTimeMillis() - startOfSimulation;
@@ -146,7 +168,7 @@ public class SingleQueueDistributor extends EventDistributor {
 						double new_start = batch.end + 1;
 						double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
 						batch = new TimeInterval(new_start, new_end);
-						if (batch.end > lastSec) batch.end = lastSec;
+						if (batch.end > last_sec) batch.end = last_sec;
 						//System.out.println("Batch limit: " + batch_limit);
  				
 						if (distributor_wakeup_time > 1) {
@@ -156,12 +178,7 @@ public class SingleQueueDistributor extends EventDistributor {
 				} else { /*** Terminate ***/	 				
 					break;
 				}						
-	 		}		 				
-	 		/*** Clean-up ***/		
-	 		scanner.close();				
-	 		System.out.println("Distributor is done.");	
-		}	
-		catch (FileNotFoundException e) { e.printStackTrace(); }	
-		catch (final InterruptedException e) { e.printStackTrace(); }
+	 		}	 		
+		} catch (final InterruptedException e) { e.printStackTrace(); }
 	} 	
 }
