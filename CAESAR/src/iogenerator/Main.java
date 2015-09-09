@@ -92,12 +92,7 @@ public class Main {
 		int window_length =  Integer.parseInt(args[9]);
 		int window_number =  Integer.parseInt(args[10]);
 		int query_number =  Integer.parseInt(args[11]);
-		System.out.println(	"Center: " + center +
-							"\nWindow distribution: " + window_distribution +
-							"\nWindow length: " + window_length + 
-							"\nWindow number: " + window_number + 
-							"\nQuery replications: " + query_number);
-		
+				
 		/*** Create shared data structures ***/		
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
 		HashMap<Double,Double> distrFinishTimes = new HashMap<Double,Double>();
@@ -112,16 +107,22 @@ public class Main {
 		
 		/*** Get expensive windows and reset last second ***/
 		ArrayList<TimeInterval> expensive_windows = new ArrayList<TimeInterval>();
+		int lambda = 0;
 		if (window_number > 0) {
 			
 			/*** Get expensive windows ***/
-			int lambda = center/window_length + 1;		
+			lambda = center/window_length + 1;		
 			expensive_windows = (window_distribution == 0) ?
 									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number) :
 									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda);
 			String s = "";
-			if (window_distribution == 1) s = "Lambda: " + lambda + " ";			
-			System.out.println(s + "Expensive windows: " + expensive_windows.toString());
+			if (window_distribution == 1) s = 	"\nCenter: " + center + 
+												"\nLambda: " + lambda;			
+			System.out.println(	s + "\nWindow distribution: " + window_distribution +
+								"\nWindow length: " + window_length + 
+								"\nWindow number: " + window_number + 
+								"\nQuery replications: " + query_number +
+								"\nExpensive windows: " + expensive_windows.toString());
 		
 			/*** Reset last second if the last expensive window ends before ***/
 			double new_lastSec = 0;
@@ -163,7 +164,10 @@ public class Main {
 			System.out.println("Executor is done.");
 									
 			/*** Generate output files ***/
-			OutputFileGenerator.write2File (runs, lastSec, count_and_rate, total_exe_time);  			
+			OutputFileGenerator.write2File (runs, lastSec, count_and_rate, 
+					max_xway, both_dirs, 
+					center, lambda, window_distribution, window_length, window_number, expensive_windows,
+					query_number, total_exe_time);  			
 			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }

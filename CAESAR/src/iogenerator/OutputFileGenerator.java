@@ -4,11 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import run.*;
+import window.*;
 
 /**
  * Output file generator generates files for validation of the output and performance charts.
@@ -22,7 +23,10 @@ public class OutputFileGenerator {
 	 * @param HP_frequency
 	 * @param LP_frequency
 	 */
-	public static void write2File (HashMap<RunID,Run> runs, double lastSec, boolean count_and_rate, AtomicInteger total_exe_time) { 
+	public static void write2File (HashMap<RunID,Run> runs, double lastSec, boolean count_and_rate, 
+			int max_xway, boolean both_dirs, 
+			int center, int lambda, int window_distribution, int window_length, int window_number, ArrayList<TimeInterval> expensive_windows,
+			int query_number, AtomicInteger total_exe_time) { 
 		
 		try {
 			/*
@@ -71,6 +75,9 @@ public class OutputFileGenerator {
 			BufferedWriter accidentalerts_output = new BufferedWriter(new FileWriter(accidentalerts_file)); 
 
 			/*** Output files for experiments ***/
+			File results_file = new File(output + "results.dat");
+			BufferedWriter results_output = new BufferedWriter(new FileWriter(results_file,true));
+			
 			/*File eventstorage_file = new File("../../eventstorage.dat");
 			BufferedWriter eventstorage_output = new BufferedWriter(new FileWriter(eventstorage_file));
 
@@ -89,9 +96,9 @@ public class OutputFileGenerator {
 			double count = 0;
 			
 			int real_size = 0;
-			int fake_size = 0;
+			//int fake_size = 0;
 			int real_complex_event_number = 0;
-			int fake_complex_event_number = 0;
+			//int fake_complex_event_number = 0;
 			
 			Set<RunID> runids = runs.keySet();
 				
@@ -114,9 +121,9 @@ public class OutputFileGenerator {
 				count += run.output.count;
 				
 				real_size += run.getRealSize();
-				fake_size += run.getFakeSize();
+				//fake_size += run.getFakeSize();
 				real_complex_event_number += run.output.getSize();
-				fake_complex_event_number += run.fake_output.getSize();
+				//fake_complex_event_number += run.fake_output.getSize();
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
 	     		run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -126,13 +133,26 @@ public class OutputFileGenerator {
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
 			double avg_latency = new Double(sum)/new Double(count);
-			System.out.println(	"Total execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
-								"\nAvg latency: " + avg_latency +
-								"\nMax latency: " + max_latency +							
-								"\nReal size: " + real_size +
-								"\nFake size: " + fake_size +
-								"\nReal complex event number: " + real_complex_event_number +
-								"\nFake complex event number: " + fake_complex_event_number);
+			
+			String start = 	"\nMax xway: " + max_xway + 
+							"\nLast xway is two-directional: " + both_dirs +
+							"\nCenter: " + center +
+							"\nLambda: " + lambda +	
+							"\nWindow distribution: " + window_distribution +
+							"\nWindow length: " + window_length + 
+							"\nWindow number: " + window_number + 
+							"\nExpensive windows: " + expensive_windows.toString() +
+							"\nQuery replications: " + query_number;							
+							
+			String end =	"\nTotal execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
+							"\nAvg latency: " + avg_latency +
+							"\nMax latency: " + max_latency +							
+							"\nReal size: " + real_size +
+							"\nReal complex event number: " + real_complex_event_number +
+							"\n----------------------------------------------------------";
+			results_output.write(start);
+			results_output.write(end);
+			System.out.println(end);
 			
 	        // Number of runs, total processing time, scheduling overhead, garbage collection overhead, priority maintenance overhead
 	       /* String line = 	min_stream_rate + " " + max_stream_rate + " " + runs.size() + " " + 
@@ -154,6 +174,7 @@ public class OutputFileGenerator {
 			
 	       	tollalerts_output.close();
 	       	accidentalerts_output.close();
+	       	results_output.close();
 	       	/*eventstorage_output.close();
 	       	eventProcessingTimes_output.close();
 	       	accidentProcessingTimes_output.close();
