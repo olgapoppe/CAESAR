@@ -26,10 +26,9 @@ public class SingleQueueDistributor extends EventDistributor {
 	}
 
 	/** 
-	 * Read the input file, parse the events, 
-	 * generate new runs if they do not exist yet and
-	 * distribute events into run task queues.
-	 */	
+	 * If there are expensive windows, events within them are distributed. Events between the expensive window are skipped.
+	 * If there are no expensive windows, all events are distributed. 
+	 */
 	public void run() {	
 		try {
 			// Input file
@@ -72,6 +71,11 @@ public class SingleQueueDistributor extends EventDistributor {
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
 	}
 	
+	/** 
+	 * Read the input file, parse the events, 
+	 * generate new runs if they do not exist yet and
+	 * distribute events into run task queues.
+	 */	
 	void distribute_all_events (Scanner scanner, PositionReport event, double curr_sec, double last_sec) {	
 		
 		try {	
