@@ -1,6 +1,7 @@
 package window;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class WindowDistribution {
 	
@@ -9,10 +10,10 @@ public class WindowDistribution {
 		/*** Input parameters ***/	
 		int lastSec = 180;
 		int window_length = 3;	
-		int expensive_window_number = 20;
+		int expensive_window_number = 2;
 		
-		int window_distribution = 0; // 0 for uniform, 1 for Poisson
-		int window_center = 10784;
+		int window_distribution = 1; // 0 for uniform, 1 for Poisson
+		int window_center = 180;
 		
 		if (window_distribution == 0) {			
 		
@@ -40,8 +41,10 @@ public class WindowDistribution {
 	
 	public static ArrayList<TimeInterval> getTimeIntervalsForPoissonDistribution (double lastSec, int window_length, int expensive_window_number, int lambda) {
 		
-		/*** Get expensive windows ***/
+		/*** Get expensive windows and sort them ***/
 		ArrayList<Integer> expensive_windows = getPoissonNumbers(lastSec, window_length, expensive_window_number, lambda);
+		Collections.sort(expensive_windows);
+		//System.out.println(expensive_windows);
 		
 		/*** Get expensive time intervals ***/
 		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
@@ -52,7 +55,7 @@ public class WindowDistribution {
 			
 			TimeInterval i = new TimeInterval(start,end);
 			results.add(i);			
-		}		
+		}			
 		return results;
 	}
 	

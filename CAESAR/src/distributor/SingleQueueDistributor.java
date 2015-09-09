@@ -32,6 +32,15 @@ public class SingleQueueDistributor extends EventDistributor {
 	 */	
 	public void run() {	
 		
+		if (expensive_windows.isEmpty()) {
+			distribute_all_events();
+		} else {
+			
+		}		
+	}
+	
+	void distribute_all_events () {
+		
 		Scanner scanner;
 		try {
 			// Input file
@@ -58,102 +67,101 @@ public class SingleQueueDistributor extends EventDistributor {
 			String line = scanner.nextLine();
 	 		PositionReport event = PositionReport.parse(line);	
 	 								
-			/*** Put events within the current batch into the run queue ***/ 		
-		 	while (true) { 
-		 		
-		 		/*** Put events within the current batch into the run queue ***/ 		
-		 		while (event != null && event.sec <= batch.end) {
-		 			
-		 			if (event.correctPositionReport() && (expensive_windows.isEmpty() || event.containedIn(expensive_windows))) {
-		 				
-		 				/*** Create run if it does not exist yet ***/
-		 				RunID runid = new RunID (event.xway, event.dir, event.seg); 
-		 				Run run;
-						      		
-		 				if (!runs.containsKey(runid) || runs.get(runid) == null) {							
-		 					run = new Run(runid, event.sec, event.min, count_and_rate);
-		 					runs.put(runid, run);						
-		 				} else {
-		 					run = runs.get(runid);
-		 				}
-		 				if (count_and_rate) run.output.position_reports_count++;
-						
-		 				/*** Set the event distributor time ***/						
-		 				event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-						
-		 				/*** Put the event into the event queue ***/
-		 				ConcurrentLinkedQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);
-		 				if (eventqueue == null) {    
-		 					eventqueue = new ConcurrentLinkedQueue<PositionReport>();
-		 					eventqueues.contents.put(runid, eventqueue);		 				
-		 				}
-		 				eventqueue.add(event);	
-		 				if (count_and_rate && eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
-		 				//System.out.println(event.toString());											
-		 			}
-		 			
-		 			/*** Set distributer progress ***/	
-		 			if (curr_sec < event.sec) {		 				
-		 				
-		 				if (curr_sec>300) { // Avoid null run exception when the stream is read too fast
-		 					eventqueues.setDistributorProgress(curr_sec, startOfSimulation);
-		 					//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
-		 				}
-		 				now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-		 				distrFinishTimes.put(curr_sec, now);
-			 			curr_sec = event.sec;
-		 			}
-		 			
-		 			/*** Reset event ***/
-		 			if (scanner.hasNextLine()) {		 				
-		 				line = scanner.nextLine();   
-		 				event = PositionReport.parse(line);		 				
-		 			} else {
-		 				event = null;		 				
-		 			}
-		 		}		 			
-		 		/*** Set distributor progress ***/		 					
-				eventqueues.setDistributorProgress(batch.end, startOfSimulation);					
-				now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+			/*** Put events within the current batch into the run queue ***/ 
+		
+	 		while (true) { 
+	 		
+	 			/*** Put events within the current batch into the run queue ***/ 		
+	 			while (event != null && event.sec <= batch.end) {
+	 			
+	 				if (event.correctPositionReport()) {
+	 				
+	 					/*** Create run if it does not exist yet ***/
+	 					RunID runid = new RunID (event.xway, event.dir, event.seg); 
+	 					Run run;
+					      		
+	 					if (!runs.containsKey(runid) || runs.get(runid) == null) {							
+	 						run = new Run(runid, event.sec, event.min, count_and_rate);
+	 						runs.put(runid, run);						
+	 					} else {
+	 						run = runs.get(runid);
+	 					}
+	 					if (count_and_rate) run.output.position_reports_count++;
+					
+	 					/*** Set the event distributor time ***/						
+	 					event.distributorTime = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+					
+	 					/*** Put the event into the event queue ***/
+	 					ConcurrentLinkedQueue<PositionReport> eventqueue = eventqueues.contents.get(runid);
+	 					if (eventqueue == null) {    
+	 						eventqueue = new ConcurrentLinkedQueue<PositionReport>();
+	 						eventqueues.contents.put(runid, eventqueue);		 				
+	 					}
+	 					eventqueue.add(event);	
+	 					if (count_and_rate && eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
+	 					//System.out.println(event.toString());											
+	 				}
+	 			
+	 				/*** Set distributer progress ***/	
+	 				if (curr_sec < event.sec) {		 				
+	 				
+	 					if (curr_sec>300) { // Avoid null run exception when the stream is read too fast
+	 						eventqueues.setDistributorProgress(curr_sec, startOfSimulation);
+	 						//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
+	 					}
+	 					now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+	 					distrFinishTimes.put(curr_sec, now);
+	 					curr_sec = event.sec;
+	 				}
+	 			
+	 				/*** Reset event ***/
+	 				if (scanner.hasNextLine()) {		 				
+	 					line = scanner.nextLine();   
+	 					event = PositionReport.parse(line);		 				
+	 				} else {
+	 					event = null;		 				
+	 				}
+	 			}		 			
+	 			/*** Set distributor progress ***/		 					
+	 			eventqueues.setDistributorProgress(batch.end, startOfSimulation);					
+	 			now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				//System.out.println("Distribution time of second " + batch_limit + " is " + now);
- 				distrFinishTimes.put(batch.end, now);
+				distrFinishTimes.put(batch.end, now);
 				curr_sec = batch.end;
-		 			
-	 			if (batch.end < lastSec) { 			
-	 				
-	 				/*** Sleep if now is smaller than batch_limit ms ***/
-	 				now = System.currentTimeMillis() - startOfSimulation;
- 					
- 					if (now < batch.end*1000 && (expensive_windows.isEmpty() || batch.contains(expensive_windows))) {
-		 			
- 						int sleep_time = new Double(batch.end*1000 - now).intValue();		 			
- 						//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			
- 						Thread.sleep(sleep_time);
- 						distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch.end;
- 					} /*else {
- 						System.out.println("Avoided sleeping at " + curr_sec);
- 					}*/
- 					
- 					/*** Rest batch_limit ***/
- 					double new_start = batch.end + 1;
- 					double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
- 					batch = new TimeInterval(new_start, new_end);
-	 				if (batch.end > lastSec) batch.end = lastSec;
-	 				//System.out.println("Batch limit: " + batch_limit);
-	 				
-	 				if (distributor_wakeup_time > 1) {
-						System.out.println(	"Distributor wakeup time is " + distributor_wakeup_time + 
-											". New batch is " + batch.toString() + ".");
-					}	 				
-	 			} else { /*** Terminate ***/	 				
-	 				break;
-	 			}						
-			}		 				
-			/*** Clean-up ***/		
-			scanner.close();				
-			System.out.println("Distributor is done.");		
-		} 
+	 			
+				if (batch.end < lastSec) { 			
+ 				
+					/*** Sleep if now is smaller than batch_limit ms ***/
+					now = System.currentTimeMillis() - startOfSimulation;
+					
+						if (now < batch.end*1000) {
+	 			
+							int sleep_time = new Double(batch.end*1000 - now).intValue();		 			
+							//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			
+							Thread.sleep(sleep_time);
+							distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch.end;
+						} 
+					
+						/*** Rest batch_limit ***/
+						double new_start = batch.end + 1;
+						double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
+						batch = new TimeInterval(new_start, new_end);
+						if (batch.end > lastSec) batch.end = lastSec;
+						//System.out.println("Batch limit: " + batch_limit);
+ 				
+						if (distributor_wakeup_time > 1) {
+							System.out.println(	"Distributor wakeup time is " + distributor_wakeup_time + 
+												". New batch is " + batch.toString() + ".");
+						}	 				
+				} else { /*** Terminate ***/	 				
+					break;
+				}						
+	 		}		 				
+	 		/*** Clean-up ***/		
+	 		scanner.close();				
+	 		System.out.println("Distributor is done.");	
+		}	
 		catch (FileNotFoundException e) { e.printStackTrace(); }	
 		catch (final InterruptedException e) { e.printStackTrace(); }
-	}
+	} 	
 }
