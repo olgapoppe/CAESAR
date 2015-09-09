@@ -142,21 +142,11 @@ public class Main {
 				runs, eventqueues, 
 				startOfSimulation, distributorProgress, distrFinishTimes, count_and_rate, expensive_windows);				
 				
-		Scheduler scheduler;
-		if (window_length == 0 && window_number == 0 && query_number == 0) {
-			scheduler = new TimeDrivenScheduler(
-					max_xway, both_dirs, lastSec,
-					runs, eventqueues, executor, 
-					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-					startOfSimulation, optimized, total_exe_time);
-		} else {
-			scheduler = new ExpensiveWindowScheduler(
-					max_xway, both_dirs, lastSec,
-					runs, eventqueues, executor, 
-					distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-					startOfSimulation, optimized, total_exe_time,
-					window_length, window_number, query_number, expensive_windows);
-		}
+		Scheduler scheduler = new TimeDrivenScheduler(
+				max_xway, both_dirs, lastSec,
+				runs, eventqueues, executor, 
+				distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
+				startOfSimulation, optimized, total_exe_time);		
 		
 		Thread prodThread = new Thread(distributor);
 		prodThread.setPriority(10);

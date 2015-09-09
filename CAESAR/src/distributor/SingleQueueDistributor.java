@@ -64,7 +64,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		 		/*** Put events within the current batch into the run queue ***/ 		
 		 		while (event != null && event.sec <= batch.end) {
 		 			
-		 			if (event.correctPositionReport()) {
+		 			if (event.correctPositionReport() && (expensive_windows.isEmpty() || event.containedIn(expensive_windows))) {
 		 				
 		 				/*** Create run if it does not exist yet ***/
 		 				RunID runid = new RunID (event.xway, event.dir, event.seg); 

@@ -7,11 +7,11 @@ public class WindowDistribution {
 	public static void main (String args[]) {
 		
 		/*** Input parameters ***/	
-		int lastSec = 10784;
-		int window_length = 300;	
-		int expensive_window_number = 2;
+		int lastSec = 180;
+		int window_length = 3;	
+		int expensive_window_number = 20;
 		
-		int window_distribution = 1; // 0 for uniform, 1 for Poisson
+		int window_distribution = 0; // 0 for uniform, 1 for Poisson
 		int window_center = 10784;
 		
 		if (window_distribution == 0) {			

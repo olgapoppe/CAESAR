@@ -1,5 +1,9 @@
 package event;
 
+import java.util.ArrayList;
+
+import window.*;
+
 /**
  * In addition to type, time stamp and vehicle identifier, 
  * a position report has minute, speed, expressway, lane, direction, segment, position and processing time. 
@@ -56,6 +60,13 @@ public class PositionReport extends Event {
 	
 	public boolean correctPositionReport() {
 		return type==0 && sec>=0 && vid>=0 && spd>=0 && xway>=0 && lane>=0 && dir>=0 && seg>=0 && pos>=0;
+	}
+	
+	public boolean containedIn (ArrayList<TimeInterval> expensive_windows) {
+		for (TimeInterval i : expensive_windows) {
+			if (i.start <= sec && sec <= i.end) return true;
+		}		
+		return false;
 	}
 	
 	/**
