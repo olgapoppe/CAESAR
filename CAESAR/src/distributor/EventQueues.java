@@ -17,13 +17,13 @@ public class EventQueues {
 		distributorProgress = dp;		
 	}
 	
-	public synchronized void setDistributorProgress (Double sec, long startOfSimulation) {
+	public synchronized void setDistributorProgress (Double sec) {
 		
 		distributorProgress.set(sec.intValue());			
 		notifyAll();		
 	}
 
-	public synchronized boolean getDistributorProgress (double sec, long startOfSimulation) {	
+	public synchronized boolean getDistributorProgress (double sec) {	
 		
 		try {			
 			while (distributorProgress.get() < sec) {				

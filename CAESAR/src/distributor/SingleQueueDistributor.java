@@ -54,11 +54,12 @@ public class SingleQueueDistributor extends EventDistributor {
 					// Skip all events before the beginning of the window
 					int count = 0;
 					while (event.sec < window.start) {						
-						line = scanner.nextLine();
+						count++;
+				 		//System.out.println(count + " " + event.toString());
+				 		line = scanner.nextLine();
 				 		event = PositionReport.parse(line);
-				 		count++;
 					}
-					System.out.println((count-1) + " events skipped before second " + window.start);
+					System.out.println(count + " events skipped before second " + window.start);
 					
 					// Distribute all events in the window 					
 					distribute_all_events(scanner, event, window.start, window.end);
@@ -80,7 +81,7 @@ public class SingleQueueDistributor extends EventDistributor {
 		
 		try {	
 			// Local variables
-			double now = 0;
+			double system_time = 0;
 			double distributor_wakeup_time = 0;
 			
 			// First batch			
@@ -90,9 +91,10 @@ public class SingleQueueDistributor extends EventDistributor {
 			
 			double end = curr_sec + random.nextInt(max - min + 1) + min;
 			TimeInterval batch = new TimeInterval(curr_sec, end);
+			double time_ahead = (curr_sec==-1) ? 0 : curr_sec; 
 			
  			if (batch.end > last_sec) batch.end = last_sec;	
- 			//System.out.println("Batch limit: " + batch_limit);
+ 			//System.out.println("-------------------------\nBatch end: " + batch.end);
  			
  			/*** Put events within the current batch into the run queue ***/		
 	 		while (true) { 
@@ -132,11 +134,11 @@ public class SingleQueueDistributor extends EventDistributor {
 	 				if (curr_sec < event.sec) {		 				
 	 				
 	 					if (curr_sec>300) { // Avoid null run exception when the stream is read too fast
-	 						eventqueues.setDistributorProgress(curr_sec, startOfSimulation);
+	 						eventqueues.setDistributorProgress(curr_sec);
 	 						//if (curr_sec % 10 == 0) System.out.println("Distribution time of second " + curr_sec + " is " + now);
 	 					}
-	 					now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
-	 					distrFinishTimes.put(curr_sec, now);
+	 					system_time = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+	 					distrFinishTimes.put(curr_sec, system_time);
 	 					curr_sec = event.sec;
 	 				}
 	 			
@@ -149,36 +151,37 @@ public class SingleQueueDistributor extends EventDistributor {
 	 				}
 	 			}		 			
 	 			/*** Set distributor progress ***/		 					
-	 			eventqueues.setDistributorProgress(batch.end, startOfSimulation);					
-	 			now = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
+	 			eventqueues.setDistributorProgress(batch.end);					
+	 			system_time = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 				//System.out.println("Distribution time of second " + batch_limit + " is " + now);
-				distrFinishTimes.put(batch.end, now);
+				distrFinishTimes.put(batch.end, system_time);
 				curr_sec = batch.end;
 	 			
 				if (batch.end < last_sec) { 			
  				
 					/*** Sleep if now is smaller than batch_limit ms ***/
-					now = System.currentTimeMillis() - startOfSimulation;
+					system_time = System.currentTimeMillis() - startOfSimulation;
+					//System.out.println("Time ahead " + time_ahead + "\nSystem time in sec " + (system_time/1000 + time_ahead));
 					
-						if (now < batch.end*1000) {
+					if (system_time + time_ahead*1000 < batch.end*1000) { // !!!
 	 			
-							int sleep_time = new Double(batch.end*1000 - now).intValue();		 			
-							//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			
-							Thread.sleep(sleep_time);
-							distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - batch.end;
-						} 
+						int sleep_time = new Double(batch.end*1000 - (system_time + time_ahead*1000)).intValue(); // !!!	 			
+						//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			
+						Thread.sleep(sleep_time);
+						distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 + time_ahead - batch.end; // !!!
+					} 
 					
-						/*** Rest batch_limit ***/
-						double new_start = batch.end + 1;
-						double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
-						batch = new TimeInterval(new_start, new_end);
-						if (batch.end > last_sec) batch.end = last_sec;
-						//System.out.println("Batch limit: " + batch_limit);
+					/*** Rest batch_limit ***/
+					double new_start = batch.end + 1;
+					double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
+					batch = new TimeInterval(new_start, new_end);
+					if (batch.end > last_sec) batch.end = last_sec;
+					//System.out.println("-------------------------\nBatch end: " + batch.end);
  				
-						if (distributor_wakeup_time > 1) {
-							System.out.println(	"Distributor wakeup time is " + distributor_wakeup_time + 
-												". New batch is " + batch.toString() + ".");
-						}	 				
+					if (distributor_wakeup_time > 1) {
+						System.out.println(	"Distributor wakeup time is " + distributor_wakeup_time + 
+											". New batch is " + batch.toString() + ".");
+					}	 				
 				} else { /*** Terminate ***/	 				
 					break;
 				}						

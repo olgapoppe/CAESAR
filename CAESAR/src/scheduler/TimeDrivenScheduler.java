@@ -31,7 +31,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 		double curr_sec = -1;
 				
 		/*** Get the permission to schedule current second ***/
-		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec, startOfSimulation)) {
+		while (curr_sec <= lastSec && eventqueues.getDistributorProgress(curr_sec)) {
 		
 			try {
 				/*** Set scheduler start time for the current second ***/

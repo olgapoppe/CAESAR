@@ -83,7 +83,7 @@ public class Main {
 		}
 		int max_xway = Integer.parseInt(last_xway_dir[0]);
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
-		System.out.println(	"Max xway: " + max_xway + 
+		System.out.print(	"Max xway: " + max_xway + 
 							"\nLast xway is two-directional: " + both_dirs);
 		
 		/*** CONTEXT WINDOWS ***/
@@ -104,7 +104,7 @@ public class Main {
 		CountDownLatch transaction_number = new CountDownLatch(0);	
 		CountDownLatch done = new CountDownLatch(1);
 		long startOfSimulation = System.currentTimeMillis();	
-		
+				
 		/*** Get expensive windows and reset last second ***/
 		ArrayList<TimeInterval> expensive_windows = new ArrayList<TimeInterval>();
 		int lambda = 0;
