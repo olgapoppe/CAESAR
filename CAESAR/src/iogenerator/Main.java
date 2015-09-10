@@ -92,6 +92,7 @@ public class Main {
 		int window_length =  Integer.parseInt(args[9]);
 		int window_number =  Integer.parseInt(args[10]);
 		int query_number =  Integer.parseInt(args[11]);
+		System.out.println("\nQuery replications: " + query_number);
 				
 		/*** Create shared data structures ***/		
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
@@ -119,10 +120,9 @@ public class Main {
 			if (window_distribution == 1) s = 	"\nCenter: " + center + 
 												"\nLambda: " + lambda;			
 			System.out.println(	s + "\nWindow distribution: " + window_distribution +
-								"\nWindow length: " + window_length + 
-								"\nWindow number: " + window_number + 
-								"\nQuery replications: " + query_number +
-								"\nExpensive windows: " + expensive_windows.toString());
+									"\nWindow length: " + window_length + 
+									"\nWindow number: " + window_number +								
+									"\nExpensive windows: " + expensive_windows.toString());
 		
 			/*** Reset last second if the last expensive window ends before ***/
 			double new_lastSec = 0;

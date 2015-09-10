@@ -148,8 +148,7 @@ public class OutputFileGenerator {
 							"\nAvg latency: " + avg_latency +
 							"\nMax latency: " + max_latency +							
 							"\nReal size: " + real_size +
-							"\nReal complex event number: " + real_complex_event_number +
-							"\n----------------------------------------------------------";
+							"\nReal complex event number: " + real_complex_event_number;
 			results_output.write(start);
 			results_output.write(end);
 			System.out.println(end);

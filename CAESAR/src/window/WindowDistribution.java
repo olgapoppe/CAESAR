@@ -9,10 +9,10 @@ public class WindowDistribution {
 		
 		/*** Input parameters ***/	
 		int lastSec = 180;
-		int window_length = 3;	
-		int expensive_window_number = 2;
+		int window_length = 15;	
+		int expensive_window_number = 1;
 		
-		int window_distribution = 1; // 0 for uniform, 1 for Poisson
+		int window_distribution = 0; // 0 for uniform, 1 for Poisson
 		int window_center = 180;
 		
 		if (window_distribution == 0) {			

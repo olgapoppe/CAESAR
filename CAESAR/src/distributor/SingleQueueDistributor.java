@@ -67,7 +67,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			}	
 			/*** Clean-up ***/		
 			scanner.close();				
-			System.out.println("Distributor is done.");	
+			System.out.println("\nDistributor is done.");	
  		
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
 	}
@@ -94,7 +94,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			double time_ahead = (curr_sec==-1) ? 0 : curr_sec; 
 			
  			if (batch.end > last_sec) batch.end = last_sec;	
- 			//System.out.println("-------------------------\nBatch end: " + batch.end);
+ 			System.out.println("\n-------------------------\nBatch end: " + batch.end);
  			
  			/*** Put events within the current batch into the run queue ***/		
 	 		while (true) { 
@@ -166,7 +166,7 @@ public class SingleQueueDistributor extends EventDistributor {
 					if (system_time + time_ahead*1000 < batch.end*1000) { // !!!
 	 			
 						int sleep_time = new Double(batch.end*1000 - (system_time + time_ahead*1000)).intValue(); // !!!	 			
-						//System.out.println("Distributor sleeps " + sleep_time + " ms");		 			
+						System.out.println("Distributor sleeps " + sleep_time + " ms at " + curr_sec );		 			
 						Thread.sleep(sleep_time);
 						distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 + time_ahead - batch.end; // !!!
 					} 
@@ -176,7 +176,7 @@ public class SingleQueueDistributor extends EventDistributor {
 					double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
 					batch = new TimeInterval(new_start, new_end);
 					if (batch.end > last_sec) batch.end = last_sec;
-					//System.out.println("-------------------------\nBatch end: " + batch.end);
+					System.out.println("-------------------------\nBatch end: " + batch.end);
  				
 					if (distributor_wakeup_time > 1) {
 						System.out.println(	"Distributor wakeup time is " + distributor_wakeup_time + 
