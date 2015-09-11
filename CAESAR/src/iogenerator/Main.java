@@ -83,7 +83,7 @@ public class Main {
 		}
 		int max_xway = Integer.parseInt(last_xway_dir[0]);
 		boolean both_dirs = (Integer.parseInt(last_xway_dir[1])==2);		
-		System.out.print(	"Max xway: " + max_xway + 
+		System.out.println(	"Max xway: " + max_xway + 
 							"\nLast xway is two-directional: " + both_dirs);
 		
 		/*** CONTEXT WINDOWS ***/
@@ -92,7 +92,7 @@ public class Main {
 		int window_length =  Integer.parseInt(args[9]);
 		int window_number =  Integer.parseInt(args[10]);
 		int query_number =  Integer.parseInt(args[11]);
-		System.out.println("\nQuery replications: " + query_number);
+		System.out.println("Query replications: " + query_number);
 				
 		/*** Create shared data structures ***/		
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
@@ -117,12 +117,13 @@ public class Main {
 									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number) :
 									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda);
 			String s = "";
-			if (window_distribution == 1) s = 	"\nCenter: " + center + 
-												"\nLambda: " + lambda;			
-			System.out.println(	s + "\nWindow distribution: " + window_distribution +
+			if (window_distribution == 1) s = 	"Center: " + center + 
+												"\nLambda: " + lambda + "\n";			
+			System.out.println(	s + "Window distribution: " + window_distribution +
 									"\nWindow length: " + window_length + 
 									"\nWindow number: " + window_number +								
-									"\nExpensive windows: " + expensive_windows.toString());
+									"\nExpensive windows: " + expensive_windows.toString() + 
+									"\n----------------------------------");
 		
 			/*** Reset last second if the last expensive window ends before ***/
 			double new_lastSec = 0;
@@ -131,7 +132,7 @@ public class Main {
 			}
 			if (lastSec > new_lastSec) {
 				lastSec = new_lastSec;
-				System.out.println("Last second: " + lastSec);
+				//System.out.println("Last second: " + lastSec);
 			}
 		}
 		
@@ -167,11 +168,8 @@ public class Main {
 			OutputFileGenerator.write2File (runs, lastSec, count_and_rate, 
 					max_xway, both_dirs, 
 					center, lambda, window_distribution, window_length, window_number, expensive_windows,
-					query_number, total_exe_time);  			
-			
-			Date dNow2 = new Date( );
-			SimpleDateFormat ft2 = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-		    System.out.println("Main is done. Current Date: " + ft2.format(dNow2));
+					query_number, total_exe_time);  
+			System.out.println("Main is done.");
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
 	}	

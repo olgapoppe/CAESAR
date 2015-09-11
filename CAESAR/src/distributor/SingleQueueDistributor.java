@@ -74,7 +74,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			}	
 			/*** Clean-up ***/		
 			scanner.close();				
-			System.out.println("\nDistributor is done.");	
+			System.out.println("----------------------------------\nDistributor is done.");	
  		
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
 	}

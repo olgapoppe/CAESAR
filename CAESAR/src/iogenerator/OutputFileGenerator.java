@@ -92,12 +92,12 @@ public class OutputFileGenerator {
 			
 			// Events processed and stored by runs
 			double max_latency = 0;
-			double sum = 0;
-			double count = 0;
+			//double sum = 0;
+			//double count = 0;
 			
-			int real_size = 0;
+			//int real_size = 0;
 			//int fake_size = 0;
-			int real_complex_event_number = 0;
+			//int real_complex_event_number = 0;
 			//int fake_complex_event_number = 0;
 			
 			Set<RunID> runids = runs.keySet();
@@ -117,12 +117,12 @@ public class OutputFileGenerator {
 				max_latency = run.output.writeTollNotifications2File(tollalerts_output, max_latency);
 				max_latency = run.output.writeAccidentWarnings2File(accidentalerts_output, max_latency);	
 				
-				sum += run.output.sum;
-				count += run.output.count;
+				//sum += run.output.sum;
+				//count += run.output.count;
 				
-				real_size += run.getRealSize();
+				//real_size += run.getRealSize();
 				//fake_size += run.getFakeSize();
-				real_complex_event_number += run.output.getSize();
+				//real_complex_event_number += run.output.getSize();
 				//fake_complex_event_number += run.fake_output.getSize();
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
@@ -132,7 +132,7 @@ public class OutputFileGenerator {
 	     		total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
-			double avg_latency = new Double(sum)/new Double(count);
+			//double avg_latency = new Double(sum)/new Double(count);
 			
 			String start = 	"\nMax xway: " + max_xway + 
 							"\nLast xway is two-directional: " + both_dirs +
@@ -144,11 +144,11 @@ public class OutputFileGenerator {
 							"\nExpensive windows: " + expensive_windows.toString() +
 							"\nQuery replications: " + query_number;							
 							
-			String end =	"\nTotal execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
-							"\nAvg latency: " + avg_latency +
-							"\nMax latency: " + max_latency +							
-							"\nReal size: " + real_size +
-							"\nReal complex event number: " + real_complex_event_number;
+			String end =	//"\nTotal execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
+							//"\nAvg latency: " + avg_latency +
+							"--- Max latency: " + max_latency + " ---";							
+							//"\nReal size: " + real_size +
+							//"\nReal complex event number: " + real_complex_event_number;
 			results_output.write(start);
 			results_output.write(end);
 			System.out.println(end);
