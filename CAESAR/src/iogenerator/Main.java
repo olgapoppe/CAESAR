@@ -168,7 +168,10 @@ public class Main {
 					max_xway, both_dirs, 
 					center, lambda, window_distribution, window_length, window_number, expensive_windows,
 					query_number, total_exe_time);  			
-			System.out.println("Main is done.");
+			
+			Date dNow2 = new Date( );
+			SimpleDateFormat ft2 = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
+		    System.out.println("Main is done. Current Date: " + ft2.format(dNow2));
 			
 		} catch (InterruptedException e) { e.printStackTrace(); }
 	}	
