@@ -38,6 +38,7 @@ public abstract class Scheduler implements Runnable {
 	long startOfSimulation;
 	boolean optimized;
 	AtomicInteger total_exe_time;
+	int query_number;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
@@ -45,7 +46,7 @@ public abstract class Scheduler implements Runnable {
 	Scheduler (int max_x, boolean both_d, double lastS,
 			HashMap<RunID,Run> rs, EventQueues evqueues, ExecutorService exe, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch d,  
-			long start, boolean opt, AtomicInteger total_exe) {
+			long start, boolean opt, AtomicInteger total_exe, int q_number) {
 		
 		max_xway = max_x;
 		both_dirs = both_d;
@@ -64,6 +65,7 @@ public abstract class Scheduler implements Runnable {
 		startOfSimulation = start;
 		optimized = opt;
 		total_exe_time = total_exe;
+		query_number = q_number;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);
@@ -344,7 +346,7 @@ public abstract class Scheduler implements Runnable {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
-						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, 0);
+						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed);
 				}}				

@@ -147,7 +147,7 @@ public class Main {
 				max_xway, both_dirs, lastSec,
 				runs, eventqueues, executor, 
 				distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-				startOfSimulation, optimized, total_exe_time);		
+				startOfSimulation, optimized, total_exe_time, query_number);		
 		
 		Thread prodThread = new Thread(distributor);
 		prodThread.setPriority(10);

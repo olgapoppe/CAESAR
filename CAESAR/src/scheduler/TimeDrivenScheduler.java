@@ -18,9 +18,9 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 	public TimeDrivenScheduler (int max_xway, boolean both_dirs, double lastSec,
 			HashMap<RunID,Run> runs, EventQueues eventqueues, ExecutorService executor, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch done,  
-			long start, boolean opt, AtomicInteger total_exe_time) {	
+			long start, boolean opt, AtomicInteger total_exe_time, int query_number) {	
 		
-		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, total_exe_time);			
+		super(max_xway, both_dirs, lastSec, runs, eventqueues, executor, distrProgr, distrFinishT, schedStartT, trans_numb, done, start, opt, total_exe_time, query_number);			
 	}
 	
 	/**
