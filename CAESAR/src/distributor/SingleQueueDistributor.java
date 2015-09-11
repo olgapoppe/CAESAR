@@ -90,7 +90,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			// Local variables
 			double system_time = 0;
 			double distributor_wakeup_time = 0;
-			int event_count = 0;
+			//int event_count = 0;
 			
 			// First batch			
 			Random random = new Random();
@@ -101,7 +101,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			TimeInterval batch = new TimeInterval(curr_sec, end);
 						
  			if (batch.end > last_sec) batch.end = last_sec;	
- 			System.out.println("\n-------------------------\nBatch end: " + batch.end);
+ 			//System.out.println("\n-------------------------\nBatch end: " + batch.end);
  			
  			/*** Put events within the current batch into the run queue ***/		
 	 		while (true) { 
@@ -136,14 +136,14 @@ public class SingleQueueDistributor extends EventDistributor {
 	 					if (count_and_rate && eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
 	 					//System.out.println(event.toString());		
 	 					
-	 					event_count++;
+	 					//event_count++;
 	 				}
 	 			
 	 				/*** Set distributer progress ***/	
 	 				if (curr_sec < event.sec) {		
 	 					
-	 					System.out.println(event_count + " events are processed at " + curr_sec);
-	 					event_count = 0;
+	 					//System.out.println(event_count + " events are processed at " + curr_sec);
+	 					//event_count = 0;
 	 				
 	 					if (curr_sec>300) { // Avoid null run exception when the stream is read too fast
 	 						eventqueues.setDistributorProgress(curr_sec);
@@ -173,12 +173,12 @@ public class SingleQueueDistributor extends EventDistributor {
  				
 					/*** Sleep if now is smaller than batch_limit ms ***/
 					system_time = System.currentTimeMillis() - startOfSimulation;
-					System.out.println("Skipped time is " + skipped_time + " sec.\nSystem time is " + system_time/1000);
+					//System.out.println("Skipped time is " + skipped_time + " sec.\nSystem time is " + system_time/1000);
 					
 					if (system_time < (batch.end - skipped_time)*1000) { // !!!
 	 			
 						int sleep_time = new Double((batch.end - skipped_time)*1000 - system_time).intValue(); // !!!	 			
-						System.out.println("Distributor sleeps " + sleep_time + " ms at " + curr_sec );		 			
+						//System.out.println("Distributor sleeps " + sleep_time + " ms at " + curr_sec );		 			
 						Thread.sleep(sleep_time);
 						distributor_wakeup_time = (System.currentTimeMillis() - startOfSimulation)/1000 - (batch.end - skipped_time); // !!!
 					} 
@@ -188,7 +188,7 @@ public class SingleQueueDistributor extends EventDistributor {
 					double new_end = batch.end + random.nextInt(max - min + 1) + min + distributor_wakeup_time;
 					batch = new TimeInterval(new_start, new_end);
 					if (batch.end > last_sec) batch.end = last_sec;
-					System.out.println("-------------------------\nBatch end: " + batch.end);
+					//System.out.println("-------------------------\nBatch end: " + batch.end);
  				
 					if (distributor_wakeup_time > 1) {
 						System.out.println(	"Distributor wakeup time is " + distributor_wakeup_time + 
