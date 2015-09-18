@@ -46,7 +46,7 @@ public abstract class Scheduler implements Runnable {
 	Scheduler (int max_x, boolean both_d, double lastS,
 			HashMap<RunID,Run> rs, EventQueues evqueues, ExecutorService exe, 
 			AtomicInteger distrProgr, HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT, CountDownLatch trans_numb, CountDownLatch d,  
-			long start, boolean opt, AtomicInteger total_exe, int q_number) {
+			long start, boolean opt, AtomicInteger total_exe) {
 		
 		max_xway = max_x;
 		both_dirs = both_d;
@@ -65,7 +65,6 @@ public abstract class Scheduler implements Runnable {
 		startOfSimulation = start;
 		optimized = opt;
 		total_exe_time = total_exe;
-		query_number = q_number;
 		
 		accidentWarningsFailed = new AtomicBoolean(false);
 		tollNotificationsFailed = new AtomicBoolean(false);
@@ -76,10 +75,10 @@ public abstract class Scheduler implements Runnable {
 	 * @param sec	time stamp
 	 * @return		number of transactions submitted for execution
 	 */	
-	public int all_queries_all_runs (double sec) {
+	public int all_queries_all_runs (double sec, int query_number) {
 		
 		// Get transactions to schedule
-		ArrayList<Transaction> transactions = one_query_all_runs(sec);
+		ArrayList<Transaction> transactions = one_query_all_runs(sec, query_number);
 		int number = transactions.size();
 		
 		try {
@@ -103,7 +102,8 @@ public abstract class Scheduler implements Runnable {
 		for (Transaction t : transactions) { 				
 			t.transaction_number = transaction_number;
 			executor.execute(t); 
-		}				
+		}
+		//System.out.println("Number of transactions in second " + sec + " is " + number);
 		return number;
 	}
 	
@@ -230,7 +230,7 @@ public abstract class Scheduler implements Runnable {
 	 * Iterate over all event queues and generate transactions with time stamp sec
 	 * @param sec	transaction time stamp			
 	 */
-	public ArrayList<Transaction> one_query_all_runs (double sec) {
+	public ArrayList<Transaction> one_query_all_runs (double sec, int query_number) {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
 				
@@ -239,13 +239,13 @@ public abstract class Scheduler implements Runnable {
 			for (double seg=0; seg<=99; seg++) {
 				
 				RunID runid0 = new RunID(xway,0,seg);
-				Transaction t0 = one_query_one_run(sec, runid0);
+				Transaction t0 = one_query_one_run(sec, runid0, query_number);
 				if (t0!=null) transactions.add(t0);	
 								
 				if (xway != max_xway || both_dirs) {
 					
 					RunID runid1 = new RunID(xway,1,seg); 
-					Transaction t1 = one_query_one_run(sec, runid1);
+					Transaction t1 = one_query_one_run(sec, runid1, query_number);
 					if (t1!=null) transactions.add(t1);
 		}}}
 		return transactions;
@@ -323,7 +323,7 @@ public abstract class Scheduler implements Runnable {
 	 * @param sec	transaction time stamp
 	 * @param runid	identifier of the run the events of which are scheduled
 	 */
-	public Transaction one_query_one_run (double sec, RunID runid) {
+	public Transaction one_query_one_run (double sec, RunID runid, int query_number) {
 		
 		if (eventqueues.contents.containsKey(runid)) {
 			
@@ -346,6 +346,7 @@ public abstract class Scheduler implements Runnable {
 						
 					Run run = runs.get(runid);
 					if (optimized) {
+						
 						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed);

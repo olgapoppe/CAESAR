@@ -16,10 +16,10 @@ import window.*;
 public class Main {
 	
 	/**
-	 * Create and call the chain: Input files -> Drivers/Distributors -> Schedulers -> Executor pool -> Output files
+	 * Create and call the chain: Input file -> Driver/Distributor -> Scheduler -> Executor pool -> Output files
 	 * 
 	 * @param args: EXECUTORS
-	 * 0			number of executors
+	 * 0			executor number
 	 *  
 	 * 				OPTIMIZATION
 	 * 1			optimized: 1 for yes, 0 for no
@@ -27,7 +27,7 @@ public class Main {
 	 *				STATISTICS
 	 * 2			count and rate computation: 1 for yes, 0 for no
 	 * 
-	 *  			INPUT
+	 *  			INPUT DATA
 	 * 3			last second : 10784
 	 * 4			path : src/input/ or ../../input/
 	 * 5			input file names in first_xway-last_xway(dir) format				
@@ -35,11 +35,17 @@ public class Main {
 	 * 6			extension : .txt or .dat
 	 * 
 	 * 				CONTEXT WINDOWS, all 0s if original benchmark is executed
-	 * 7			lambda in seconds for Poisson distribution
+	 * 7			window center
 	 * 8			window distribution: 0 for uniform, 1 for Poisson
-	 * 9			window length in seconds
-	 * 10			number of windows
-	 * 11			number of queries 
+	 * 9			window length (sec)
+	 * 10			window number
+	 * 11			query number 
+	 * 
+	 * 				OVERLAPPING CONTEXT WINDOWS, all 0s if context windows do not overlap
+	 * 12			shared : 1 for yes, 0 for no
+	 * 13			overlap length (sec)
+	 * 14			group number of overlapping windows
+	 * 15			group size
 	 */
 	public static void main (String[] args) { 
 		
@@ -49,8 +55,8 @@ public class Main {
 	    System.out.println("Current Date: " + ft.format(dNow));
 	    
 	    /*** Validate the number of input parameters ***/
-	    if (args.length < 12) {
-			System.out.println("At least 12 input parameters are expected.");
+	    if (args.length < 16) {
+			System.out.println("At least 16 input parameters are expected.");
 			return;
 		} 
 		
@@ -89,12 +95,17 @@ public class Main {
 		/*** CONTEXT WINDOWS ***/
 		int center = Integer.parseInt(args[7]);
 		int window_distribution = Integer.parseInt(args[8]);
-		int window_length =  Integer.parseInt(args[9]);
-		int window_number =  Integer.parseInt(args[10]);
-		int query_number =  Integer.parseInt(args[11]);
+		int window_length = Integer.parseInt(args[9]);
+		int window_number = Integer.parseInt(args[10]);
+		int query_number = Integer.parseInt(args[11]);
 		System.out.println("Query replications: " + query_number);
+		
+		boolean shared = args[12].equals("1");
+		int overlap_length = Integer.parseInt(args[13]);
+		int group_number = Integer.parseInt(args[14]);
+		int group_size = Integer.parseInt(args[15]);
 				
-		/*** Create shared data structures ***/		
+		/*** SHARED DATA STRUCTURES ***/		
 		AtomicInteger distributorProgress = new AtomicInteger(-1);	
 		HashMap<Double,Double> distrFinishTimes = new HashMap<Double,Double>();
 		HashMap<Double,Double> schedStartTimes = new HashMap<Double,Double>();
@@ -105,38 +116,52 @@ public class Main {
 		CountDownLatch transaction_number = new CountDownLatch(0);	
 		CountDownLatch done = new CountDownLatch(1);
 		long startOfSimulation = System.currentTimeMillis();	
-				
-		/*** Get expensive windows and reset last second ***/
+			
 		ArrayList<TimeInterval> expensive_windows = new ArrayList<TimeInterval>();
 		int lambda = 0;
-		if (window_number > 0) {
-			
-			/*** Get expensive windows ***/
-			lambda = center/window_length + 1;		
-			expensive_windows = (window_distribution == 0) ?
-									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number) :
-									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda);
-			String s = "";
-			if (window_distribution == 1) s = 	"Center: " + center + 
-												"\nLambda: " + lambda + "\n";			
-			System.out.println(	s + "Window distribution: " + window_distribution +
-									"\nWindow length: " + window_length + 
-									"\nWindow number: " + window_number +								
-									"\nExpensive windows: " + expensive_windows.toString() + 
-									"\n----------------------------------");
 		
-			/*** Reset last second if the last expensive window ends before ***/
-			double new_lastSec = 0;
-			for (TimeInterval i : expensive_windows) {
-				if (new_lastSec < i.end) new_lastSec = i.end;
+		/*** EXPENSIVE WINDOWS ***/
+		if (overlap_length == 0 && group_number == 0 && group_size == 0) {
+			if (window_number > 0) {
+			
+				/*** Get expensive windows ***/
+				lambda = center/window_length + 1;		
+				String s = "";
+				if (window_distribution == 1) s = 	"Center: " + center + 
+													"\nLambda: " + lambda + "\n";			
+				System.out.println(	s + "Window distribution: " + window_distribution +
+										"\nWindow length: " + window_length + 
+										"\nWindow number: " + window_number);
+				
+				expensive_windows = (window_distribution == 0) ?
+									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number) :
+									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda);								
 			}
-			if (lastSec > new_lastSec) {
-				lastSec = new_lastSec;
-				//System.out.println("Last second: " + lastSec);
-			}
+		/*** OVERLAPPING WINDOWS ***/
+		} else {			
+				
+			System.out.println(	"Shared overlapping windows: " + shared +
+								"\nWindow length: " + window_length + 
+								"\nWindow overlap length: " + overlap_length +
+								"\nOverlapping window group number: " + group_number +
+								"\nWindow group size: " + group_size);
+			
+			expensive_windows = WindowDistribution.getTimeIntervalsForSharedWindows (shared, lastSec, window_length, query_number,
+					overlap_length, group_number, group_size);
+		}
+		System.out.println("\nExpensive windows: " + expensive_windows.toString() + "\n----------------------------------");	
+		
+		/*** Reset LAST SECOND if the last expensive window ends before ***/
+		double new_lastSec = 0;
+		for (TimeInterval i : expensive_windows) {
+			if (new_lastSec < i.end) new_lastSec = i.end;
+		}
+		if (lastSec > new_lastSec) {
+			lastSec = new_lastSec;
+			//System.out.println("Last second: " + lastSec);
 		}
 		
-		/*** Create and start event distributing and query scheduling threads.
+		/*** Create and start event distributing and query scheduling THREADS.
 		 *   Distributor reads from the file and writes into runs and event queues.
 		 *   Scheduler reads from runs and run queues and submits tasks to executor. ***/
 		EventDistributor distributor = new SingleQueueDistributor(
@@ -148,7 +173,7 @@ public class Main {
 				max_xway, both_dirs, lastSec,
 				runs, eventqueues, executor, 
 				distributorProgress, distrFinishTimes, schedStartTimes, transaction_number, done, 
-				startOfSimulation, optimized, total_exe_time, query_number);		
+				startOfSimulation, optimized, total_exe_time, query_number, expensive_windows);		
 		
 		Thread prodThread = new Thread(distributor);
 		prodThread.setPriority(10);
