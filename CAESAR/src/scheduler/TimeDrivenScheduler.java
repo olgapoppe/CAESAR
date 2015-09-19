@@ -9,7 +9,6 @@ import run.*;
 import window.TimeInterval;
 import distributor.*;
 
-
 /**
  * As soon as all events with the same time stamp become available,
  * time driven scheduler submits them for execution.
@@ -49,17 +48,18 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 				//System.out.println("Scheduling time of second " + curr_sec + " is " + now);
 				
 				/*** Find out query number ***/
-				int number = 0;
+				int number = -1;
 				if (expensive_windows.isEmpty()) {
 					number = query_number;
 				} else {
 					for (TimeInterval i : expensive_windows) {
-						if (i.contains(curr_sec)) number = i.query_number;
-					}
-				}
+						if (i.contains(curr_sec)) {
+							number = i.query_number;
+							break;
+				}}}
 				
 				/*** Schedule the current second ***/
-				all_queries_all_runs(curr_sec, number);
+				if (number>-1) all_queries_all_runs(curr_sec, number);
 									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				
 				if (curr_sec == lastSec) {	
