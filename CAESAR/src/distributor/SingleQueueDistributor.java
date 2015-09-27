@@ -102,7 +102,7 @@ public class SingleQueueDistributor extends EventDistributor {
 			TimeInterval batch = new TimeInterval(curr_sec, end);
 									
  			if (batch.end > last_sec) batch.end = last_sec;	
- 			System.out.println("\n-------------------------\nBatch end: " + batch.end);
+ 			//System.out.println("\n-------------------------\nBatch end: " + batch.end);
  			
  			/*** Put events within the current batch into the run queue ***/		
 	 		while (true) { 
@@ -136,7 +136,7 @@ public class SingleQueueDistributor extends EventDistributor {
 	 					}
 	 					eventqueue.add(event);	
 	 					if (count_and_rate && eventqueue.size() > run.output.maxLengthOfEventQueue) run.output.maxLengthOfEventQueue = eventqueue.size();
-	 					System.out.println(event.toString());		
+	 					//System.out.println(event.toString());		
 	 					
 	 					//event_count++;
 	 				}

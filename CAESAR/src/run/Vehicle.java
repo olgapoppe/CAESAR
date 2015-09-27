@@ -64,8 +64,10 @@ public class Vehicle {
 			for (double spd : spdsPerMin) {
 				sum += spd;
 			}
+			//System.out.println("for vehicle and min: " + min + " sum: "+ sum);
 			return sum/new Double(spdsPerMin.size());			
 		} else {
+			//System.out.println("no min " + min);
 			return -1;
 		}	
 	}

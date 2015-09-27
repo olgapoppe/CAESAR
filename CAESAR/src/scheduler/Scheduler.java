@@ -357,7 +357,7 @@ public abstract class Scheduler implements Runnable {
 				if (!event_list.isEmpty()) {
 						
 					Run run = runs.get(runid);
-					return new ActivityMonitoring (run, event_list, runs, startOfSimulation, total_exe_time, query_number);
+					return new ActivityMonitoring (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
 					/*if (optimized) {
 						
 						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);

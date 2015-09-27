@@ -78,7 +78,7 @@ public class TrafficManagement extends Transaction {
 			
 			for (int i=1; i<query_number; i++) {			
 				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
+				run.fake_collectGarbage(event.min);	 	
 			}
 			// Avoid multiple storage of complex events due to replicated queries
 			//System.out.println("Size: " + (run.fake_output.tollNotifications.size() + run.fake_output.accidentWarnings.size()));

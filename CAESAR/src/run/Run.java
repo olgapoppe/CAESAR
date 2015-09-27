@@ -119,7 +119,10 @@ public class Run {
 			if (spd>-1) {
 				sum += spd;	
 				count++;
-		}}
+			}
+			//System.out.println("vid: " + vid + " sum: " + sum + "min: " + min);
+		}
+		
 		return (sum==0 && count==0) ? -1 : sum/count;		
 	}	
 	
@@ -134,6 +137,7 @@ public class Run {
 			result = avgSpds.get(min);
 		} else {
 			result = getAvgSpd(min);
+			//System.out.println("for min: " + min + " result: " + result);
 			avgSpds.put(min,result);
 		}
 		return result;
@@ -155,6 +159,7 @@ public class Run {
 				sum += avgSpdPerMin;	
 				count++;			
 		}}
+		//System.out.println("5 min from min: " + min + " sum: " + sum);
 		return (min==1 || (sum==0 && count==0)) ? -1 : sum/count;	
 	}
 	
@@ -870,6 +875,40 @@ public class Run {
 				existingVehicle.pos = event.pos;
 		}}		
 	}	
+	
+	public void activityMonitoring (PositionReport event, double segWithAccAhead, long startOfSimulation, 
+			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes,
+			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
+		
+		// create new vehicle
+		if (vehicles.get(event.id) == null) {
+			
+			Vehicle new_vehicle = new Vehicle(event);	
+			vehicles.put(event.id,new_vehicle);
+		} 
+		
+		// save speeds and compute their average
+		if (event.spd > 0) {			
+					
+			Vehicle existingVehicle = vehicles.get(event.id);
+			
+			if (existingVehicle.spds.containsKey(event.min)) {    
+
+				existingVehicle.spds.get(event.min).add(event.spd);    			
+ 				
+			} else {             					
+	
+				Vector<Double> new_speeds_per_min = new Vector<Double>();
+				new_speeds_per_min.add(event.spd);
+				existingVehicle.spds.put(event.min, new_speeds_per_min);			
+			}
+						
+			double avgSpd = getAvgSpdFor5Min(event.min, true);
+			
+			TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
+			output.tollNotifications.add(tollNotification);
+		}		
+	}
 	
 	/**
 	 * accidentManagement maintains stopped vehicles, detects accidents and their clearance and derives accident warnings.   
