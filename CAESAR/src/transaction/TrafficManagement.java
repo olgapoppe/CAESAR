@@ -87,7 +87,7 @@ public class TrafficManagement extends Transaction {
 			
 			// WRITE: Update this run and remove old data
 			run.trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-			run.collectGarbage(event.min);			
+			run.collectGarbage(event.min,false);			
 		}
 			
 		double end = System.currentTimeMillis() - startOfSimulation;			

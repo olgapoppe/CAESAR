@@ -17,23 +17,25 @@ public class InputFileGenerator {
 	 * Generate input files
 	 * @param args: action: 1 for clean file, 
 	 * 						2 for merge files, 
-	 * 						3 for select tuples with direction, 
-	 * 						4 for copy n tuples, 
-	 * 						5 for copy tuples from second to second
+	 * 						3 for select events with direction, 
+	 * 						4 for copy n events, 
+	 * 						5 for copy events from second to second
 	 * 						6 for map from other event type
-	 * 				path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
-	 * 				if clean file: input file, output file, xway
-	 * 				if merge files: first input file, second input file, output file, last second
-	 * 				if select tuples: input file, output file, direction
-	 * 				if copy n tuples: input file, output file, n
-	 * 				if copy tuples from second to second: input file, output file, second from, second to
-	 * 				if map from other event type: input file, output file, person identifier
+	 * 						7 for count events with a given attribute value 
+	 * 	path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
+	 * 	if clean file: input file, output file, xway
+	 * 	if merge files: first input file, second input file, output file, last second
+	 * 	if select events: input file, output file, direction
+	 * 	if copy n events: input file, output file, n
+	 * 	if copy events from second to second: input file, output file, second from, second to
+	 * 	if map from other event type: input file, output file, person identifier
+	 * 	if count events: input file, attribute value			
 	 */
 	public static void main (String[] args) {
 		
 		/*** Validate the input parameter ***/
-		if (args.length < 5) {
-			System.out.println("At least 5 input parameters are expected.");
+		if (args.length < 4) {
+			System.out.println("At least 4 input parameters are expected.");
 			return;
 		}	
 		
@@ -48,7 +50,7 @@ public class InputFileGenerator {
 			String outputfile = path + args[3];
 			int xway = Integer.parseInt(args[4]);
 			System.out.println("The file " + inputfile + " is cleaned, the xway is set to " + xway + ", the result is saved in the file" + outputfile);
-			cleanFile(inputfile,outputfile,xway);			
+			oneInputOneOutput(0,inputfile,outputfile,xway,0);			
 		} 
 		/*** Merge file ***/
 		if (action == 2) {
@@ -58,27 +60,27 @@ public class InputFileGenerator {
 			String outputfile = path + args[4];
 			int lastSec = Integer.parseInt(args[5]);
 			System.out.println("The files " + inputfile1 + " and " + inputfile2 + " are merged into the file" + outputfile);
-			mergeFiles(inputfile1,inputfile2,outputfile,lastSec);
+			twoInputsOneOutput(inputfile1,inputfile2,outputfile,lastSec);
 		}	
-		/*** Select tuples with given direction ***/
+		/*** Select events with given direction ***/
 		if (action == 3) {
 			
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
 			int dir = Integer.parseInt(args[4]);
 			System.out.println("All events with direction " + dir + " from the file " + inputfile + " are copied to the file" + outputfile);
-			getTuples(1,inputfile,outputfile,dir,0);
+			oneInputOneOutput(1,inputfile,outputfile,dir,0);
 		}	
-		/*** Copy n tuples ***/
+		/*** Copy n events ***/
 		if (action == 4) {
 			
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
 			int n = Integer.parseInt(args[4]);
 			System.out.println(n + " events from the file " + inputfile + " are copied to the file" + outputfile);
-			getTuples(2,inputfile,outputfile,n,0);
+			oneInputOneOutput(2,inputfile,outputfile,n,0);
 		}	
-		/*** Copy tuples from second ***/
+		/*** Copy events from second to second ***/
 		if (action == 5) {
 			
 			String inputfile = path + args[2];
@@ -86,45 +88,125 @@ public class InputFileGenerator {
 			int from = Integer.parseInt(args[4]);
 			int to = Integer.parseInt(args[5]);
 			System.out.println("Events from second " + from + " to second " + to + " from the file " + inputfile + " are copied to the file" + outputfile);
-			getTuples(3,inputfile,outputfile,from,to);
+			oneInputOneOutput(3,inputfile,outputfile,from,to);
 		}	
-		/*** Map another event type ***/
+		/*** Map to other event type ***/
 		if (action == 6) {
 			
 			String inputfile = path + args[2];
 			String outputfile = path + args[3];
 			int id = Integer.parseInt(args[4]);
 			System.out.println("Events with id " + id + " from the file " + inputfile + " are mapped to the file" + outputfile);
-			mapTuples(inputfile,outputfile,id);
+			oneInputOneOutput(4,inputfile,outputfile,id,0);
+		}
+		/*** Count events with attribute value ***/
+		if (action == 7) {
+			
+			String inputfile = path + args[2];
+			int value = Integer.parseInt(args[3]);
+			System.out.println("Count the number of events with value " + value + " in the file " + inputfile);
+			oneInput(inputfile,value);
 		}
 		System.out.println("Done!");
 	}
 	
 	/****************************************************************************
-	 * Select correct position reports and change xway
+	 * Open input and output files, call respective method depending on the value of choice variable and close both files.
+	 * @param choice: 	0 for select correct position reports and change xway
+	 * 					1 for select events with given direction
+	 * 					2 for copy first n events
+	 * 					3 for copy all events from second to second
+	 * 					4 for change event type
 	 * @param inputfilename
 	 * @param outputfilename
-	 * @param xway
+	 * @param n and to are input parameters to the respective method
 	 */
-	public static void cleanFile (String inputfilename, String outputfilename, int xway) {
+	public static void oneInputOneOutput (int choice, String inputfilename, String outputfilename, int n, int to) {
 		
 		Scanner input = null;
 		try {		
 			/*** Input file ***/
 			File input_file = new File(inputfilename);
-			input = new Scanner(input_file);  			
-								
+	        input = new Scanner(input_file);     
+	        
+	        /*** Output file ***/
+            File output_file = new File(outputfilename);
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
+	            
+	        /*** Call the method ***/ 
+            if (choice == 0) {
+            	changeXway(input,output,n);
+            } else {
+            if (choice == 1) {
+            	selectEvents(input,output,n);
+            } else {
+            if (choice == 2) {
+            	copyNEvents(input,output,n);
+            } else {
+            if (choice == 3) {
+            	copyEventsFromSecToSec(input,output,n,to);
+            } else {
+            	changeEventType(input,output,n);
+            }}}}
+	        /*** Close the files ***/       		
+	       	input.close();       		       		
+	       	output.close();
+	        
+		} catch (IOException e) { System.err.println(e); }		  
+	}
+	
+	/****************************************************************************
+	 * Open 2 input files and 1 output file, call the method and close all files.
+	 * @param first input file
+	 * @param second input file
+	 * @param output file
+	 * @param last second
+	 */
+	public static void twoInputsOneOutput (String inputfilename1, String inputfilename2, String outputfilename, int lastSec) {
+		
+		Scanner input1 = null;
+		Scanner input2 = null;
+		try {		
+			/*** Input file ***/
+			File input_file_1 = new File(inputfilename1);
+			File input_file_2 = new File(inputfilename2);
+			input1 = new Scanner(input_file_1);  			
+			input2 = new Scanner(input_file_2);
+					
 			/*** Output file ***/
             File output_file = new File(outputfilename);
-            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
-              
-            /*** Call method ***/            
-            changeXway(input,output,xway);
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
             
+            /*** Call the method ***/            
+            merge(input1,input2,output,lastSec);
+                       
             /*** Close the files ***/
-       		input.close();
+       		input1.close();
+       		input2.close();
        		output.close();        		
         
+		} catch (IOException e) { System.err.println(e); }		  
+	}
+	
+	/****************************************************************************
+	 * Open 1 input file, call the method and close the file.
+	 * @param input file
+	 * @param event attribute value
+	 */
+	public static void oneInput (String inputfilename, int value) {
+		
+		Scanner input = null;
+		try {		
+			/*** Input file ***/
+			File input_file = new File(inputfilename);
+			input = new Scanner(input_file);			
+					
+			/*** Call the method ***/            
+            countEvents(input,value);
+                       
+            /*** Close the files ***/
+       		input.close();
+       		
 		} catch (IOException e) { System.err.println(e); }		  
 	}
 	
@@ -151,38 +233,7 @@ public class InputFileGenerator {
 			}}			
 		} catch (IOException e) { System.err.println(e); }
 		System.out.println("Count: " + count + " Last event: " + eventString);
-	}
-	
-	/****************************************************************************
-	 * Merge 2 files
-	 * @param filename1
-	 * @param filename2
-	 */
-	public static void mergeFiles (String inputfilename1, String inputfilename2, String outputfilename, int lastSec) {
-		
-		Scanner input1 = null;
-		Scanner input2 = null;
-		try {		
-			/*** Input file ***/
-			File input_file_1 = new File(inputfilename1);
-			File input_file_2 = new File(inputfilename2);
-			input1 = new Scanner(input_file_1);  			
-			input2 = new Scanner(input_file_2);
-					
-			/*** Output file ***/
-            File output_file = new File(outputfilename);
-            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
-            
-            /*** Call method ***/            
-            merge(input1,input2,output,lastSec);
-                       
-            /*** Close the files ***/
-       		input1.close();
-       		input2.close();
-       		output.close();        		
-        
-		} catch (IOException e) { System.err.println(e); }		  
-	}
+	}	
 	
 	/***
 	 * Merges 2 sorted files input1 and input2 into one sorted file output. The files are sorted by time stamps. 
@@ -240,48 +291,13 @@ public class InputFileGenerator {
 		System.out.println("Count: " + count + " Last event: " + eventString2);
 	}
 	
-	/****************************************************************************
-	 * Copy all tuples with given direction or first n tuples
-	 * @param choice: 1 for select tuples with given direction, 2 for copy first n tuples
-	 * @param inputfilename
-	 * @param outputfilename
-	 * @param dir or n
-	 */
-	public static void getTuples (int choice, String inputfilename, String outputfilename, int n, int to) {
-		
-		Scanner input = null;
-		try {		
-			/*** Input file ***/
-			File input_file = new File(inputfilename);
-	        input = new Scanner(input_file);     
-	        
-	        /*** Output file ***/
-            File output_file = new File(outputfilename);
-            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));
-	            
-	        /*** Call method ***/    
-            if (choice==1) {
-            	selectTuples(input,output,n);
-            } else {
-            if (choice==2) {
-            	copyNTuples(input,output,n);
-            } else {
-            	copyTuplesFromSec(input,output,n,to);
-            }}
-	        /*** Close the files ***/       		
-	       	input.close();       		       		
-	       	output.close();
-	        
-		} catch (IOException e) { System.err.println(e); }		  
-	}	
-	
 	/**
 	 * Select position reports that have the given direction from input to output
 	 * @param input
 	 * @param output
 	 * @param dir
 	 */
-	public static void selectTuples (Scanner input, BufferedWriter output, int dir) {
+	public static void selectEvents (Scanner input, BufferedWriter output, int dir) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -302,12 +318,12 @@ public class InputFileGenerator {
 	}
 	
 	/***
-	 * Copy the given number of tuples from input to output
+	 * Copy the given number of events from input to output
 	 * @param input
 	 * @param output
 	 * @param tuple number
 	 */
-	public static void copyNTuples (Scanner input, BufferedWriter output, int tupleNumber) {
+	public static void copyNEvents (Scanner input, BufferedWriter output, int tupleNumber) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -327,7 +343,7 @@ public class InputFileGenerator {
 	 * @param output
 	 * @param sec
 	 */
-	public static void copyTuplesFromSec (Scanner input, BufferedWriter output, int from, int to) {
+	public static void copyEventsFromSecToSec (Scanner input, BufferedWriter output, int from, int to) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -347,41 +363,13 @@ public class InputFileGenerator {
 		System.out.println("Count: " + count + " Last event: " + eventString);
 	}
 	
-	/****************************************************************************
-	 * Select correct position reports and change xway
-	 * @param inputfilename
-	 * @param outputfilename
-	 * @param identifier
-	 */
-	public static void mapTuples (String inputfilename, String outputfilename, int id) {
-		
-		Scanner input = null;
-		try {		
-			/*** Input file ***/
-			File input_file = new File(inputfilename);
-			input = new Scanner(input_file);  			
-								
-			/*** Output file ***/
-            File output_file = new File(outputfilename);
-            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
-              
-            /*** Call method ***/            
-            changeType(input,output,id);
-            
-            /*** Close the files ***/
-       		input.close();
-       		output.close();        		
-        
-		} catch (IOException e) { System.err.println(e); }		  
-	}
-	
 	/***
-	 * Copy position reports from input to output and change their xway to the given value 
+	 * Copy events from input to output and change their type  
 	 * @param input
 	 * @param output
-	 * @param new xway
+	 * @param identifier
 	 */
-	public static void changeType (Scanner input, BufferedWriter output, int id) {
+	public static void changeEventType (Scanner input, BufferedWriter output, int id) {
 		
 		String eventString = "";
 		int count = 0; 
@@ -398,5 +386,26 @@ public class InputFileGenerator {
 			}}			
 		} catch (IOException e) { System.err.println(e); }
 		System.out.println("Count: " + count + " Last event: " + eventString);
+	}
+	
+	/***
+	 * Count the number of events with a given attribute value in the input file   
+	 * @param input
+	 * @param value
+	 */
+	public static void countEvents (Scanner input, int value) {
+		
+		String eventString = "";
+		int count = 0; 
+		int total_count = 0;
+		
+		while (input.hasNextLine()) {         	
+        			
+			eventString = input.nextLine();
+			PositionReport event = PositionReport.parse(eventString);				
+			if (event.pos == value) count++;
+			total_count++;
+		}		
+		System.out.println("Total count: " + total_count + " Count: " + count + " Percentage: " + ((count*100)/total_count + "%"));
 	}
 }

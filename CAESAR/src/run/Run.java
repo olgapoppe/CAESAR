@@ -148,18 +148,19 @@ public class Run {
 	 * @param min
 	 * @return rolling average speed
 	 */
-	public double getAvgSpdFor5Min (double min, boolean fake) {
+	public double getAvgSpdFor5Min (double min, boolean fake, boolean double_length) {
 		
 		double sum = 0;
 		double count = 0;
+		int j = (double_length) ? 2 : 1;
 		// Look-up or compute average speeds for 5 minutes before
-		for (int i=1; i<=5 && min-i>0; i++) {	
+		for (int i=1; i<=5*j && min-i>0; i++) {	
 			double avgSpdPerMin = lookUpOrComputeAvgSpd(min-i, fake);			
 			if (avgSpdPerMin>-1) {
 				sum += avgSpdPerMin;	
 				count++;			
 		}}
-		//System.out.println("5 min from min: " + min + " sum: " + sum);
+		//System.out.println("10 min from min: " + min + " to min: " + (min-5*j) + " sum: " + sum);
 		return (min==1 || (sum==0 && count==0)) ? -1 : sum/count;	
 	}
 	
@@ -552,13 +553,14 @@ public class Run {
 	 *  All other vehicles are deleted.
 	 * @param new_min	current processing minute of this run
 	 */
-	public void deleteVehicles (double new_min) {
+	public void deleteVehicles (double new_min, boolean double_length) {
+		int j = (double_length) ? 2 : 1;
 		Set<Double> vids = vehicles.keySet();            			
 		/*** Get vehicles to delete ***/
 		Vector<Double> vehicles2delete = new Vector<Double>();
 		for (Double vid : vids) {
 			Vehicle vehicle = vehicles.get(vid);				
-			if (vehicle.min < new_min-5) vehicles2delete.add(vid);				 
+			if (vehicle.min < new_min-(5*j)) vehicles2delete.add(vid);				 
 		}
 		/*** Delete these vehicles ***/
 		for (Double vid : vehicles2delete) {
@@ -584,14 +586,14 @@ public class Run {
 	 * Delete expired objects and values
 	 * @param new_min	current processing minute of this run 
 	 */
-	public void collectGarbage (double new_min) {
+	public void collectGarbage (double new_min, boolean double_length) {
 		if (time.minOfLastGarbageCollection < new_min-2) {
 	 			
 	 		//long beginOfDeletion = System.currentTimeMillis();
 	 			
  			deleteVehCounts(new_min);
  			deleteAvgSpds(new_min);
- 			deleteVehicles(new_min);
+ 			deleteVehicles(new_min, double_length);
  			time.minOfLastGarbageCollection = new_min;	
 	 			
  			//long durationOfDeletion = System.currentTimeMillis() - beginOfDeletion;
@@ -639,7 +641,7 @@ public class Run {
 		// Update run data: avgSpd, time, numberOfProcessedEvents
 		if (time.min < event.min) {  
 
-			avgSpd = getAvgSpdFor5Min(event.min, false);   		
+			avgSpd = getAvgSpdFor5Min(event.min, false, false);   		
 			time.min = event.min;
 		}   
 		time.sec = event.sec;
@@ -766,7 +768,7 @@ public class Run {
 		// Update run data: avgSpd, time, numberOfProcessedEvents
 		if (time.min < event.min) {  
 
-			fake_avgSpd = getAvgSpdFor5Min(event.min, true);   		
+			fake_avgSpd = getAvgSpdFor5Min(event.min, true, false);   		
 			fake_time.min = event.min;
 		}   
 		fake_time.sec = event.sec;
@@ -905,8 +907,9 @@ public class Run {
 		}	
 		//System.out.println(event.toString() + " is executed " + query_number + " times.");
 		for (int i=1; i<=query_number; i++) {
-			avgSpd = getAvgSpdFor5Min(event.min, true);
+			avgSpd = getAvgSpdFor5Min(event.min, true, true);
 		}
+		//System.out.println("10 min from min: " + event.min + " to min: " + (event.min-10) + " avg spd: " + avgSpd);
 			
 		TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
 		output.tollNotifications.add(tollNotification);			
