@@ -11,7 +11,7 @@ import event.*;
  * Input file generator parses the input file and copies certain tuples to the output file.  
  * @author Olga Poppe
  */
-public class InputFileGenerator_LR {
+public class InputFileGenerator {
 	
 	/***
 	 * Generate input files
@@ -19,13 +19,15 @@ public class InputFileGenerator_LR {
 	 * 						2 for merge files, 
 	 * 						3 for select tuples with direction, 
 	 * 						4 for copy n tuples, 
-	 * 						5 for copy tuples from second
+	 * 						5 for copy tuples from second to second
+	 * 						6 for map from other event type
 	 * 				path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
 	 * 				if clean file: input file, output file, xway
-	 * 				if merge files: first input file, second input file, output file
+	 * 				if merge files: first input file, second input file, output file, last second
 	 * 				if select tuples: input file, output file, direction
 	 * 				if copy n tuples: input file, output file, n
-	 * 				if copy tuples from second: input file, output file, second from, second to
+	 * 				if copy tuples from second to second: input file, output file, second from, second to
+	 * 				if map from other event type: input file, output file, identifier
 	 */
 	public static void main (String[] args) {
 		
@@ -54,8 +56,9 @@ public class InputFileGenerator_LR {
 			String inputfile1 = path + args[2];
 			String inputfile2 = path + args[3];
 			String outputfile = path + args[4];
+			int lastSec = Integer.parseInt(args[5]);
 			System.out.println("The files " + inputfile1 + " and " + inputfile2 + " are merged into the file" + outputfile);
-			mergeFiles(inputfile1,inputfile2,outputfile);
+			mergeFiles(inputfile1,inputfile2,outputfile,lastSec);
 		}	
 		/*** Select tuples with given direction ***/
 		if (action == 3) {
@@ -85,6 +88,15 @@ public class InputFileGenerator_LR {
 			System.out.println("Events from second " + from + " to second " + to + " from the file " + inputfile + " are copied to the file" + outputfile);
 			getTuples(3,inputfile,outputfile,from,to);
 		}	
+		/*** Map another event type ***/
+		if (action == 6) {
+			
+			String inputfile = path + args[2];
+			String outputfile = path + args[3];
+			int id = Integer.parseInt(args[4]);
+			System.out.println("Events with id " + id + " from the file " + inputfile + " are mapped to the file" + outputfile);
+			mapTuples(inputfile,outputfile,id);
+		}
 		System.out.println("Done!");
 	}
 	
@@ -146,9 +158,8 @@ public class InputFileGenerator_LR {
 	 * @param filename1
 	 * @param filename2
 	 */
-	public static void mergeFiles (String inputfilename1, String inputfilename2, String outputfilename) {
+	public static void mergeFiles (String inputfilename1, String inputfilename2, String outputfilename, int lastSec) {
 		
-		int lastSec = 10784;
 		Scanner input1 = null;
 		Scanner input2 = null;
 		try {		
@@ -333,6 +344,59 @@ public class InputFileGenerator_LR {
 				}
 			}   
 		} catch (IOException e) { System.err.println(e); }	
+		System.out.println("Count: " + count + " Last event: " + eventString);
+	}
+	
+	/****************************************************************************
+	 * Select correct position reports and change xway
+	 * @param inputfilename
+	 * @param outputfilename
+	 * @param identifier
+	 */
+	public static void mapTuples (String inputfilename, String outputfilename, int id) {
+		
+		Scanner input = null;
+		try {		
+			/*** Input file ***/
+			File input_file = new File(inputfilename);
+			input = new Scanner(input_file);  			
+								
+			/*** Output file ***/
+            File output_file = new File(outputfilename);
+            BufferedWriter output = new BufferedWriter(new FileWriter(output_file));            
+              
+            /*** Call method ***/            
+            changeType(input,output,id);
+            
+            /*** Close the files ***/
+       		input.close();
+       		output.close();        		
+        
+		} catch (IOException e) { System.err.println(e); }		  
+	}
+	
+	/***
+	 * Copy position reports from input to output and change their xway to the given value 
+	 * @param input
+	 * @param output
+	 * @param new xway
+	 */
+	public static void changeType (Scanner input, BufferedWriter output, int id) {
+		
+		String eventString = "";
+		int count = 0; 
+		try {
+			while (input.hasNextLine()) {         	
+        			
+				eventString = input.nextLine();
+				PositionReport event = ActivityReport.parse(eventString,id);
+				
+				if (event.correctPositionReport()) {
+					
+					count++;
+					output.write(event.toStringChangeXway(id) + "\n");            	            	            	         	
+			}}			
+		} catch (IOException e) { System.err.println(e); }
 		System.out.println("Count: " + count + " Last event: " + eventString);
 	}
 }

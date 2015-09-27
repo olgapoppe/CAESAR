@@ -14,14 +14,15 @@ import window.*;
 
 public class SingleQueueDistributor extends EventDistributor {	
 	
+	boolean count_and_rate;
 	ArrayList<TimeInterval> expensive_windows;
 		
 	public SingleQueueDistributor (String filename, double lastSec, 
 			HashMap<RunID,Run> runs, EventQueues eventqueues, 
 			long start, AtomicInteger distrProgress, HashMap<Double,Double> distrFinishTimes, boolean cr, ArrayList<TimeInterval> ew) {
 		
-		super(filename, lastSec, runs, eventqueues, start, distrProgress, distrFinishTimes, cr);
-		
+		super(filename, lastSec, runs, eventqueues, start, distrProgress, distrFinishTimes);
+		count_and_rate = cr;
 		expensive_windows = ew;
 	}
 

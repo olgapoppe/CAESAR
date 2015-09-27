@@ -21,12 +21,9 @@ public abstract class EventDistributor implements Runnable {
 	AtomicInteger distributorProgress;
 	HashMap<Double,Double> distrFinishTimes;
 	
-	boolean count_and_rate;
-		
 	public EventDistributor (String f, double last, 
 			HashMap<RunID,Run> rs, EventQueues rq, 
-			long start, AtomicInteger dp, HashMap<Double,Double> dFTimes,
-			boolean cr) {
+			long start, AtomicInteger dp, HashMap<Double,Double> dFTimes) {
 		
 		filename = f;
 		lastSec = last;
@@ -37,7 +34,5 @@ public abstract class EventDistributor implements Runnable {
 		startOfSimulation = start;
 		distributorProgress = dp;
 		distrFinishTimes = dFTimes;
-		
-		count_and_rate = cr;
 	}
 }
