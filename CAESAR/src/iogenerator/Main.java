@@ -44,8 +44,8 @@ public class Main {
 	 * 				OVERLAPPING CONTEXT WINDOWS, all 0s if context windows do not overlap
 	 * 12			shared : 1 for yes, 0 for no
 	 * 13			overlap length (sec)
-	 * 14			group number of overlapping windows
-	 * 15			group size
+	 * 14			group number of overlapping windows (number of groups of overlapping windows)
+	 * 15			group size (number of overlapping windows)
 	 */
 	public static void main (String[] args) { 
 		
@@ -67,7 +67,7 @@ public class Main {
 		
 		/*** OPTIMIZATION ***/
 		boolean optimized = args[1].equals("1");
-				
+						
 		/*** STATISTICS ***/
 		boolean count_and_rate = args[2].equals("1");
 		AtomicInteger total_exe_time = new AtomicInteger(0);

@@ -59,7 +59,7 @@ public class TimeDrivenScheduler extends Scheduler implements Runnable {
 				}}}
 				
 				/*** Schedule the current second ***/
-				if (number>-1) all_queries_all_runs(curr_sec, number);
+				if (number>-1) all_queries_all_runs(curr_sec,number);
 									
 				/*** If the stream is over, wait for acknowledgment of the previous transactions and terminate ***/				
 				if (curr_sec == lastSec) {	

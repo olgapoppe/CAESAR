@@ -17,13 +17,14 @@ public class ActivityMonitoring extends Transaction {
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
 	
+	boolean context_aware;
 	int query_number;
 
 	public ActivityMonitoring (Run r, ArrayList<PositionReport> eventList, 
 			HashMap<RunID,Run> rs, long start,
 			HashMap<Double,Double> distrFinishT, HashMap<Double,Double> schedStartT,
 			AtomicInteger tet, AtomicBoolean awf, AtomicBoolean tnf,
-			int qn) {
+			boolean ca, int qn) {
 		
 		super(eventList,rs,start,tet);
 		
@@ -35,6 +36,7 @@ public class ActivityMonitoring extends Transaction {
 		accidentWarningsFailed = awf;
 		tollNotificationsFailed = tnf;	
 		
+		context_aware = ca;
 		query_number = qn;
 	}
 	
@@ -48,7 +50,7 @@ public class ActivityMonitoring extends Transaction {
 			if (event == null) System.out.println("NULL EVENT!!!");
 			if (run == null) System.out.println("NULL RUN!!!" + event.toString());
 			
-			run.activityMonitoring(query_number, event, 0, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
+			run.activityMonitoring(context_aware, query_number, event, 0, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 			run.deleteVehicleSpeeds(event.min,event.id);	
 		}			
 		

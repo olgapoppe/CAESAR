@@ -38,7 +38,6 @@ public abstract class Scheduler implements Runnable {
 	long startOfSimulation;
 	boolean optimized;
 	AtomicInteger total_exe_time;
-	int query_number;
 	
 	AtomicBoolean accidentWarningsFailed;
 	AtomicBoolean tollNotificationsFailed;
@@ -355,7 +354,7 @@ public abstract class Scheduler implements Runnable {
 				if (!event_list.isEmpty()) {
 						
 					Run run = runs.get(runid);
-					return new ActivityMonitoring (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
+					return new ActivityMonitoring (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, optimized, query_number);
 					/*if (optimized) {
 						
 						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);

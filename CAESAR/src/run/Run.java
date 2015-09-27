@@ -901,7 +901,7 @@ public class Run {
 		}}		
 	}	
 	
-	public void activityMonitoring (int query_number, PositionReport event, double segWithAccAhead, long startOfSimulation, 
+	public void activityMonitoring (boolean context_aware, int query_number, PositionReport event, double segWithAccAhead, long startOfSimulation, 
 			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes,
 			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
@@ -927,15 +927,17 @@ public class Run {
 				new_speeds_per_min.add(event.spd);
 				existingVehicle.spds.put(event.min, new_speeds_per_min);			
 			}
-		}	
-		//System.out.println(event.toString() + " is executed " + query_number + " times.");
-		for (int i=1; i<=query_number; i++) {
-			avgSpd = getAvgSpdFor5Min(event.min, true, false);
-		}
-		//System.out.println("10 min from min: " + event.min + " to min: " + (event.min-10) + " avg spd: " + avgSpd);
+		}			
+		if (!context_aware || (event.pos == 5 || event.pos == 6 || event.pos == 20)) {
+			System.out.println(event.toString() + " is executed " + query_number + " times.");
+			for (int i=1; i<=query_number; i++) {
+				avgSpd = getAvgSpdFor5Min(event.min, true, false);
+			}
+			//System.out.println("10 min from min: " + event.min + " to min: " + (event.min-10) + " avg spd: " + avgSpd);
 			
-		TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
-		output.tollNotifications.add(tollNotification);			
+			TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
+			output.tollNotifications.add(tollNotification);	
+		}
 	}
 	
 	/**
