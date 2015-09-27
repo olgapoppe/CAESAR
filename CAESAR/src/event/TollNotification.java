@@ -27,7 +27,7 @@ public class TollNotification extends Event {
 	public TollNotification (PositionReport p, double a, double vehCount, 
 			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, long startOfSimulation, AtomicBoolean tnf) {
 		
-		super(0,p.sec,p.vid);	
+		super(0,p.sec,p.id);	
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
@@ -47,7 +47,7 @@ public class TollNotification extends Event {
 	public TollNotification (PositionReport p, double a, 
 			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, long startOfSimulation, AtomicBoolean tnf) {
 		
-		super(0,p.sec,p.vid);
+		super(0,p.sec,p.id);
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		avgSpd = a;
@@ -76,7 +76,7 @@ public class TollNotification extends Event {
 	public boolean equals (TollNotification other) {
 		return 	type == other.type &&
 				sec == other.sec &&
-				vid == other.vid &&
+				id == other.id &&
 				emit == other.emit &&
 				avgSpd == other.avgSpd &&
 				toll == other.toll;
@@ -87,7 +87,7 @@ public class TollNotification extends Event {
 	 */
 	public String toString () {
 		return new Double(type).intValue() + ","
-				+ new Double(vid).intValue() + ","
+				+ new Double(id).intValue() + ","
 				+ new Double(sec).intValue() + ","
 				+ emit + "," 
 				+ new Double(avgSpd).intValue() + ","

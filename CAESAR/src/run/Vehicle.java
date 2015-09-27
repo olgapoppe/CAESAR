@@ -34,7 +34,7 @@ public class Vehicle {
 					
 	public Vehicle (PositionReport e) {
 		
-		vid = e.vid;
+		vid = e.id;
 		
 		appearance_sec = e.sec;
 		sec = e.sec;

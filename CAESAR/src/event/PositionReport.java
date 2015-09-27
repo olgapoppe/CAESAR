@@ -58,27 +58,34 @@ public class PositionReport extends Event {
         return event;
 	}
 	
-	public boolean correctPositionReport() {
-		return type==0 && sec>=0 && vid>=0 && spd>=0 && xway>=0 && lane>=0 && dir>=0 && seg>=0 && pos>=0;
+	/** 
+	 * Return true if this position report is correct.
+	 * Return false otherwise.
+	 */
+	public boolean correctPositionReport () {
+		return type==0 && sec>=0 && id>=0 && spd>=0 && xway>=0 && lane>=0 && dir>=0 && seg>=0 && pos>=0;
 	}
 	
-	public boolean containedIn (ArrayList<TimeInterval> expensive_windows) {
-		for (TimeInterval i : expensive_windows) {
+	/** 
+	 * Return true if this position report is contained in the context window to be processed.
+	 * Return false otherwise.
+	 */
+	public boolean containedIn (ArrayList<TimeInterval> context_windows) {
+		for (TimeInterval i : context_windows) {
 			if (i.start <= sec && sec <= i.end) return true;
 		}		
 		return false;
 	}
 	
 	/**
-	 * Determine whether this position report is equal to the given position report.
-	 * 
+	 * Determine whether this position report is equal to the given position report. 
 	 * @param e	position report
 	 * @return boolean
 	 */	
 	public boolean equals (PositionReport e) {
 		return 	type == e.type &&	
 				sec == e.sec &&				
-				vid == e.vid &&
+				id == e.id &&
 				spd == e.spd &&
 				xway == e.xway &&
 				lane == e.lane &&
@@ -108,7 +115,7 @@ public class PositionReport extends Event {
 	public String toStringChangeXway(int newXway) {
 		return new Double(type).intValue() + ","
 				+ new Double(sec).intValue() + ","				
-				+ new Double(vid).intValue() + ","
+				+ new Double(id).intValue() + ","
 				+ new Double(spd).intValue() + ","
 				+ newXway + ","
 				+ new Double(lane).intValue() + ","
@@ -124,7 +131,7 @@ public class PositionReport extends Event {
 	public String toStringChangeSec(int s) {
 		return new Double(type).intValue() + ","
 				+ (new Double(sec).intValue()-s) + ","				
-				+ new Double(vid).intValue() + ","
+				+ new Double(id).intValue() + ","
 				+ new Double(spd).intValue() + ","
 				+ new Double(xway).intValue() + ","
 				+ new Double(lane).intValue() + ","
@@ -139,7 +146,7 @@ public class PositionReport extends Event {
 	public String toString() {
 		return "type: " + type + 
 				" sec: " + sec + 
-				" vid: " + vid + 
+				" vid: " + id + 
 				" spd: " + spd + 
 				" xway: " + xway + 
 				" lane: " + lane + 

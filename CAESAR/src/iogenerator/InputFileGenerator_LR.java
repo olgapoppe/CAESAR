@@ -11,7 +11,7 @@ import event.*;
  * Input file generator parses the input file and copies certain tuples to the output file.  
  * @author Olga Poppe
  */
-public class InputFileGenerator {
+public class InputFileGenerator_LR {
 	
 	/***
 	 * Generate input files

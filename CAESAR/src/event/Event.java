@@ -11,15 +11,15 @@ public abstract class Event {
 	
 	public double type;
 	public double sec;
-	public double vid;
+	public double id;
 	
 	public double totalProcessingTime;
 	
-	public Event (double t, double s, double v) {
+	public Event (double t, double s, double i) {
 		
 		type = t;
 		sec = s;
-		vid = v;
+		id = i;
 	}
 	/***
 	 * Print an error message if the latency constraint of 5 seconds is violated.

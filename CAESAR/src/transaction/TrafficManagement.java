@@ -58,7 +58,7 @@ public class TrafficManagement extends Transaction {
 			if (run == null) System.out.println("NULL RUN!!!" + event.toString());			
 						
 			// READ: If a new vehicle on a travel lane arrives, lookup accidents ahead
-			if (run.vehicles.get(event.vid) == null && event.lane < 4) {
+			if (run.vehicles.get(event.id) == null && event.lane < 4) {
 					
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) {
 						
@@ -81,6 +81,7 @@ public class TrafficManagement extends Transaction {
 				run.fake_collectGarbage(event.min);	// Has effect only when called for the first time for this event 	
 			}
 			// Avoid multiple storage of complex events due to replicated queries
+			//System.out.println("Size: " + (run.fake_output.tollNotifications.size() + run.fake_output.accidentWarnings.size()));
 			run.fake_output.tollNotifications.clear();
 			run.fake_output.accidentWarnings.clear();
 			

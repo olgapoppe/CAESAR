@@ -641,14 +641,14 @@ public class Run {
 		if (count_and_rate) output.update_positionreport_rates(runID, event.min);
 		
 		/************************************************* If the vehicle is new in the segment *************************************************/
-		if (vehicles.get(event.vid) == null) {
+		if (vehicles.get(event.id) == null) {
 			
 			// Update vehicles, vehCounts
 			Vehicle newVehicle = new Vehicle (event);
 			Vector<Double> new_speeds_per_min = new Vector<Double>();
 			new_speeds_per_min.add(event.spd);
 			newVehicle.spds.put(event.min,new_speeds_per_min);
-			vehicles.put(event.vid,newVehicle);    	   
+			vehicles.put(event.id,newVehicle);    	   
 
 			double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
 			vehCounts.put(next_min, new_count);
@@ -683,7 +683,7 @@ public class Run {
 			/************************************************* If the vehicle was in the segment before *************************************************/
 		} else {
 			// Get previous info about the vehicle
-			Vehicle existingVehicle = vehicles.get(event.vid);
+			Vehicle existingVehicle = vehicles.get(event.id);
 		
 			// Update vehCounts
 			// Update existingVehicle: time
@@ -719,7 +719,7 @@ public class Run {
 				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
 				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
 
-					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.id, event.sec);
 
 					if (stoppedVehicles.containsKey(accidentLocation)) {
 	
@@ -735,13 +735,13 @@ public class Run {
 					}}
 				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
 
-					StoppedVehicle stopped_vehicle = getStoppedVehicle(event.lane, event.pos, event.vid);
+					StoppedVehicle stopped_vehicle = getStoppedVehicle(event.lane, event.pos, event.id);
 					if (stopped_vehicle != null) stopped_vehicle.sec = event.sec;
 				}
 			} else { // Other position is reported
 	      					
 				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) {     				
-					setRemovalTime(event.vid, event.sec); 	
+					setRemovalTime(event.id, event.sec); 	
 					fromAccident(event, startOfSimulation, false);
 				}  
 				existingVehicle.count = 1;    			
@@ -767,14 +767,14 @@ public class Run {
 		fake_time.sec = event.sec;
 				
 		/************************************************* If the vehicle is new in the segment *************************************************/
-		if (vehicles.get(event.vid) == null) {
+		if (vehicles.get(event.id) == null) {
 			
 			// Update vehicles, vehCounts
 			Vehicle newVehicle = new Vehicle (event);
 			Vector<Double> new_speeds_per_min = new Vector<Double>();
 			new_speeds_per_min.add(event.spd);
 			newVehicle.spds.put(event.min,new_speeds_per_min);
-			fake_vehicles.put(event.vid,newVehicle);    	   
+			fake_vehicles.put(event.id,newVehicle);    	   
 
 			double new_count = vehCounts.containsKey(next_min) ? vehCounts.get(next_min)+1 : 1;
 			fake_vehCounts.put(next_min, new_count);
@@ -804,7 +804,7 @@ public class Run {
 			/************************************************* If the vehicle was in the segment before *************************************************/
 		} else {
 			// Get previous info about the vehicle
-			Vehicle existingVehicle = fake_vehicles.get(event.vid);
+			Vehicle existingVehicle = fake_vehicles.get(event.id);
 		
 			// Update vehCounts
 			// Update existingVehicle: time
@@ -840,7 +840,7 @@ public class Run {
 				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
 				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
 
-					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.id, event.sec);
 
 					if (stoppedVehicles.containsKey(accidentLocation)) {
 	
@@ -856,13 +856,13 @@ public class Run {
 					}}
 				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  {
 
-					StoppedVehicle stopped_vehicle = getStoppedVehicle(event.lane, event.pos, event.vid);
+					StoppedVehicle stopped_vehicle = getStoppedVehicle(event.lane, event.pos, event.id);
 					if (stopped_vehicle != null) stopped_vehicle.sec = stopped_vehicle.sec;
 				}
 			} else { // Other position is reported
 	      					
 				if (existingVehicle.count >= 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4) {     				
-					fake_setRemovalTime(event.vid, event.sec); 	
+					fake_setRemovalTime(event.id, event.sec); 	
 					fake_fromAccident(event, startOfSimulation, false);
 				}  
 				existingVehicle.count = 1;    			

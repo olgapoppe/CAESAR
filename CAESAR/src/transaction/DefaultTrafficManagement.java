@@ -57,7 +57,7 @@ public class DefaultTrafficManagement extends Transaction {
 			if (run == null) System.out.println("NULL RUN!!!" + event.toString());
 			
 			// READ: If a new vehicle on a travel lane arrives, lookup accidents ahead
-			if (run.vehicles.get(event.vid) == null && event.lane < 4) { // FI
+			if (run.vehicles.get(event.id) == null && event.lane < 4) { // FI
 								
 				if (event.min > run.time.minOfLastUpdateOfAccidentAhead) { // FI
 									
@@ -124,7 +124,7 @@ public class DefaultTrafficManagement extends Transaction {
 		// New car detection
 		runLookUp(event); // RL 3
 						
-		if (run.vehicles.get(event.vid) == null) { // FI
+		if (run.vehicles.get(event.id) == null) { // FI
 					
 			projection(event); // optional PR
 			event_derivation("NewCar",event); // optional ED
@@ -139,7 +139,7 @@ public class DefaultTrafficManagement extends Transaction {
 			new_speeds_per_min.add(event.spd); 			
 					
 			newVehicle.spds.put(event.min,new_speeds_per_min);
-			run.vehicles.put(event.vid,newVehicle); // HU  	   
+			run.vehicles.put(event.id,newVehicle); // HU  	   
 
 			// Update of vehCounts
 			runLookUp(event); // RL 5
@@ -208,14 +208,14 @@ public class DefaultTrafficManagement extends Transaction {
 		} else {	
 			// Old car detection
 			runLookUp(event); // RL 9
-			if (run.vehicles.get(event.vid) != null) { // FI				
+			if (run.vehicles.get(event.id) != null) { // FI				
 				projection(event); // optional PR
 				event_derivation("OldCar",event); // optional ED
 			}  
 				
 			// Update of existingVehicle: sec
 			runLookUp(event); // RL 18
-			Vehicle existingVehicle = run.vehicles.get(event.vid);
+			Vehicle existingVehicle = run.vehicles.get(event.id);
 			double sec2 = event.sec; // optional PR
 			existingVehicle.sec = event.sec; // TU
 					
@@ -229,7 +229,7 @@ public class DefaultTrafficManagement extends Transaction {
 			}
 			// Update of existingVehicle: sec
 			runLookUp(event); // RL 17
-			Vehicle vehicle = run.vehicles.get(event.vid); // optional PR
+			Vehicle vehicle = run.vehicles.get(event.id); // optional PR
 			double min2 = event.min; 
 			if (event.min > existingVehicle.min) { // FI					
 				existingVehicle.min = event.min; // TU
@@ -237,7 +237,7 @@ public class DefaultTrafficManagement extends Transaction {
 							
 			// Update of existingVehicle: spd, spds
 			runLookUp(event); // RL 10
-			Vehicle vehicle1 = run.vehicles.get(event.vid); // optional PR
+			Vehicle vehicle1 = run.vehicles.get(event.id); // optional PR
 			double min3 = event.min;
 			double spd = event.spd;
 			existingVehicle.spd = event.spd; // HU
@@ -264,20 +264,20 @@ public class DefaultTrafficManagement extends Transaction {
 						
 				// Update count of the existing vehicle
 				runLookUp(event); // RL 21
-				Vehicle vehicle2 = run.vehicles.get(event.vid); // optional PR
+				Vehicle vehicle2 = run.vehicles.get(event.id); // optional PR
 				double new_count = existingVehicle.count;
 				existingVehicle.count++; // HU
 						
 				// Update stopped vehicles
 				runLookUp(event); // RL 22
 				HashMap<AccidentLocation, Vector<StoppedVehicle>> stoppedVeh = run.stoppedVehicles; // optional PR
-				Vehicle vehicle3 = run.vehicles.get(event.vid); 
+				Vehicle vehicle3 = run.vehicles.get(event.id); 
 
 				// Add new stopped vehicle
 				AccidentLocation accidentLocation = new AccidentLocation (event.lane, event.pos);
 				if (existingVehicle.count == 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
 
-					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.vid, event.sec);
+					StoppedVehicle stopped_vehicle = new StoppedVehicle(event.id, event.sec);
 
 					if (run.stoppedVehicles.containsKey(accidentLocation)) {
 						
@@ -303,9 +303,9 @@ public class DefaultTrafficManagement extends Transaction {
 				runLookUp(event); // RL 24
 				if (existingVehicle.count > 4 && existingVehicle.lane > 0 && existingVehicle.lane < 4)  { // FI
 								
-					Vehicle vehicle4 = run.vehicles.get(event.vid); // optional PR
+					Vehicle vehicle4 = run.vehicles.get(event.id); // optional PR
 					double sec = event.sec;
-					StoppedVehicle stopped_vehicle = run.getStoppedVehicle(event.lane, event.pos, event.vid);
+					StoppedVehicle stopped_vehicle = run.getStoppedVehicle(event.lane, event.pos, event.id);
 					if (stopped_vehicle != null) stopped_vehicle.sec = event.sec; // HU
 				}
 			} else { // Other position is reported
@@ -321,9 +321,9 @@ public class DefaultTrafficManagement extends Transaction {
 						
 					// Set vehicle removal time
 					runLookUp(event); // RL 25
-					Vehicle vehicle2 = run.vehicles.get(event.vid); // optional PR
+					Vehicle vehicle2 = run.vehicles.get(event.id); // optional PR
 					double sec = event.sec;
-					run.setRemovalTime(event.vid, event.sec); // HU	
+					run.setRemovalTime(event.id, event.sec); // HU	
 							
 					// Accident clearance detection
 					runLookUp(event); // RL 27
@@ -333,7 +333,7 @@ public class DefaultTrafficManagement extends Transaction {
 					run.fromAccident(event, startOfSimulation, false); // FI, HU
 				}  
 				runLookUp(event); // RL 26
-				Vehicle vehicle2 = run.vehicles.get(event.vid); // optional PR
+				Vehicle vehicle2 = run.vehicles.get(event.id); // optional PR
 				double lane = event.lane;
 				double pos = event.pos;
 				existingVehicle.count = 1; // HU   			
@@ -417,7 +417,7 @@ public class DefaultTrafficManagement extends Transaction {
 		double type = event.type; 
 		double sec = event.sec;
 		double min = event.min;
-		double vid = event.vid;
+		double vid = event.id;
 		double spd = event.spd;
 		double xway = event.xway;
 		double lane = event.lane;

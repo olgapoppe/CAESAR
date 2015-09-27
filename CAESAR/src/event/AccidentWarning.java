@@ -25,7 +25,7 @@ public class AccidentWarning extends Event {
 	public AccidentWarning (PositionReport p, double s, 
 			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes, long startOfSimulation, AtomicBoolean awf) {
 		
-		super(1,p.sec,p.vid);	
+		super(1,p.sec,p.id);	
 		
 		emit = (System.currentTimeMillis() - startOfSimulation)/new Double(1000);
 		seg = s;
@@ -53,7 +53,7 @@ public class AccidentWarning extends Event {
 	public boolean equals (AccidentWarning other) {
 		return 	type == other.type &&
 				sec == other.sec &&
-				vid == other.vid &&
+				id == other.id &&
 				emit == other.emit &&
 				seg == other.seg;
 	}
@@ -65,7 +65,7 @@ public class AccidentWarning extends Event {
 		return new Double(type).intValue() + ","
 				+ new Double(sec).intValue() + ","
 				+ emit + "," 
-				+ new Double(vid).intValue() + ","
+				+ new Double(id).intValue() + ","
 				+ new Double(seg).intValue() + "\n";			
 	}
 }

@@ -92,13 +92,13 @@ public class OutputFileGenerator {
 			
 			// Events processed and stored by runs
 			double max_latency = 0;
-			//double sum = 0;
-			//double count = 0;
+			double sum = 0;
+			double count = 0;
 			
-			//int real_size = 0;
-			//int fake_size = 0;
-			//int real_complex_event_number = 0;
-			//int fake_complex_event_number = 0;
+			int real_size = 0;
+			int fake_size = 0;
+			int real_complex_event_number = 0;
+			int fake_complex_event_number = 0;
 			
 			Set<RunID> runids = runs.keySet();
 				
@@ -117,13 +117,13 @@ public class OutputFileGenerator {
 				max_latency = run.output.writeTollNotifications2File(tollalerts_output, max_latency);
 				max_latency = run.output.writeAccidentWarnings2File(accidentalerts_output, max_latency);	
 				
-				//sum += run.output.sum;
-				//count += run.output.count;
+				sum += run.output.sum;
+				count += run.output.count;
 				
-				//real_size += run.getRealSize();
-				//fake_size += run.getFakeSize();
-				//real_complex_event_number += run.output.getSize();
-				//fake_complex_event_number += run.fake_output.getSize();
+				real_size += run.getRealSize();
+				fake_size += run.getFakeSize();
+				real_complex_event_number += run.output.getSize();
+				fake_complex_event_number += run.fake_output.getSize();
 	     		
 				/*run.write2FileEventStorage(eventstorage_output);
 	     		run.output.write2FileEventProcessingTimes(eventProcessingTimes_output);
@@ -146,9 +146,11 @@ public class OutputFileGenerator {
 							
 			String end =	//"\nTotal execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
 							//"\nAvg latency: " + avg_latency +
-							"--- Max latency: " + max_latency + " ---";							
-							//"\nReal size: " + real_size +
-							//"\nReal complex event number: " + real_complex_event_number;
+							"--- Max latency: " + max_latency + " ---" +						
+							"\nReal size: " + real_size +
+							"\nReal complex event number: " + real_complex_event_number +
+							"\nFake size: " + fake_size +
+							"\nFake complex event number: " + fake_complex_event_number;
 			results_output.write(start);
 			results_output.write(end);
 			System.out.println(end);
