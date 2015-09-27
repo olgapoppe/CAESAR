@@ -340,7 +340,7 @@ public class DefaultTrafficManagement extends Transaction {
 				existingVehicle.lane = event.lane;
 				existingVehicle.pos = event.pos;
 		}}
-		run.collectGarbage(event.min,false);		
+		run.collectGarbage(event.min);		
 	}
 	
 	/**

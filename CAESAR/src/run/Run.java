@@ -553,14 +553,13 @@ public class Run {
 	 *  All other vehicles are deleted.
 	 * @param new_min	current processing minute of this run
 	 */
-	public void deleteVehicles (double new_min, boolean double_length) {
-		int j = (double_length) ? 2 : 1;
+	public void deleteVehicles (double new_min) {
 		Set<Double> vids = vehicles.keySet();            			
 		/*** Get vehicles to delete ***/
 		Vector<Double> vehicles2delete = new Vector<Double>();
 		for (Double vid : vids) {
 			Vehicle vehicle = vehicles.get(vid);				
-			if (vehicle.min < new_min-(5*j)) vehicles2delete.add(vid);				 
+			if (vehicle.min < new_min-5) vehicles2delete.add(vid);				 
 		}
 		/*** Delete these vehicles ***/
 		for (Double vid : vehicles2delete) {
@@ -583,17 +582,41 @@ public class Run {
 	}
 	
 	/**
+	 *  Vehicles that sent a report during the last 5 minutes are kept.
+	 *  All other vehicles are deleted.
+	 * @param new_min	current processing minute of this run
+	 */
+	public void deleteVehicleSpeeds (double new_min, Double id) {
+		/*** Get vehicle and the minutes for which speed is saved ***/
+		Vehicle v = vehicles.get(id);
+		Set<Double> mins = v.spds.keySet();
+		
+		/*** Get minutes to delete ***/
+		Vector<Double> mins2delete = new Vector<Double>();
+		for (Double m : mins) {
+			if (m < new_min-5) {
+				mins2delete.add(m);
+				//System.out.println(id + " deletes values " + v.spds.get(m).toString() + " for min " + m + " at min " + new_min);
+			}
+		}
+		/*** Delete these minutes ***/
+		for (Double m : mins2delete) {
+			v.spds.remove(m);
+		}		
+	}
+	
+	/**
 	 * Delete expired objects and values
 	 * @param new_min	current processing minute of this run 
 	 */
-	public void collectGarbage (double new_min, boolean double_length) {
+	public void collectGarbage (double new_min) {
 		if (time.minOfLastGarbageCollection < new_min-2) {
 	 			
 	 		//long beginOfDeletion = System.currentTimeMillis();
 	 			
  			deleteVehCounts(new_min);
  			deleteAvgSpds(new_min);
- 			deleteVehicles(new_min, double_length);
+ 			deleteVehicles(new_min);
  			time.minOfLastGarbageCollection = new_min;	
 	 			
  			//long durationOfDeletion = System.currentTimeMillis() - beginOfDeletion;
@@ -907,7 +930,7 @@ public class Run {
 		}	
 		//System.out.println(event.toString() + " is executed " + query_number + " times.");
 		for (int i=1; i<=query_number; i++) {
-			avgSpd = getAvgSpdFor5Min(event.min, true, true);
+			avgSpd = getAvgSpdFor5Min(event.min, true, false);
 		}
 		//System.out.println("10 min from min: " + event.min + " to min: " + (event.min-10) + " avg spd: " + avgSpd);
 			

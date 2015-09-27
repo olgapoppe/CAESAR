@@ -49,7 +49,7 @@ public class ActivityMonitoring extends Transaction {
 			if (run == null) System.out.println("NULL RUN!!!" + event.toString());
 			
 			run.activityMonitoring(query_number, event, 0, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-			run.collectGarbage(event.min,true);	
+			run.deleteVehicleSpeeds(event.min,event.id);	
 		}			
 		
 		// Count down the number of transactions
