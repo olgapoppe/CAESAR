@@ -929,7 +929,7 @@ public class Run {
 			}
 		}			
 		if (!context_aware || (event.pos == 5 || event.pos == 6 || event.pos == 20)) {
-			System.out.println(event.toString() + " is executed " + query_number + " times.");
+			//System.out.println(event.toString() + " is executed " + query_number + " times.");
 			for (int i=1; i<=query_number; i++) {
 				avgSpd = getAvgSpdFor5Min(event.min, true, false);
 			}
