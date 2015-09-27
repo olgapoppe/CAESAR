@@ -234,17 +234,15 @@ public abstract class Scheduler implements Runnable {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();	
 		
-		RunID runid1 = new RunID(101,101,101);
-		Transaction t1 = one_query_one_run(sec, runid1, query_number);
-		if (t1!=null) transactions.add(t1);
+		int firstID = 101;
+		int lastID = 114;
 		
-		RunID runid2 = new RunID(102,102,102);
-		Transaction t2 = one_query_one_run(sec, runid2, query_number);
-		if (t2!=null) transactions.add(t2);
+		for (int i=firstID; i<=lastID; i++) {
 		
-		RunID runid3 = new RunID(103,103,103);
-		Transaction t3 = one_query_one_run(sec, runid3, query_number);
-		if (t3!=null) transactions.add(t3);		
+			RunID runid = new RunID(i);
+			Transaction t = one_query_one_run(sec, runid, query_number);
+			if (t!=null) transactions.add(t);		
+		}		
 				
 		/*for (int xway=0; xway<=max_xway; xway++) {
 			

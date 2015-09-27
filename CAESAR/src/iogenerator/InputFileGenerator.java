@@ -27,7 +27,7 @@ public class InputFileGenerator {
 	 * 				if select tuples: input file, output file, direction
 	 * 				if copy n tuples: input file, output file, n
 	 * 				if copy tuples from second to second: input file, output file, second from, second to
-	 * 				if map from other event type: input file, output file, identifier
+	 * 				if map from other event type: input file, output file, person identifier
 	 */
 	public static void main (String[] args) {
 		

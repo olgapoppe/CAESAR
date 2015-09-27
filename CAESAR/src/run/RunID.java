@@ -11,9 +11,15 @@ public class RunID {
 	public double seg;
 	
 	public RunID (double x, double d, double s) {		
-		this.xway = x;
-		this.dir = d;
-		this.seg = s;
+		xway = x;
+		dir = d;
+		seg = s;
+	}
+	
+	public RunID (double i) {		
+		xway = i;
+		dir = i;
+		seg = i;
 	}
 	
 	/**
