@@ -902,14 +902,14 @@ public class Run {
 				new_speeds_per_min.add(event.spd);
 				existingVehicle.spds.put(event.min, new_speeds_per_min);			
 			}
-				
-			for (int i=1; i<=query_number; i++) {
-				avgSpd = getAvgSpdFor5Min(event.min, true);
-			}
+		}	
+		//System.out.println(event.toString() + " is executed " + query_number + " times.");
+		for (int i=1; i<=query_number; i++) {
+			avgSpd = getAvgSpdFor5Min(event.min, true);
+		}
 			
-			TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
-			output.tollNotifications.add(tollNotification);
-		}		
+		TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
+		output.tollNotifications.add(tollNotification);			
 	}
 	
 	/**
