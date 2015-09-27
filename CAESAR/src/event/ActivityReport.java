@@ -33,27 +33,39 @@ public class ActivityReport extends Event {
 	 * @param line	
 	 * @return activity report
 	 */
-	public static ActivityReport parse (String line, boolean pid_given) {
+	public static ActivityReport parse_original_file (String line) {
 		
-		String[] values = (pid_given) ? line.split(",") : line.split(" ");
+		String[] values = line.split(" ");
 		
 		double new_sec = Double.parseDouble(values[0]);
         double new_min = Math.floor(new_sec/60) + 1;
         
-        ActivityReport event;
-        if (pid_given) {
-        	
-        	double new_pid = Double.parseDouble(values[1]);
-        	double new_act = Double.parseDouble(values[2]);
-        	double new_hr = Double.parseDouble(values[3]);
-        	event = new ActivityReport(new_sec, new_min, new_pid, new_act, new_hr);
-        	
-        } else {
-        	double new_act = Double.parseDouble(values[1]);
-        	String new_hr_string = values[2];
-        	double new_hr = new_hr_string.equals("NaN") ? -1 : Double.parseDouble(new_hr_string);    	    	    	
-        	event = new ActivityReport(new_sec, new_min, new_act, new_hr); 
-        }
+        double new_act = Double.parseDouble(values[1]);
+        String new_hr_string = values[2];
+        double new_hr = new_hr_string.equals("NaN") ? -1 : Double.parseDouble(new_hr_string);    	    	    	
+        ActivityReport event = new ActivityReport(new_sec, new_min, new_act, new_hr); 
+        
+    	//System.out.println(event.toString());    	
+        return event;
+	}
+	
+	/**
+	 * Parse the given line and construct an activity report.
+	 * @param line	
+	 * @return activity report
+	 */
+	public static ActivityReport parse (String line) {
+		
+		String[] values = line.split(",");
+		
+		double new_sec = Double.parseDouble(values[0]);
+        double new_min = Math.floor(new_sec/60) + 1;
+        
+        double new_pid = Double.parseDouble(values[1]);
+        double new_act = Double.parseDouble(values[2]);
+        double new_hr = Double.parseDouble(values[3]);
+        ActivityReport event = new ActivityReport(new_sec, new_min, new_pid, new_act, new_hr);        	
+        
     	//System.out.println(event.toString());    	
         return event;
 	}
