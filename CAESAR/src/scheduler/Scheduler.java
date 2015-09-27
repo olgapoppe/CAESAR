@@ -232,9 +232,21 @@ public abstract class Scheduler implements Runnable {
 	 */
 	public ArrayList<Transaction> one_query_all_runs (double sec, int query_number) {
 		
-		ArrayList<Transaction> transactions = new ArrayList<Transaction>();		
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();	
+		
+		RunID runid1 = new RunID(101,101,101);
+		Transaction t1 = one_query_one_run(sec, runid1, query_number);
+		if (t1!=null) transactions.add(t1);
+		
+		RunID runid2 = new RunID(102,102,102);
+		Transaction t2 = one_query_one_run(sec, runid2, query_number);
+		if (t2!=null) transactions.add(t2);
+		
+		RunID runid3 = new RunID(103,103,103);
+		Transaction t3 = one_query_one_run(sec, runid3, query_number);
+		if (t3!=null) transactions.add(t3);		
 				
-		for (int xway=0; xway<=max_xway; xway++) {
+		/*for (int xway=0; xway<=max_xway; xway++) {
 			
 			for (double seg=0; seg<=99; seg++) {
 				
@@ -247,7 +259,7 @@ public abstract class Scheduler implements Runnable {
 					RunID runid1 = new RunID(xway,1,seg); 
 					Transaction t1 = one_query_one_run(sec, runid1, query_number);
 					if (t1!=null) transactions.add(t1);
-		}}}
+		}}}*/
 		return transactions;
 	}	
 	
@@ -345,12 +357,14 @@ public abstract class Scheduler implements Runnable {
 				if (!event_list.isEmpty()) {
 						
 					Run run = runs.get(runid);
-					if (optimized) {
+					return new ActivityMonitoring (run, event_list, runs, startOfSimulation, total_exe_time, query_number);
+					/*if (optimized) {
 						
 						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed);
-				}}				
+					}*/
+				}				
 		}}
 		return null;
 	}
