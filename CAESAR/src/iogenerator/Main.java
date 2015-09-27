@@ -134,8 +134,8 @@ public class Main {
 										"\nWindow number: " + window_number);
 				
 				expensive_windows = (window_distribution == 0) ?
-									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number) :
-									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda);								
+									WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number, query_number) :
+									WindowDistribution.getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda, query_number);								
 			}
 		/*** OVERLAPPING WINDOWS ***/
 		} else {			

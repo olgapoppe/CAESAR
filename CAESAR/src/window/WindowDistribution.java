@@ -54,7 +54,7 @@ public class WindowDistribution {
 								"\nWindow length: " + window_length + 
 								"\nWindow number: " + window_number);
 			
-			ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number);
+			ArrayList<TimeInterval> timeIntervals = getTimeIntervalsForUniformDistribution(lastSec, window_length, window_number, query_number);
 			int count = 1;
 			for (TimeInterval i : timeIntervals) {
 				String s = i.toString();
@@ -76,7 +76,7 @@ public class WindowDistribution {
 			
 			int count_1 = 0;
 			while (count_1 < 5) {
-				System.out.println(getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda));
+				System.out.println(getTimeIntervalsForPoissonDistribution(lastSec, window_length, window_number, lambda, query_number));
 				count_1++;
 			}
 		} else {
@@ -99,7 +99,7 @@ public class WindowDistribution {
 		}}
 	}
 	
-	public static ArrayList<TimeInterval> getTimeIntervalsForPoissonDistribution (double lastSec, int window_length, int window_number, int lambda) {
+	public static ArrayList<TimeInterval> getTimeIntervalsForPoissonDistribution (double lastSec, int window_length, int window_number, int lambda, int query_number) {
 		
 		/*** Get expensive windows and sort them ***/
 		ArrayList<Integer> expensive_windows = getPoissonNumbers(lastSec, window_length, window_number, lambda);
@@ -113,7 +113,7 @@ public class WindowDistribution {
 			double start = new Double(expensive_window * window_length + 1).intValue();
 			double end = new Double((expensive_window + 1) * window_length).intValue();
 			
-			TimeInterval i = new TimeInterval(start,end);
+			TimeInterval i = new TimeInterval(start,end,query_number);
 			results.add(i);			
 		}			
 		return results;
@@ -146,7 +146,7 @@ public class WindowDistribution {
 		return k - 1;
 	}
 	
-	public static ArrayList<TimeInterval> getTimeIntervalsForUniformDistribution (double lastSec, int window_length, int window_number) {
+	public static ArrayList<TimeInterval> getTimeIntervalsForUniformDistribution (double lastSec, int window_length, int window_number, int query_number) {
 		 	
 		/*** Get cheap window length ***/
 		double expensive_time = window_number * window_length;
@@ -167,7 +167,7 @@ public class WindowDistribution {
 				System.err.println("Data bounds are exceeded by the time interval [" + start + "," + end + "]!");
 				break;
 			} else {
-				TimeInterval i = new TimeInterval(start,end);
+				TimeInterval i = new TimeInterval(start,end,query_number);
 				results.add(i);
 			}		
 			window_bound = end + 1 + cheap_window_length;
@@ -180,7 +180,7 @@ public class WindowDistribution {
 		
 		ArrayList<TimeInterval> results = new ArrayList<TimeInterval>();
 		
-		ArrayList<TimeInterval> first_expensive_windows_per_group = WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, group_number);
+		ArrayList<TimeInterval> first_expensive_windows_per_group = WindowDistribution.getTimeIntervalsForUniformDistribution(lastSec, window_length, group_number, query_number);
 		
 		/*** Windows overlap completely ***/
 		if (window_length == overlap_length) {
