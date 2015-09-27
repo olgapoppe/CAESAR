@@ -130,7 +130,7 @@ public class InputFileGenerator_PA {
 			while (input.hasNextLine()) {         	
         			
 				eventString = input.nextLine();
-				ActivityReport event = ActivityReport.parse(eventString);
+				ActivityReport event = ActivityReport.parse(eventString, false);
 				
 				count++;
 				output.write(event.toStringChangePid(pid) + "\n");            	            	            	         	
@@ -146,7 +146,7 @@ public class InputFileGenerator_PA {
 	 */
 	public static void mergeFiles (String inputfilename1, String inputfilename2, String outputfilename) {
 		
-		int lastSec = 10784;
+		int lastSec = 4475;
 		Scanner input1 = null;
 		Scanner input2 = null;
 		try {		
@@ -182,8 +182,8 @@ public class InputFileGenerator_PA {
 		
 		String eventString1 = input1.nextLine();
 		String eventString2 = input2.nextLine();
-		PositionReport event1 = PositionReport.parse(eventString1);
-		PositionReport event2 = PositionReport.parse(eventString2);
+		ActivityReport event1 = ActivityReport.parse(eventString1,true);
+		ActivityReport event2 = ActivityReport.parse(eventString2,true);
 		double curr_sec = 0;
 		int count = 0; 
 		
@@ -201,7 +201,7 @@ public class InputFileGenerator_PA {
 					// Reset event1
 					if (input1.hasNextLine()) {
 						eventString1 = input1.nextLine();
-						event1 = PositionReport.parse(eventString1);
+						event1 = ActivityReport.parse(eventString1,true);
 					} else {
 						event1 = null;
 					}
@@ -216,7 +216,7 @@ public class InputFileGenerator_PA {
 					// Reset event2
 					if (input2.hasNextLine()) {
 						eventString2 = input2.nextLine();
-						event2 = PositionReport.parse(eventString2);
+						event2 = ActivityReport.parse(eventString2,true);
 					} else {
 						event2 = null;
 					}
