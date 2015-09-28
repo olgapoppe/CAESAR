@@ -905,30 +905,32 @@ public class Run {
 			HashMap<Double,Double> distrFinishTimes, HashMap<Double,Double> schedStartTimes,
 			AtomicBoolean accidentWarningsFailed, AtomicBoolean tollNotificationsFailed) {
 		
-		// create new vehicle
-		if (vehicles.get(event.id) == null) {
-			
-			Vehicle new_vehicle = new Vehicle(event);	
-			vehicles.put(event.id,new_vehicle);
-		} 
-		
-		// save speeds and compute their average
-		if (event.spd > 0) {			
-					
-			Vehicle existingVehicle = vehicles.get(event.id);
-			
-			if (existingVehicle.spds.containsKey(event.min)) {    
-
-				existingVehicle.spds.get(event.min).add(event.spd);    			
- 				
-			} else {             					
-	
-				Vector<Double> new_speeds_per_min = new Vector<Double>();
-				new_speeds_per_min.add(event.spd);
-				existingVehicle.spds.put(event.min, new_speeds_per_min);			
-			}
-		}			
 		if (!context_aware || event.pos == 20) {
+			
+			// create new vehicle
+			if (vehicles.get(event.id) == null) {
+			
+				Vehicle new_vehicle = new Vehicle(event);	
+				vehicles.put(event.id,new_vehicle);
+			} 
+		
+			// save speeds and compute their average
+			if (event.spd > 0) {			
+					
+				Vehicle existingVehicle = vehicles.get(event.id);
+			
+				if (existingVehicle.spds.containsKey(event.min)) {    
+
+					existingVehicle.spds.get(event.min).add(event.spd);    			
+ 				
+				} else {             					
+	
+					Vector<Double> new_speeds_per_min = new Vector<Double>();
+					new_speeds_per_min.add(event.spd);
+					existingVehicle.spds.put(event.min, new_speeds_per_min);			
+				}
+			}			
+		
 			//System.out.println(event.toString() + " is executed " + query_number + " times.");
 			for (int i=1; i<=query_number; i++) {
 				avgSpd = getAvgSpdFor5Min(event.min, true, false);
@@ -937,6 +939,8 @@ public class Run {
 			
 			TollNotification tollNotification = new TollNotification(event, avgSpd, distrFinishTimes, schedStartTimes, startOfSimulation, tollNotificationsFailed);	
 			output.tollNotifications.add(tollNotification);	
+			
+			deleteVehicleSpeeds(event.min,event.id);
 		}
 	}
 	

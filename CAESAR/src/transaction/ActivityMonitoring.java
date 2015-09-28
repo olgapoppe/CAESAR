@@ -50,8 +50,7 @@ public class ActivityMonitoring extends Transaction {
 			if (event == null) System.out.println("NULL EVENT!!!");
 			if (run == null) System.out.println("NULL RUN!!!" + event.toString());
 			
-			run.activityMonitoring(context_aware, query_number, event, 0, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
-			run.deleteVehicleSpeeds(event.min,event.id);	
+			run.activityMonitoring(context_aware, query_number, event, 0, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed);	
 		}			
 		
 		// Count down the number of transactions
