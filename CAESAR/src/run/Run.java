@@ -928,7 +928,7 @@ public class Run {
 				existingVehicle.spds.put(event.min, new_speeds_per_min);			
 			}
 		}			
-		if (!context_aware || (event.pos == 5 || event.pos == 6 || event.pos == 20)) {
+		if (!context_aware || event.pos == 20) {
 			//System.out.println(event.toString() + " is executed " + query_number + " times.");
 			for (int i=1; i<=query_number; i++) {
 				avgSpd = getAvgSpdFor5Min(event.min, true, false);
