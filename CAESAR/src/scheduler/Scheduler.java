@@ -12,7 +12,6 @@ import run.*;
 import transaction.*;
 import distributor.*;
 
-
 /**
  * A scheduler iterates over run task queues, picks events from them and 
  * submits them to the thread pool for execution.
@@ -233,7 +232,7 @@ public abstract class Scheduler implements Runnable {
 		
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();	
 		
-		int firstID = 101;
+		/*int firstID = 101;
 		int lastID = 114;
 		
 		for (int i=firstID; i<=lastID; i++) {
@@ -241,9 +240,9 @@ public abstract class Scheduler implements Runnable {
 			RunID runid = new RunID(i);
 			Transaction t = one_query_one_run(sec, runid, query_number);
 			if (t!=null) transactions.add(t);		
-		}		
+		}*/		
 				
-		/*for (int xway=0; xway<=max_xway; xway++) {
+		for (int xway=0; xway<=max_xway; xway++) {
 			
 			for (double seg=0; seg<=99; seg++) {
 				
@@ -256,7 +255,7 @@ public abstract class Scheduler implements Runnable {
 					RunID runid1 = new RunID(xway,1,seg); 
 					Transaction t1 = one_query_one_run(sec, runid1, query_number);
 					if (t1!=null) transactions.add(t1);
-		}}}*/
+		}}}
 		return transactions;
 	}	
 	
@@ -354,13 +353,13 @@ public abstract class Scheduler implements Runnable {
 				if (!event_list.isEmpty()) {
 						
 					Run run = runs.get(runid);
-					return new ActivityMonitoring (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, optimized, query_number);
-					/*if (optimized) {
+					//return new ActivityMonitoring (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, optimized, query_number);
+					if (optimized) {
 						
 						return new TrafficManagement (run, event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed, query_number);
 					} else {
 						return new DefaultTrafficManagement (event_list, runs, startOfSimulation, distrFinishTimes, schedStartTimes, total_exe_time, accidentWarningsFailed, tollNotificationsFailed);
-					}*/
+					}
 				}				
 		}}
 		return null;

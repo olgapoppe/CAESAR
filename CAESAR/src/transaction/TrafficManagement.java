@@ -74,8 +74,6 @@ public class TrafficManagement extends Transaction {
 			//System.out.println("Execute event " + event.toString() + " " + query_number + " times.");	
 			
 			// Query replication
-			//try { Thread.sleep(query_number); } catch (InterruptedException e) { e.printStackTrace(); }
-			
 			for (int i=1; i<query_number; i++) {			
 				run.fake_trafficManagement(event, segWithAccAhead, startOfSimulation, distrFinishTimes, schedStartTimes, accidentWarningsFailed, tollNotificationsFailed); 	
 				run.fake_collectGarbage(event.min);	 	
