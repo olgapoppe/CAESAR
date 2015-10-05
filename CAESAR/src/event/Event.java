@@ -34,7 +34,8 @@ public abstract class Event {
 		/*System.out.println("Delay 1: " + (schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec)) + 
 				" Delay 2: " + (p.schedulerTime - p.distributorTime));*/
 		
-		if (schedStartTimes.containsKey(p.sec) && distrFinishTimes.containsKey(p.sec)) {
+		if (schedStartTimes.containsKey(p.sec) && schedStartTimes.get(p.sec)!=null && 
+			distrFinishTimes.containsKey(p.sec) && distrFinishTimes.get(p.sec)!=null) {
 			
 			double delay = schedStartTimes.get(p.sec) - distrFinishTimes.get(p.sec);
 			totalProcessingTime =  emit - p.distributorTime - delay;
