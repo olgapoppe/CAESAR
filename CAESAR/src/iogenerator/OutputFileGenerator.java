@@ -132,7 +132,7 @@ public class OutputFileGenerator {
 	     		total_garbageCollectionTime += run.time.garbageCollectionTime;
 	     		total_priorityMaintenanceTime += run.time.priorityMaintenanceTime;*/
 	     	}
-			//double avg_latency = new Double(sum)/new Double(count);
+			double avg_latency = new Double(sum)/new Double(count);
 			
 			String start = 	"\nMax xway: " + max_xway + 
 							"\nLast xway is two-directional: " + both_dirs +
@@ -145,8 +145,8 @@ public class OutputFileGenerator {
 							"\nQuery replications: " + query_number;							
 							
 			String end =	//"\nTotal execution time in seconds: " + (total_exe_time.get()/new Double(1000)) +
-							//"\nAvg latency: " + avg_latency +
-							"--- Max latency: " + max_latency + " ---" +						
+							"\nAvg latency: " + avg_latency +
+							"\n--- Max latency: " + max_latency + " ---" +						
 							"\nReal size: " + real_size +
 							"\nReal complex event number: " + real_complex_event_number +
 							"\nFake size: " + fake_size +

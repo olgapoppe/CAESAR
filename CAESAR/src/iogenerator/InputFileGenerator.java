@@ -22,6 +22,7 @@ public class InputFileGenerator {
 	 * 						5 for copy events from second to second
 	 * 						6 for map from other event type
 	 * 						7 for count events with a given attribute value 
+	 * 						8 for special input file
 	 * 	path : src/input/ or ../../input/ or ../../../Dropbox/LR/InAndOutput/10xways/
 	 * 	if clean file: input file, output file, xway
 	 * 	if merge files: first input file, second input file, output file, last second
@@ -29,7 +30,8 @@ public class InputFileGenerator {
 	 * 	if copy n events: input file, output file, n
 	 * 	if copy events from second to second: input file, output file, second from, second to
 	 * 	if map from other event type: input file, output file, person identifier
-	 * 	if count events: input file, attribute value			
+	 * 	if count events: input file, attribute value
+	 *  if special input file: input file and output file			
 	 */
 	public static void main (String[] args) {
 		
@@ -107,6 +109,14 @@ public class InputFileGenerator {
 			System.out.println("Count the number of events with value " + value + " in the file " + inputfile);
 			oneInput(inputfile,value);
 		}
+		/*** Create special input file ***/
+		if (action == 8) {
+			
+			String inputfile = path + args[2];
+			String outputfile = path + args[3];
+			System.out.println("Create special input file " + outputfile + " from the file " + inputfile);
+			oneInputOneOutput(5,inputfile,outputfile,0,0);
+		}
 		System.out.println("Done!");
 	}
 	
@@ -146,8 +156,11 @@ public class InputFileGenerator {
             if (choice == 3) {
             	copyEventsFromSecToSec(input,output,n,to);
             } else {
+            if (choice == 4) {
             	changeEventType(input,output,n);
-            }}}}
+            } else {
+            	createSpecialInputFile(input,output);
+            }}}}}
 	        /*** Close the files ***/       		
 	       	input.close();       		       		
 	       	output.close();
@@ -408,4 +421,28 @@ public class InputFileGenerator {
 		}		
 		System.out.println("Total count: " + total_count + " Count: " + count + " Percentage: " + ((count*100)/total_count + "%"));
 	}
+	
+	/***
+	 * Copy position reports from input to output and change their xway to the given value 
+	 * @param input
+	 * @param output
+	 */
+	public static void createSpecialInputFile (Scanner input, BufferedWriter output) {
+		
+		String eventString = "";
+		int count = 0; 
+		try {
+			while (input.hasNextLine()) {         	
+        			
+				eventString = input.nextLine();
+				PositionReport event = PositionReport.parse(eventString);
+				
+				if (event.correctPositionReport()) {
+					
+					count++;
+					output.write(event.getJsonRepresentaion(count) + "\n");            	            	            	         	
+			}}			
+		} catch (IOException e) { System.err.println(e); }
+		System.out.println("Count: " + count + " Last event: " + eventString);
+	}	
 }

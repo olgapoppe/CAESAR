@@ -141,6 +141,19 @@ public class PositionReport extends Event {
 	}	
 	
 	/** 
+	 * Print this position report to file in json notation
+	 * @param new xway
+	 */
+	public String getJsonRepresentaion(int count) {
+		return "{\"Name\":\"ActivityReport" +
+				"\", \"activity\":\"" + new Double(pos).intValue() +
+				"\", \"pid\":\"" + new Double(id).intValue() +
+				"\", \"OccurrenceTime\":\"" + new Double(sec).intValue() +
+				"\", \"eventid\":\"" + count +
+				"\"}";		
+	}	
+	
+	/** 
 	 * Print this position report.
 	 */
 	public String toString() {
