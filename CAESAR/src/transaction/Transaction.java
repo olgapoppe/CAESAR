@@ -9,7 +9,7 @@ import event.*;
 
 /** 
  * A transaction has a sequence of events with the same time stamp and belonging to the same run,
- * a set of all runs, start of simulation and distributor progress per second. 
+ * a set of all runs, start of simulation, total execution time and transaction number. 
  * @author Olga Poppe
  */
 public abstract class Transaction implements Runnable {
